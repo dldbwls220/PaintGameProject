@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>Centrixe</author>
+      <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 68</authoring_tool>
+    </contributor>
+    <created>2022-10-07T21:33:08</created>
+    <modified>2022-10-07T21:33:08</modified>
+    <unit name="inch" meter="0.0254"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_effects>
+    <effect id="M_TeamColor">
+      <profile_COMMON>
+        <newparam sid="m_teamcolor_tcl_png-surface">
+          <surface type="2D">
+            <init_from>m_teamcolor_tcl_png</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="m_teamcolor_tcl_png-sampler">
+          <sampler2D>
+            <source>m_teamcolor_tcl_png-surface</source>
+          </sampler2D>
+        </newparam>
+        <newparam sid="M_TeamColor_Nrm_png-surface">
+          <surface type="2D">
+            <init_from>M_TeamColor_Nrm_png</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="M_TeamColor_Nrm_png-sampler">
+          <sampler2D>
+            <source>M_TeamColor_Nrm_png-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <blinn>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0.588 0.588 0.588 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="m_teamcolor_tcl_png-sampler" texcoord="CHANNEL1"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </blinn>
+          <extra>
+            <technique profile="OpenCOLLADA3dsMax">
+              <bump bumptype="HEIGHTFIELD">
+                <texture texture="M_TeamColor_Nrm_png-sampler" texcoord="CHANNEL1"/>
+              </bump>
+            </technique>
+          </extra>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <extended_shader>
+            <opacity_type sid="opacity_type" type="int">0</opacity_type>
+            <falloff_type sid="falloff_type" type="int">0</falloff_type>
+            <falloff sid="falloff" type="float">0</falloff>
+            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
+            <wire_size sid="wire_size" type="float">1</wire_size>
+            <wire_units sid="wire_units" type="int">0</wire_units>
+            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
+            <dim_level sid="dim_level" type="float">0</dim_level>
+            <reflection_level sid="reflection_level" type="float">3</reflection_level>
+          </extended_shader>
+          <shader>
+            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
+            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">1</ambient_diffuse_lock>
+            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
+            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
+            <self_illumination sid="self_illumination" type="float">0</self_illumination>
+            <specular_level sid="specular_level" type="float">0</specular_level>
+            <soften sid="soften" type="float">0.1</soften>
+          </shader>
+        </technique>
+      </extra>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="M_TeamColor-material" name="M_TeamColor">
+      <instance_effect url="#M_TeamColor"/>
+    </material>
+  </library_materials>
+  <library_geometries>
+    <geometry id="geom-Eyeblow01_Model__M_TeamColor" name="Eyeblow01_Model__M_TeamColor">
+      <mesh>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-positions">
+          <float_array id="geom-Eyeblow01_Model__M_TeamColor-positions-array" count="387">-0.05740357 -0.2371826 0.2756348 -0.0501709 -0.2305908 0.2678223 -0.04299927 -0.2310791 0.270752 -0.04138184 -0.232666 0.277832 -0.0602417 -0.2293701 0.269043 -0.05395508 -0.2382813 0.2856445 -0.04333496 -0.2324219 0.284668 -0.05010987 -0.2307129 0.2905273 -0.07708741 -0.2307129 0.2822266 -0.07806397 -0.2233887 0.2766114 -0.07403565 -0.2310791 0.2937012 -0.07147218 -0.2253418 0.2980957 -0.09869386 -0.2220459 0.2924805 -0.1002197 -0.217041 0.2875977 -0.09704591 -0.2232666 0.3015137 -0.09515382 -0.2185059 0.3059082 -0.1200562 -0.2128906 0.2995605 -0.121582 -0.2091064 0.2954102 -0.118042 -0.2137451 0.3068848 -0.1167603 -0.2089844 0.3100586 -0.1348877 -0.206543 0.3015137 -0.1347656 -0.2025146 0.2976074 -0.1341553 -0.2058106 0.307373 -0.1324463 -0.2016602 0.3100586 -0.1441651 -0.1959229 0.3083496 -0.1459961 -0.199707 0.3061523 -0.1679688 -0.1835937 0.300293 -0.1467285 -0.1999512 0.3010254 -0.1452637 -0.1973877 0.2976074 -0.1656494 -0.1856689 0.2944336 -0.1679688 -0.1871338 0.2978516 -0.1763916 -0.1783447 0.2941895 0.05740357 -0.2371826 0.2756348 0.04299927 -0.2310791 0.270752 0.0501709 -0.2305908 0.2678223 0.04138184 -0.232666 0.277832 0.0602417 -0.2293701 0.269043 0.05395508 -0.2382813 0.2856445 0.04333496 -0.2324219 0.284668 0.05010987 -0.2307129 0.2905273 0.07708741 -0.2307129 0.2822266 0.07806397 -0.2233887 0.2766114 0.07403565 -0.2310791 0.2937012 0.07147218 -0.2253418 0.2980957 0.09869386 -0.2220459 0.2924805 0.1002197 -0.217041 0.2875977 0.09704591 -0.2232666 0.3015137 0.09515382 -0.2185059 0.3059082 0.1200562 -0.2128906 0.2995605 0.121582 -0.2091065 0.2954102 0.118042 -0.2137451 0.3068848 0.1167603 -0.2089844 0.3100586 0.1348877 -0.206543 0.3015137 0.1347656 -0.2025146 0.2976074 0.1341553 -0.2058106 0.307373 0.1324463 -0.2016602 0.3100586 0.1441651 -0.1959229 0.3083496 0.1459961 -0.199707 0.3061523 0.1679688 -0.1835937 0.300293 0.1467285 -0.1999512 0.3010254 0.1452637 -0.1973877 0.2976074 0.1656494 -0.1856689 0.2944336 0.1679688 -0.1871338 0.2978516 0.1763916 -0.1783447 0.2941895 -0.04299927 -0.2310791 0.270752 -0.04122925 -0.232666 0.277832 -0.05718995 -0.2382813 0.276123 -0.0602417 -0.2292481 0.2687988 -0.04980469 -0.2333985 0.2917481 -0.07733156 -0.2322998 0.2827149 -0.095459 -0.2203369 0.3066407 -0.1002808 -0.216919 0.2873535 -0.1176148 -0.213623 0.3076172 -0.1200562 -0.2128906 0.2995605 -0.121582 -0.2089844 0.2954102 -0.1341553 -0.2058106 0.307373 -0.1324463 -0.2015381 0.3103027 -0.1348877 -0.206543 0.3015137 -0.1655274 -0.1855469 0.2946777 -0.1459961 -0.199707 0.3061523 -0.1679688 -0.1835937 0.300293 -0.1679688 -0.1871338 0.2978516 -0.1763916 -0.1783447 0.2941895 0.04299927 -0.2310791 0.270752 0.05715943 -0.2384033 0.276123 0.04122925 -0.2327881 0.277832 0.0602417 -0.2292481 0.2687988 0.04968262 -0.2322998 0.2912598 0.07714844 -0.230835 0.2822266 0.1002808 -0.216919 0.2873535 0.07415772 -0.2316895 0.2939453 0.09515382 -0.2185059 0.3059082 0.1176148 -0.2136231 0.3076172 0.1201172 -0.2130127 0.2995605 0.121582 -0.2089844 0.2954102 0.1341553 -0.2058106 0.307373 0.1324463 -0.2015381 0.3103027 0.1348877 -0.206543 0.3015137 0.1655274 -0.1855469 0.2946777 0.1459961 -0.199707 0.3061523 0.1679688 -0.1835937 0.300293 0.1679688 -0.1871338 0.2978516 0.1763916 -0.1783447 0.2941895 -0.1307373 -0.2025146 0.3117676 -0.1652832 -0.1868896 0.3029785 -0.1303711 -0.2073975 0.3027344 -0.1679688 -0.1871338 0.2978516 -0.1763916 -0.1783447 0.2941895 0.1677246 -0.1862793 0.296875 0.1763916 -0.1783447 0.2941895 0.1690674 -0.1849365 0.3015137 0.1350098 -0.2067871 0.3017578 0.12146 -0.2088623 0.2956543 0.1325684 -0.2015381 0.310791 0.1179199 -0.2141113 0.3081055 0.1202393 -0.2127686 0.2990723 0.1003418 -0.216919 0.2873535 0.05773926 -0.2392578 0.2758789 0.09588625 -0.2208252 0.3066407 0.06033326 -0.229126 0.2685547 0.04879761 -0.2332764 0.2919922 0.04125977 -0.2315674 0.270752 -0.0411377 -0.2316895 0.2709961 -0.05664063 -0.2402344 0.2763672 -0.06088257 -0.2286377 0.2685547 -0.0496521 -0.2327881 0.2915039 -0.09692384 -0.2196045 0.2873535 -0.09411623 -0.2216797 0.3073731 -0.1303711 -0.2073975 0.3027344</float_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-positions-array" count="129" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-normals">
+          <float_array id="geom-Eyeblow01_Model__M_TeamColor-normals-array" count="192">-0.2112603 -0.9311103 -0.2973261 0.04501794 -0.7750875 -0.6302481 0.2737928 -0.9172053 -0.2894342 0.3172686 -0.9283051 -0.1938823 -0.4070138 -0.632046 -0.6594374 -0.01564733 -0.9564621 0.2914369 0.477209 -0.8077354 0.3461719 0.1604898 -0.6086865 0.7770094 -0.4246244 -0.8551185 -0.2974333 -0.4774693 -0.62032 -0.622275 -0.1683887 -0.9045963 0.3916004 0.08029268 -0.6286294 0.7735492 -0.4442768 -0.8572402 -0.2603025 -0.4874626 -0.6616948 -0.5696844 -0.2442912 -0.8989917 0.3635049 -0.01955926 -0.6298108 0.7765023 -0.4502881 -0.8614219 -0.2349315 -0.4422185 -0.7024628 -0.5576637 -0.3207231 -0.846786 0.4243705 -0.1467297 -0.5477928 0.8236464 -0.4482341 -0.8671114 -0.2172648 -0.3720564 -0.6775312 -0.6344489 -0.3914785 -0.7653393 0.5108819 -0.2545948 -0.4465184 0.8577896 -0.3678661 -0.3365573 0.8668355 -0.4971493 -0.6459032 0.5793546 -0.5933503 -0.6266409 0.5052294 -0.5106493 -0.8491247 -0.1349985 -0.3249155 -0.6889779 -0.647873 -0.3385899 -0.698709 -0.6302084 -0.5715948 -0.8201998 -0.02349018 -0.7148765 -0.6972484 -0.05288129 0.2112603 -0.9311103 -0.2973261 -0.2737928 -0.9172053 -0.2894342 -0.04501794 -0.7750875 -0.6302481 -0.3172686 -0.9283051 -0.1938823 0.4070138 -0.632046 -0.6594374 0.01564733 -0.9564621 0.2914369 -0.477209 -0.8077354 0.3461719 -0.1604898 -0.6086865 0.7770094 0.4246244 -0.8551185 -0.2974333 0.4774702 -0.6203181 -0.6222762 0.1683882 -0.9045968 0.3915993 -0.08029268 -0.6286294 0.7735492 0.4442756 -0.857241 -0.2603018 0.4874621 -0.6616956 -0.5696838 0.2442912 -0.8989917 0.3635049 0.01955926 -0.6298108 0.7765023 0.4502881 -0.8614219 -0.2349315 0.442219 -0.702462 -0.5576643 0.3207227 -0.8467863 0.4243699 0.1467297 -0.5477928 0.8236464 0.4482346 -0.8671111 -0.217265 0.3720557 -0.6775329 -0.6344476 0.3914776 -0.7653406 0.5108807 0.2545946 -0.4465196 0.857789 0.3678658 -0.33656 0.8668346 0.4971493 -0.6459032 0.5793546 0.5933503 -0.6266409 0.5052294 0.5106493 -0.8491247 -0.1349985 0.3249155 -0.6889779 -0.647873 0.3385896 -0.6987098 -0.6302078 0.5715948 -0.8201998 -0.02349018 0.7148765 -0.6972484 -0.05288129</float_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-normals-array" count="64" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-map-2">
+          <float_array id="geom-Eyeblow01_Model__M_TeamColor-map-2-array" count="387">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</float_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-map-2-array" count="129" stride="3">
+              <param name="R" type="float"/>
+              <param name="G" type="float"/>
+              <param name="B" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-map0">
+          <float_array id="geom-Eyeblow01_Model__M_TeamColor-map0-array" count="387">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</float_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-map0-array" count="129" stride="3">
+              <param name="R" type="float"/>
+              <param name="G" type="float"/>
+              <param name="B" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-map1">
+          <float_array id="geom-Eyeblow01_Model__M_TeamColor-map1-array" count="387">0.8133516 0.2041962 0 0.8827039 0.1138933 0 0.8998703 0.1499962 0 0.8998703 0.3499962 0 0.8498665 0.09999239 0 0.8240482 0.3157702 0 0.8827039 0.3861143 0 0.8498665 0.4 0 0.6997177 0.2116884 0 0.7021439 0.09999239 0 0.6979629 0.3185321 0 0.6965133 0.4 0 0.5532159 0.2218814 0 0.5556725 0.09999239 0 0.5517052 0.3166552 0 0.5504234 0.4 0 0.4098879 0.2293889 0 0.3498589 0.09999239 0 0.4085756 0.3087816 0 0.3048295 0.4 0 0.3742886 0.2289464 0 0.3113908 0.106157 0 0.3540703 0.3245289 0 0.2762646 0.3929351 0 0.2476844 0.3858702 0 0.2995651 0.3402609 0 0.1905547 0.3717555 0 0.3386892 0.2285038 0 0.2729229 0.1123064 0 0.1959869 0.1246204 0 0.2674754 0.2276188 0 0.1483482 0.2500038 0 0.8133516 0.2041962 0 0.8998703 0.1499962 0 0.8827039 0.1138933 0 0.8998703 0.3499962 0 0.8498665 0.09999239 0 0.8240482 0.3157702 0 0.8827039 0.3861143 0 0.8498665 0.4 0 0.6997177 0.2116884 0 0.7021439 0.09999239 0 0.6979629 0.3185321 0 0.6965133 0.4 0 0.5532159 0.2218814 0 0.5556725 0.09999239 0 0.5517052 0.3166552 0 0.5504234 0.4 0 0.4098879 0.2293889 0 0.3498589 0.09999239 0 0.4085756 0.3087816 0 0.3048295 0.4 0 0.3742886 0.2289464 0 0.3113908 0.106157 0 0.3540703 0.3245289 0 0.2762646 0.3929351 0 0.2476844 0.3858702 0 0.2995651 0.3402609 0 0.1905547 0.3717555 0 0.3386892 0.2285038 0 0.2729229 0.1123064 0 0.1959869 0.1246204 0 0.2674754 0.2276188 0 0.1483482 0.2500038 0 0.8998703 0.1499962 0 0.8998703 0.3499962 0 0.8133516 0.2041962 0 0.8498665 0.09999239 0 0.8498665 0.4 0 0.6997177 0.2116884 0 0.5504234 0.4 0 0.5556725 0.09999239 0 0.4085756 0.3087816 0 0.4098879 0.2293889 0 0.3498589 0.09999239 0 0.3540703 0.3245289 0 0.2762646 0.3929351 0 0.3742886 0.2289464 0 0.1959869 0.1246204 0 0.2995651 0.3402609 0 0.1905547 0.3717555 0 0.2674754 0.2276188 0 0.1483482 0.2500038 0 0.8998703 0.1499962 0 0.8133516 0.2041962 0 0.8998703 0.3499962 0 0.8498665 0.09999239 0 0.8498665 0.4 0 0.6997177 0.2116884 0 0.5556725 0.09999239 0 0.6979629 0.3185321 0 0.5504234 0.4 0 0.4085756 0.3087816 0 0.4098879 0.2293889 0 0.3498589 0.09999239 0 0.3540703 0.3245289 0 0.2762646 0.3929351 0 0.3742886 0.2289464 0 0.1959869 0.1246204 0 0.2995651 0.3402609 0 0.1905547 0.3717555 0 0.2674754 0.2276188 0 0.1483482 0.2500038 0 0.2762646 0.3929351 0 0.1905547 0.3717555 0 0.4085756 0.3087816 0 0.2674754 0.2276188 0 0.1483482 0.2500038 0 0.2674754 0.2276188 0 0.1483482 0.2500038 0 0.1905547 0.3717555 0 0.3742886 0.2289464 0 0.3498589 0.09999239 0 0.2762646 0.3929351 0 0.4085756 0.3087816 0 0.4098879 0.2293889 0 0.5556725 0.09999239 0 0.8133516 0.2041962 0 0.5504234 0.4 0 0.8498665 0.09999239 0 0.8498665 0.4 0 0.8998703 0.1499962 0 0.8998703 0.1499962 0 0.8133516 0.2041962 0 0.8498665 0.09999239 0 0.8498665 0.4 0 0.5556725 0.09999239 0 0.5504234 0.4 0 0.4085756 0.3087816 0</float_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-map1-array" count="129" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-Eyeblow01_Model__M_TeamColor-vertices">
+          <input semantic="POSITION" source="#geom-Eyeblow01_Model__M_TeamColor-positions"/>
+        </vertices>
+        <triangles material="M_TeamColor" count="86">
+          <input semantic="VERTEX" source="#geom-Eyeblow01_Model__M_TeamColor-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-Eyeblow01_Model__M_TeamColor-normals" offset="1"/>
+          <input semantic="COLOR" source="#geom-Eyeblow01_Model__M_TeamColor-map0" offset="2" set="0"/>
+          <input semantic="TEXCOORD" source="#geom-Eyeblow01_Model__M_TeamColor-map1" offset="3" set="0"/>
+          <p>0 0 0 0 1 1 1 1 2 2 2 2 2 2 2 2 3 3 3 3 0 0 0 0 1 1 1 1 0 0 0 0 4 4 4 4 3 3 3 3 5 5 5 5 0 0 0 0 6 6 6 6 5 5 5 5 3 3 3 3 5 5 5 5 6 6 6 6 7 7 7 7 0 0 0 0 8 8 8 8 4 4 4 4 0 0 0 0 5 5 5 5 8 8 8 8 8 8 8 8 9 9 9 9 4 4 4 4 10 10 10 10 5 5 5 5 7 7 7 7 5 5 5 5 10 10 10 10 8 8 8 8 11 11 11 11 10 10 10 10 7 7 7 7 8 8 8 8 12 12 12 12 9 9 9 9 12 12 12 12 8 8 8 8 10 10 10 10 12 12 12 12 13 13 13 13 9 9 9 9 14 14 14 14 10 10 10 10 11 11 11 11 14 14 14 14 12 12 12 12 10 10 10 10 15 15 15 15 14 14 14 14 11 11 11 11 12 12 12 12 16 16 16 16 13 13 13 13 16 16 16 16 12 12 12 12 14 14 14 14 16 16 16 16 17 17 17 17 13 13 13 13 14 14 14 14 15 15 15 15 18 18 18 18 18 18 18 18 16 16 16 16 14 14 14 14 15 15 15 15 19 19 19 19 18 18 18 18 16 16 16 16 20 20 20 20 17 17 17 17 20 20 20 20 21 21 21 21 17 17 17 17 18 18 18 18 22 22 22 22 16 16 16 16 18 18 18 18 19 19 19 19 22 22 22 22 22 22 22 22 20 20 20 20 16 16 16 16 19 19 19 19 23 23 23 23 22 22 22 22 23 23 23 23 24 24 24 24 22 22 22 22 24 24 24 24 25 25 25 25 22 22 22 22 22 22 22 22 25 25 25 25 20 20 20 20 25 25 25 25 24 24 24 24 26 26 26 26 20 20 20 20 27 27 27 27 21 21 21 21 25 25 25 25 27 27 27 27 20 20 20 20 27 27 27 27 28 28 28 28 21 21 21 21 28 28 28 28 27 27 27 27 29 29 29 29 25 25 25 25 26 26 26 26 30 30 30 30 27 27 27 27 25 25 25 25 30 30 30 30 27 27 27 27 30 30 30 30 29 29 29 29 30 30 30 30 26 26 26 26 31 31 31 31 30 30 30 30 31 31 31 31 29 29 29 29 32 32 32 32 33 33 33 33 34 34 34 34 33 33 33 33 32 32 32 32 35 35 35 35 34 34 34 34 36 36 36 36 32 32 32 32 32 32 32 32 37 37 37 37 35 35 35 35 38 38 38 38 35 35 35 35 37 37 37 37 37 37 37 37 39 39 39 39 38 38 38 38 40 40 40 40 32 32 32 32 36 36 36 36 32 32 32 32 40 40 40 40 37 37 37 37 41 41 41 41 40 40 40 40 36 36 36 36 37 37 37 37 42 42 42 42 39 39 39 39 40 40 40 40 42 42 42 42 37 37 37 37 42 42 42 42 43 43 43 43 39 39 39 39 44 44 44 44 40 40 40 40 41 41 41 41 40 40 40 40 44 44 44 44 42 42 42 42 45 45 45 45 44 44 44 44 41 41 41 41 42 42 42 42 46 46 46 46 43 43 43 43 44 44 44 44 46 46 46 46 42 42 42 42 46 46 46 46 47 47 47 47 43 43 43 43 44 44 44 44 45 45 45 45 48 48 48 48 44 44 44 44 48 48 48 48 46 46 46 46 45 45 45 45 49 49 49 49 48 48 48 48 47 47 47 47 46 46 46 46 50 50 50 50 48 48 48 48 50 50 50 50 46 46 46 46 51 51 51 51 47 47 47 47 50 50 50 50 52 52 52 52 48 48 48 48 49 49 49 49 53 53 53 53 52 52 52 52 49 49 49 49 54 54 54 54 50 50 50 50 48 48 48 48 50 50 50 50 54 54 54 54 51 51 51 51 52 52 52 52 54 54 54 54 48 48 48 48 54 54 54 54 55 55 55 55 51 51 51 51 56 56 56 56 55 55 55 55 54 54 54 54 57 57 57 57 56 56 56 56 54 54 54 54 57 57 57 57 54 54 54 54 52 52 52 52 57 57 57 57 58 58 58 58 56 56 56 56 59 59 59 59 52 52 52 52 53 53 53 53 59 59 59 59 57 57 57 57 52 52 52 52 60 60 60 60 59 59 59 59 53 53 53 53 60 60 60 60 61 61 61 61 59 59 59 59 62 62 62 62 58 58 58 58 57 57 57 57 59 59 59 59 62 62 62 62 57 57 57 57 61 61 61 61 62 62 62 62 59 59 59 59 62 62 62 62 63 63 63 63 58 58 58 58 62 62 62 62 61 61 61 61 63 63 63 63</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_controllers>
+    <controller id="geom-Eyeblow01_Model__M_TeamColor-skin1">
+      <skin source="#geom-Eyeblow01_Model__M_TeamColor">
+        <bind_shape_matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</bind_shape_matrix>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-skin1-joints">
+          <Name_array id="geom-Eyeblow01_Model__M_TeamColor-skin1-joints-array" count="4">joint0 joint1 joint2 joint3</Name_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-skin1-joints-array" count="4" stride="1">
+              <param name="JOINT" type="name"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-skin1-bind_poses">
+          <float_array id="geom-Eyeblow01_Model__M_TeamColor-skin1-bind_poses-array" count="64">0 0 1 0 0 -1 0 0 1 0 0 0 0 0 0 1 0 0 1 -0.305 0.4226182 -0.9063079 0 -0.2313651 0.9063079 0.4226182 0 -0.04658565 0 0 0 1 1.52762e-8 -2.49921e-9 1 -0.305 0.4226185 0.9063079 -1.93475e-8 0.2313651 -0.9063077 0.4226184 2.38613e-8 -0.04658558 0 0 0 1 0 0 1 -0.275 0 -1 0 -0.22 1 0 0 0 0 0 0 1</float_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-skin1-bind_poses-array" count="4" stride="16">
+              <param name="TRANSFORM" type="float4x4"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-Eyeblow01_Model__M_TeamColor-skin1-weights">
+          <float_array id="geom-Eyeblow01_Model__M_TeamColor-skin1-weights-array" count="322">1 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4 0.2 0.4 0.4 0.2 0.4 0.4 0.2 0.4 0.4 0.2 0.4 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3411765 0.6588235 0.3411765 0.6588235 0.3215686 0.6784314 0.3411765 0.6588235 0.3411765 0.6588235 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6784314 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4 0.2 0.4 0.4 0.2 0.4 0.4 0.2 0.4 0.4 0.2 0.4 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3411765 0.6588235 0.3411765 0.6588235 0.3215686 0.6784314 0.3411765 0.6588235 0.3411765 0.6588235 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6784314 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4 0.2 0.4 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6784314 0.3411765 0.6588235 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6784314 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4 0.2 0.4 0.3607843 0.4 0.2392157 0.4 0.2 0.4 0.3607843 0.4 0.2392157 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6470588 0.03137255 0.3215686 0.6784314 0.3411765 0.6588235 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6470588 0.03137255 0.3215686 0.6784314 0.3098039 0.5882353 0.1019608 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6784314 0.3215686 0.6470588 0.03137255 0.3098039 0.5882353 0.1019608 0.3215686 0.6470588 0.03137255 0.3098039 0.5882353 0.1019608 0.3098039 0.5882353 0.1019608 0.3607843 0.4 0.2392157 0.4980392 0.5019608 0.3607843 0.4 0.2392157 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.4980392 0.5019608 0.3607843 0.4 0.2392157 0.3607843 0.4 0.2392157 0.3098039 0.5882353 0.1019608</float_array>
+          <technique_common>
+            <accessor source="#geom-Eyeblow01_Model__M_TeamColor-skin1-weights-array" count="322" stride="1">
+              <param name="WEIGHT" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <joints>
+          <input semantic="JOINT" source="#geom-Eyeblow01_Model__M_TeamColor-skin1-joints"/>
+          <input semantic="INV_BIND_MATRIX" source="#geom-Eyeblow01_Model__M_TeamColor-skin1-bind_poses"/>
+        </joints>
+        <vertex_weights count="129">
+          <input semantic="JOINT" source="#geom-Eyeblow01_Model__M_TeamColor-skin1-joints" offset="0"/>
+          <input semantic="WEIGHT" source="#geom-Eyeblow01_Model__M_TeamColor-skin1-weights" offset="1"/>
+          <vcount>2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 2 2 2 2 2 3 2 3 2 2 2 2 2 3 3 3 3 3 3 2 3 2 2 2 2 2 2 2 3 3 3</vcount>
+          <v>0 1 3 2 0 3 3 4 0 5 3 6 0 7 3 8 0 9 3 10 0 11 3 12 0 13 3 14 0 15 3 16 0 17 2 18 3 19 0 20 2 21 3 22 0 23 2 24 3 25 0 26 2 27 3 28 0 29 2 30 3 31 0 32 2 33 3 34 0 35 2 36 3 37 0 38 2 39 3 40 0 41 2 42 3 43 0 44 2 45 3 46 0 47 2 48 3 49 0 50 2 51 3 52 0 53 2 54 3 55 0 56 2 57 3 58 0 59 2 60 3 61 0 62 2 63 3 64 0 65 2 66 0 67 2 68 0 69 2 70 0 71 2 72 0 73 2 74 0 75 2 76 0 77 2 78 0 79 2 80 0 81 3 82 0 83 3 84 0 85 3 86 0 87 3 88 0 89 3 90 0 91 3 92 0 93 3 94 0 95 3 96 0 97 1 98 3 99 0 100 1 101 3 102 0 103 1 104 3 105 0 106 1 107 3 108 0 109 1 110 3 111 0 112 1 113 3 114 0 115 1 116 3 117 0 118 1 119 3 120 0 121 1 122 3 123 0 124 1 125 3 126 0 127 1 128 3 129 0 130 1 131 3 132 0 133 1 134 3 135 0 136 1 137 3 138 0 139 1 140 3 141 0 142 1 143 3 144 0 145 1 146 0 147 1 148 0 149 1 150 0 151 1 152 0 153 1 154 0 155 1 156 0 157 1 158 0 159 1 160 0 161 3 162 0 163 3 164 0 165 3 166 0 167 3 168 0 169 3 170 0 171 2 172 3 173 0 174 2 175 3 176 0 177 2 178 3 179 0 180 2 181 3 182 0 183 2 184 3 185 0 186 2 187 3 188 0 189 2 190 3 191 0 192 2 193 3 194 0 195 2 196 3 197 0 198 2 199 0 200 2 201 0 202 2 203 0 204 2 205 0 206 2 207 0 208 3 209 0 210 3 211 0 212 3 213 0 214 3 215 0 216 3 217 0 218 1 219 3 220 0 221 1 222 3 223 0 224 1 225 3 226 0 227 1 228 3 229 0 230 1 231 3 232 0 233 1 234 3 235 0 236 1 237 3 238 0 239 1 240 3 241 0 242 1 243 3 244 0 245 1 246 3 247 0 248 1 249 0 250 1 251 0 252 1 253 0 254 1 255 0 256 1 257 0 258 2 259 3 260 0 261 2 262 0 263 2 264 3 265 0 266 2 267 0 268 2 269 0 270 1 271 0 272 1 273 0 274 1 275 0 276 1 277 3 278 0 279 1 280 3 281 0 282 1 283 3 284 0 285 1 286 3 287 0 288 1 289 3 290 0 291 1 292 3 293 0 294 3 295 0 296 1 297 3 298 0 299 3 300 0 301 3 302 0 303 3 304 0 305 3 306 0 307 3 308 0 309 3 310 0 311 3 312 0 313 2 314 3 315 0 316 2 317 3 318 0 319 2 320 3 321</v>
+        </vertex_weights>
+      </skin>
+    </controller>
+  </library_controllers>
+  <library_lights>
+    <light id="EnvironmentAmbientLight" name="EnvironmentAmbientLight">
+      <technique_common>
+        <ambient>
+          <color>0 0 0</color>
+        </ambient>
+      </technique_common>
+    </light>
+  </library_lights>
+  <library_images>
+    <image id="M_TeamColor_Nrm_png">
+      <init_from>./M_TeamColor_Nrm.png</init_from>
+    </image>
+    <image id="m_teamcolor_tcl_png">
+      <init_from>./m_teamcolor_tcl.png</init_from>
+    </image>
+  </library_images>
+  <library_visual_scenes>
+    <visual_scene id="MaxScene">
+      <node name="EnvironmentAmbientLight">
+        <instance_light url="#EnvironmentAmbientLight"/>
+      </node>
+      <node id="node-Head_Root" name="Head_Root" sid="joint0" type="JOINT">
+        <rotate>0.7071068 0 0.7071068 -180</rotate>
+        <node id="node-Head_Eyeblow_L" name="Head_Eyeblow_L" sid="joint1" type="JOINT">
+          <translate>0.305 0.19 0.14</translate>
+          <rotate>-1 0 0 -24.99999</rotate>
+          <extra>
+            <technique profile="OpenCOLLADA">
+              <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+              <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+              <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+              <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+            </technique>
+          </extra>
+        </node>
+        <node id="node-Head_Eyeblow_R" name="Head_Eyeblow_R" sid="joint2" type="JOINT">
+          <translate>0.305 0.19 -0.14</translate>
+          <rotate>1 -3.73626e-9 1.09952e-8 -205</rotate>
+          <extra>
+            <technique profile="OpenCOLLADA">
+              <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+              <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+              <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+              <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+            </technique>
+          </extra>
+        </node>
+        <node id="node-Head_Intercostal" name="Head_Intercostal" sid="joint3" type="JOINT">
+          <translate>0.275 0.22 0</translate>
+          <extra>
+            <technique profile="OpenCOLLADA">
+              <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+              <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+              <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+              <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+            </technique>
+          </extra>
+        </node>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-Eyeblow01_Model__M_TeamColor" name="Eyeblow01_Model__M_TeamColor">
+        <instance_controller url="#geom-Eyeblow01_Model__M_TeamColor-skin1">
+          <skeleton>#node-Head_Root</skeleton>
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="M_TeamColor" target="#M_TeamColor-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_controller>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#MaxScene"/>
+  </scene>
+</COLLADA>

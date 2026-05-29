@@ -1,0 +1,118 @@
+using UnityEngine;
+using UnityEngine.Rendering;
+
+public class PaintManager : Singleton<PaintManager>
+{
+    public Shader _texturePaint;
+    public Shader _extendIslands;
+
+    int _prepareUVID = Shader.PropertyToID("_PrepareUV");
+    int _positionID = Shader.PropertyToID("_PainterPosition");
+    int _hardnessID = Shader.PropertyToID("_Hardness");
+    int _strengthID = Shader.PropertyToID("_Strength");
+    int _radiusID = Shader.PropertyToID("_Radius");
+    int _blendOpID = Shader.PropertyToID("_BlendOp");
+    int _colorID = Shader.PropertyToID("_PainterColor");
+    int _textureID = Shader.PropertyToID("_MainTex");
+    int _uvOffsetID = Shader.PropertyToID("_OffsetUV");
+    int _uvIslandsID = Shader.PropertyToID("_UVIslands");
+
+    Material _paintMaterial;
+    Material _extendMaterial;
+
+    CommandBuffer _command;
+
+    MaterialPropertyBlock _propBlock;
+
+    public override void Awake()
+    {
+        base.Awake();
+
+        _paintMaterial = new Material(_texturePaint);
+        _extendMaterial = new Material(_extendIslands);
+        _command = new CommandBuffer();
+        _command.name = "CommmandBuffer - " + gameObject.name;
+
+        _propBlock = new MaterialPropertyBlock();
+    }
+
+    public void initTextures(Paintabale paintable)
+    {
+        RenderTexture mask = paintable.getmask();
+        RenderTexture uvIslands = paintable.getUVIslands();
+        RenderTexture extend = paintable.getExtend();
+        RenderTexture support = paintable.getSupport();
+        Renderer rend = paintable.getRenderer();
+
+        _command.SetRenderTarget(mask);
+        _command.SetRenderTarget(extend);
+        _command.SetRenderTarget(support);
+
+        _paintMaterial.SetFloat(_prepareUVID, 1);
+        _command.SetRenderTarget(uvIslands);
+        _command.DrawRenderer(rend, _paintMaterial, 0);
+
+        Graphics.ExecuteCommandBuffer(_command);
+        _command.Clear();
+    }
+
+
+    public void paint(Paintabale paintable, Vector3 pos, float radius = 1f, float hardness = .5f, float strength = .5f, Color? color = null)
+    {
+        RenderTexture mask = paintable.getmask();
+        RenderTexture uvIslands = paintable.getUVIslands();
+        RenderTexture extend = paintable.getExtend();
+        RenderTexture support = paintable.getSupport();
+        Renderer rend = paintable.getRenderer();
+
+        Mesh mesh = paintable.GetComponent<MeshFilter>().sharedMesh; // 메쉬 가져오기
+        Matrix4x4 matrix = paintable.transform.localToWorldMatrix;   // 변환 행렬
+
+        //_paintMaterial.SetFloat(_prepareUVID, 0);
+        //_paintMaterial.SetVector(_positionID, pos);
+        //_paintMaterial.SetFloat(_hardnessID, hardness);
+        //_paintMaterial.SetFloat(_strengthID, strength);
+        //_paintMaterial.SetFloat(_radiusID, radius);
+        //_paintMaterial.SetTexture(_textureID, support);
+        //_paintMaterial.SetColor(_colorID, color ?? Color.red);
+        //_extendMaterial.SetFloat(_uvOffsetID, paintable._extendsIslandOffset);
+        //_extendMaterial.SetTexture(_uvIslandsID, uvIslands);
+
+        //_command.SetRenderTarget(mask);
+        //_command.DrawRenderer(rend, _paintMaterial, 0);
+
+        //_command.SetRenderTarget(support);
+        //_command.Blit(mask, support);
+
+        //_command.SetRenderTarget(extend);
+        //_command.Blit(mask, extend, _extendMaterial);
+
+        //Graphics.ExecuteCommandBuffer(_command);
+        //_command.Clear();
+
+        _propBlock.Clear();
+        _propBlock.SetFloat(_prepareUVID, 0);
+        _propBlock.SetVector(_positionID, pos);
+        _propBlock.SetFloat(_hardnessID, hardness);
+        _propBlock.SetFloat(_strengthID, strength);
+        _propBlock.SetFloat(_radiusID, radius);
+        _propBlock.SetTexture(_textureID, support);
+        _propBlock.SetColor(_colorID, color ?? Color.red);
+
+        _command.Clear();
+        _command.SetRenderTarget(mask);
+        // DrawRenderer 호출 시 마지막 인자로 _propBlock을 전달
+        _command.DrawMesh(mesh, matrix, _paintMaterial, 0, 0, _propBlock);
+
+        _command.SetRenderTarget(support);
+        _command.Blit(mask, support);
+
+        _command.SetRenderTarget(extend);
+        _command.Blit(mask, extend, _extendMaterial);
+
+        Graphics.ExecuteCommandBuffer(_command);
+        _command.Clear();
+
+        Graphics.ExecuteCommandBuffer(_command);
+    }
+}
