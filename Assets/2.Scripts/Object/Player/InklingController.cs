@@ -156,8 +156,7 @@ public class InklingController : CharBase
             _aniController[(int)FormState.Inkling].SetBool("isShooting", true);
             _aniController[(int)FormState.Inkling].SetLayerWeight(1, _currentWeight);
 
-            _shoot.ShootingPaint(_isShooting);
-            _inkP.Launch(_shootRoot.transform.position, transform.forward);
+            _shoot.ShootingPaint(_isShooting);           
 
             _shoot.UseInk(_inkUseRate);          
 

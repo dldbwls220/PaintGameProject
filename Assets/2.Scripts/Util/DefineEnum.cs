@@ -39,4 +39,26 @@ namespace DefineEnum
     }
 
     #endregion[某腐磐]
+
+    #region[家府]
+
+    public enum LoopName
+    {
+        Count
+    }
+
+    public enum BGMName
+    {
+        Count
+    }
+
+    public enum  SFXName
+    {
+        Shtr_Shot_00,
+        Hit_Inkling_00,
+
+        Count
+    }
+
+    #endregion[家府]
 }

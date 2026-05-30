@@ -1,34 +1,43 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
+using DefineEnum;
 
 public class InkProjectile : MonoBehaviour
 {
     [SerializeField] GameObject _testProjectile;
+    [SerializeField] ParticleSystem _shootFX;
 
     InklingController _inkling;
 
+    float lastShootTime = 0;
+
+    [Header("Ink Projectile Setting")]
     [SerializeField] float _minSpeed;
     [SerializeField] float _maxSpeed;
     [SerializeField] float _gravityModify;
 
-    Vector3 _currentVelocity;
-    Vector3 _currentPosition;
+    [Header("Ink Paint Setting")]
+    [SerializeField] float _minRadius = 0.5f;
+    [SerializeField] float _maxRadius = 1.2f;
+    [SerializeField] float _strength = 1;
+    [SerializeField] float _hardness = 1;
 
     private void Start()
     {
         _inkling = GetComponent<InklingController>();
+
     }
 
     public void Launch(Vector3 startPos, Vector3 dir)
     {
-        GameObject go = Instantiate(_testProjectile, startPos, Quaternion.identity);
-
-        StartCoroutine(SimulateArc(startPos, dir, go));
+        _shootFX.Play();
+        StartCoroutine(SimulateArc(startPos, dir));
     }
 
-    IEnumerator SimulateArc(Vector3 startPos, Vector3 direction , GameObject projectile)
+    IEnumerator SimulateArc(Vector3 startPos, Vector3 direction)
     {
+        GameObject projectile = Instantiate(_testProjectile, startPos, Quaternion.identity);
+
         float ranSpeed = Random.Range(_minSpeed, _maxSpeed);
 
         Vector3 currentPos = startPos;
@@ -60,18 +69,37 @@ public class InkProjectile : MonoBehaviour
             //레이케스트 발사
             if (Physics.Raycast(currentPos, dir, out RaycastHit hit, distance))
             {
-                if (projectile != null)
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Wall") || hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                 {
-                    // 1. 잉크 방울이 팡! 하고 터지는 이펙트나 사운드 연출 생성
-                    // PlaySplashEffect(hit.point);
+                    if (projectile != null)
+                    {
+                        
+                        // 1. 잉크 방울이 팡! 하고 터지는 이펙트나 사운드 연출 생성
+                        // PlaySplashEffect(hit.point);
 
-                    // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
-                    Destroy(projectile);
+                        // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
+                        Destroy(projectile);
+                    }
+
+                    // 잉크 칠하는 로직 실행
+                    PaintInk(hit);
+                    Debug.DrawLine(currentPos, nextPos, Color.cyan, 1f);
                 }
+                else if(hit.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    if (projectile != null)
+                    {
+                        SoundManager._instance.PlaySFX(SFXName.Hit_Inkling_00);
+                        // 1. 잉크 방울이 팡! 하고 터지는 이펙트나 사운드 연출 생성
+                        // PlaySplashEffect(hit.point);
 
-                // 잉크 칠하는 로직 실행
-                PaintInk(hit);
-                Debug.DrawLine(currentPos, nextPos, Color.cyan, 1f);
+                        // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
+                        Destroy(projectile);
+                    }
+                    Debug.DrawLine(currentPos, nextPos, Color.red, 1f);
+                }
+               
+
                 yield break;
             }
 
@@ -95,8 +123,8 @@ public class InkProjectile : MonoBehaviour
         
         if (p != null)
         {
-            float radius = Random.Range(0.9f, 1.7f);
-            PaintManager.instance.paint(p, hit.point, radius, 1, 1, _inkling._myColor);
+            float radius = Random.Range(_minRadius, _maxRadius);
+            PaintManager.instance.paint(p, hit.point, radius, _hardness, _strength, _inkling._myColor);
         }
 
         Debug.Log($"잉크 충돌! 위치: {hit.point}");
