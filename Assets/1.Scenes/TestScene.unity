@@ -18332,6 +18332,11 @@ Transform:
   - {fileID: 1335522277}
   m_Father: {fileID: 547171556}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1187090797 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9077617254665921393, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+  m_PrefabInstance: {fileID: 2978331834120428659}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1193484277
 GameObject:
   m_ObjectHideFlags: 0
@@ -30106,6 +30111,22 @@ MonoBehaviour:
   _detectionLegth: 0.7
   _sphereCastRadius: 0.5
   _maxWallLookAngle: 60
+--- !u!114 &1627450095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874394855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95e51a7236974b7439aeb56f9b2a809e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InkProjectile
+  _testProjectile: {fileID: 4689569005773955523, guid: bfebcb4d518e4004888052315ae7a4a4, type: 3}
+  _minSpeed: 20
+  _maxSpeed: 40
+  _gravityModify: 2
 --- !u!1 &1633825822
 GameObject:
   m_ObjectHideFlags: 0
@@ -36927,6 +36948,14 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3377413297045163398, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377413297045163398, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3431492085273668496, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -37047,6 +37076,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4369289534192137056, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4468723710247268968, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: _accel
       value: 4
@@ -37055,6 +37088,10 @@ PrefabInstance:
       propertyPath: _multiAC
       value: 
       objectReference: {fileID: 1386049734}
+    - target: {fileID: 4468723710247268968, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: _shootRoot
+      value: 
+      objectReference: {fileID: 1187090797}
     - target: {fileID: 4468723710247268968, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: _turnDecel
       value: 2
@@ -37559,6 +37596,14 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7939761095012896176, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7939761095012896176, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7984498863975701875, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -37736,8 +37781,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8699011851330262589, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8699011851330262589, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: TriggerModule.primitives.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8699011851330262589, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8699011851330262589, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: 'TriggerModule.primitives.Array.data[0]'
@@ -37840,6 +37893,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8955290842762730277, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1627450091}
+    - targetCorrespondingSourceObject: {fileID: 8955290842762730277, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1627450095}
     - targetCorrespondingSourceObject: {fileID: 2572808896076339776, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2978331834120428666}

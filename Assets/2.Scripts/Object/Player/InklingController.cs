@@ -38,11 +38,13 @@ public class InklingController : CharBase
     ShootingComponent _shoot;
     CharacterClothChanger _clothChanger;
     WallClimbing _wallClimb;
+    InkProjectile _inkP;
 
     [Header("GameObject")]
     [SerializeField] GameObject[] _modelObj;
     [SerializeField] GameObject _inkTankObj;
     [SerializeField] GameObject _mouseTarget;
+    [SerializeField] GameObject _shootRoot;
     [Space]
 
     //정보 변수
@@ -104,6 +106,7 @@ public class InklingController : CharBase
         _shoot = GetComponent<ShootingComponent>();
         _clothChanger = GetComponent<CharacterClothChanger>();
         _wallClimb = GetComponent<WallClimbing>();
+        _inkP = GetComponent<InkProjectile>();
 
         _followCam = Camera.main.transform;
         InitSetBase(name, 2, 5, 100, 100, 15, 25, _anim);
@@ -154,6 +157,7 @@ public class InklingController : CharBase
             _aniController[(int)FormState.Inkling].SetLayerWeight(1, _currentWeight);
 
             _shoot.ShootingPaint(_isShooting);
+            _inkP.Launch(_shootRoot.transform.position, transform.forward);
 
             _shoot.UseInk(_inkUseRate);          
 
