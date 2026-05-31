@@ -9,7 +9,6 @@ using UnityEngine.InputSystem;
 public class InklingController : CharBase
 {
     [Header("Test")]
-    [SerializeField] GameObject _testPrefab;
     [Space]
 
 
@@ -35,10 +34,9 @@ public class InklingController : CharBase
     [Space]
 
     InkTankComponent _inktank;
-    ShootingComponent _shoot;
+    [SerializeField] WeaponComponent _shoot; //test
     CharacterClothChanger _clothChanger;
     WallClimbing _wallClimb;
-    InkProjectile _inkP;
 
     [Header("GameObject")]
     [SerializeField] GameObject[] _modelObj;
@@ -103,10 +101,8 @@ public class InklingController : CharBase
     {
         _charController = GetComponent<CharacterController>();
         _inktank = GetComponent<InkTankComponent>();
-        _shoot = GetComponent<ShootingComponent>();
         _clothChanger = GetComponent<CharacterClothChanger>();
         _wallClimb = GetComponent<WallClimbing>();
-        _inkP = GetComponent<InkProjectile>();
 
         _followCam = Camera.main.transform;
         InitSetBase(name, 2, 5, 100, 100, 15, 25, _anim);
@@ -115,8 +111,8 @@ public class InklingController : CharBase
         _tempSpeed = _runSpeed;
         _inkTankOffset = 0;
 
-        _clothChanger.EquipClothing(_testPrefab, _customizeState);
         AddAimSource();
+        _clothChanger.SetCustomization();
 
         _inkingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
         _halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -156,9 +152,7 @@ public class InklingController : CharBase
             _aniController[(int)FormState.Inkling].SetBool("isShooting", true);
             _aniController[(int)FormState.Inkling].SetLayerWeight(1, _currentWeight);
 
-            _shoot.ShootingPaint(_isShooting);           
-
-            _shoot.UseInk(_inkUseRate);          
+            _shoot.ShootingPaint(_isShooting);         
 
 
         }

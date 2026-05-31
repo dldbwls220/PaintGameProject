@@ -7,6 +7,39 @@ public class CharacterClothChanger : MonoBehaviour
     [SerializeField] Transform _characterRootBone;
     [SerializeField] Transform _characterHeadRoot;
 
+    [SerializeField] HairState _hairState;
+    [SerializeField] EyebrowsState _eyebrowsState;
+    [SerializeField] HeadState _headState;
+    [SerializeField] BodyState _bodyState;
+    [SerializeField] ShoeState _shoeState;
+
+    Dictionary<CustomizeState, string> CustomDic = new Dictionary<CustomizeState, string>();
+
+    public void SetCustomization()
+    {
+        CustomDic.Add(CustomizeState.Head, _headState.ToString());
+        CustomDic.Add(CustomizeState.Shirts, _bodyState.ToString());
+        CustomDic.Add(CustomizeState.Shoes, _shoeState.ToString());
+        CustomDic.Add(CustomizeState.Hair, _hairState.ToString());
+        CustomDic.Add(CustomizeState.Eyebrows, _eyebrowsState.ToString());
+
+        foreach (KeyValuePair<CustomizeState, string> pair in CustomDic)
+        {
+            GameObject go = Resources.Load<GameObject>("Object/Customizing/" +  pair.Key.ToString() +"/" + pair.Value);
+
+            EquipClothing(go, pair.Key);
+
+            Debug.Log(go.name);
+
+            if (pair.Key == CustomizeState.Shoes)
+            {
+                go = Resources.Load<GameObject>("Object/Customizing/" + pair.Key.ToString() + "/" + pair.Value + "_R");
+
+                EquipClothing(go, pair.Key);
+            }
+        }
+    }
+
     public void EquipClothing(GameObject clothPrefab, CustomizeState state)
     {
 
@@ -15,13 +48,16 @@ public class CharacterClothChanger : MonoBehaviour
             case CustomizeState.Hair:
                 SetHair(clothPrefab);
                 break;
-            case CustomizeState.Eyebrow:
+            case CustomizeState.Eyebrows:
                 SetClothes(clothPrefab);
                 break;
             case CustomizeState.Head:
                 SetHair(clothPrefab);
                 break;
             case CustomizeState.Shirts:
+                SetClothes(clothPrefab);
+                break;
+            case CustomizeState.Shoes:
                 SetClothes(clothPrefab);
                 break;
         }
@@ -44,7 +80,7 @@ public class CharacterClothChanger : MonoBehaviour
 
     void SetClothes(GameObject clothPrefab)
     {
-        GameObject clothObj = Instantiate(clothPrefab, transform);
+        GameObject clothObj = Instantiate(clothPrefab, _characterRootBone.parent.parent);
 
         SkinnedMeshRenderer[] clothRender = clothObj.GetComponentsInChildren<SkinnedMeshRenderer>();
         if (clothRender == null) return;

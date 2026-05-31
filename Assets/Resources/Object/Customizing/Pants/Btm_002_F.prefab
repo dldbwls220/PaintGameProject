@@ -118,14 +118,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5902984194700879426}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: -0.00000089916}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.19499, y: 0.85032004, z: -4.7460847}
+  m_LocalScale: {x: 39, y: 39, z: 39}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6315969113082334988}
   - {fileID: 2713337734361168156}
-  m_Father: {fileID: 8330161667076634639}
+  m_Father: {fileID: 1947627709018665310}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5993826738743355557
 GameObject:
@@ -221,9 +221,41 @@ Transform:
   m_LocalScale: {x: 39, y: 39, z: 39}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 1947627709018665310}
   - {fileID: 935813105983881567}
-  - {fileID: 1048859678299539904}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6706704443824831689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1947627709018665310}
+  m_Layer: 0
+  m_Name: Armature
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1947627709018665310
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6706704443824831689}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.0049997433, y: -0.021803077, z: 0.12169358}
+  m_LocalScale: {x: 0.025641024, y: 0.025641024, z: 0.025641024}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1048859678299539904}
+  m_Father: {fileID: 8330161667076634639}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7588115497929456376
 GameObject:

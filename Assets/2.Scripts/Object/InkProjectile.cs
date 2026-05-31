@@ -1,13 +1,14 @@
 using System.Collections;
 using UnityEngine;
 using DefineEnum;
+using Unity.VisualScripting;
 
 public class InkProjectile : MonoBehaviour
 {
     [SerializeField] GameObject _testProjectile;
     [SerializeField] ParticleSystem _shootFX;
 
-    InklingController _inkling;
+    [SerializeField] InklingController _inkling; // test
 
     float lastShootTime = 0;
 
@@ -26,6 +27,7 @@ public class InkProjectile : MonoBehaviour
     {
         _inkling = GetComponent<InklingController>();
 
+        _testProjectile = Resources.Load<GameObject>("TestProjectile");
     }
 
     public void Launch(Vector3 startPos, Vector3 dir)
@@ -124,7 +126,7 @@ public class InkProjectile : MonoBehaviour
         if (p != null)
         {
             float radius = Random.Range(_minRadius, _maxRadius);
-            PaintManager.instance.paint(p, hit.point, radius, _hardness, _strength, _inkling._myColor);
+            PaintManager.instance.paint(p, hit.point, radius, _hardness, _strength, /*_inkling._myColor*/ Color.navyBlue);
         }
 
         Debug.Log($"잉크 충돌! 위치: {hit.point}");

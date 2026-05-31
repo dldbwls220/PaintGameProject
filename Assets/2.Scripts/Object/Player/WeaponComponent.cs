@@ -2,34 +2,28 @@ using System.Collections;
 using UnityEngine;
 using DefineEnum;
 
-public class ShootingComponent : MonoBehaviour
+public class WeaponComponent : MonoBehaviour
 {
-    InklingController _inkling;
-    InkProjectile _projectile;
+    [SerializeField] InklingController _inkling;
+    [SerializeField] InkProjectile _projectile; // test
     [SerializeField] GameObject _inkRoot;
 
     float _lastSootTime = 0;
+
+    [SerializeField] float _dmg;
     [SerializeField] float _shootRate;
+    [SerializeField] float _useInkRate;
 
     bool _triggered;
     bool _isEmpty;
+    bool _soundOn;
 
     void Start()
     {
-        _inkling = GetComponent<InklingController>();
+        //_inkling = GetComponent<InklingController>();
         _projectile = GetComponent<InkProjectile>();
 
         _triggered = false;
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (!_isEmpty && _triggered && Time.time > _lastSootTime + _shootRate)
-        {
-            _lastSootTime = Time.time;
-            _projectile.Launch(_inkRoot.transform.position, transform.forward);
-        }
     }
 
     public void ShootingPaint(bool Shooting)
@@ -41,29 +35,39 @@ public class ShootingComponent : MonoBehaviour
 
         if (_isEmpty) return;
 
-        if (!_triggered && Shooting)
+        _triggered = Shooting;
+
+        if (_triggered)
         {
-            _triggered = true;
-            StartCoroutine(ShootSound());   
+            UseInk();
+
+            if (!_soundOn)
+            {
+                _soundOn = true;
+                StartCoroutine(ShootSound());
+            }
+            
+            if (!_isEmpty && _triggered && Time.time > _lastSootTime + _shootRate)
+            {
+                _lastSootTime = Time.time;
+                _projectile.Launch(_inkRoot.transform.position, transform.forward);
+            }
         }
-        else if (_triggered && !Shooting)
-        {            
-            _triggered = false;
+        else
+        {
+            _soundOn = false;
         }
+
+       
     }
 
-    public void UseInk(float inkRate)
+    void UseInk()
     {
-        if (_inkling._currentInk > 0)
-        {
-            _isEmpty = false;
-        }
-
         if (!_isEmpty)
         {
-            _inkling._currentInk = Mathf.MoveTowards(_inkling._currentInk, 0, inkRate * Time.deltaTime);
+            _inkling._currentInk = Mathf.MoveTowards(_inkling._currentInk, 0, _useInkRate * Time.deltaTime);
 
-            float offsetSpeed = inkRate * (0.5f / _inkling._maxInk);
+            float offsetSpeed = _useInkRate * (0.5f / _inkling._maxInk);
             _inkling._inkOffset = Mathf.MoveTowards(_inkling._inkOffset, 0.5f, offsetSpeed * Time.deltaTime);
 
             if (_inkling._currentInk <= 0)
@@ -82,7 +86,7 @@ public class ShootingComponent : MonoBehaviour
         {
             SoundManager._instance.PlaySFX(SFXName.Shtr_Shot_00);
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(_shootRate * 2);
         }
 
         yield return null;
