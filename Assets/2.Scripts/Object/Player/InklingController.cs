@@ -78,6 +78,7 @@ public class InklingController : CharBase
     bool _isMorphing;
     bool _isSameColor;
     bool _isOnPaint;
+    bool _footSwitch;
 
     Vector3 _finalMove;
     Vector3 _currentVelocity;
@@ -275,6 +276,7 @@ public class InklingController : CharBase
             {
                 _finalMove.y = 5f;
                 _isJumping = true;
+                _footSwitch = !_footSwitch;
                 //ExchangeAnimation(AniState.Jump);
             }
         }
@@ -337,6 +339,7 @@ public class InklingController : CharBase
                 _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);
                 break;
             case AniState.Jump:
+                _aniController[(int)FormState.Inkling].SetBool("FootSwitch", _footSwitch);
                 _aniController[(int)FormState.Inkling].SetBool("isGround", _isGround);
                 _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);
                 break;
