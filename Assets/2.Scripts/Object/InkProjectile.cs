@@ -92,11 +92,17 @@ public class InkProjectile : MonoBehaviour
                     if (projectile != null)
                     {
                         SoundManager._instance.PlaySFX(SFXName.Hit_Inkling_00);
+
+                        GameObject go = Resources.Load<GameObject>("Object/Particle/HitParticle");
+
+                        GameObject particle = Instantiate(go, nextPos, Quaternion.identity);
+
                         // 1. 잉크 방울이 팡! 하고 터지는 이펙트나 사운드 연출 생성
                         // PlaySplashEffect(hit.point);
 
                         // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
                         Destroy(projectile);
+                        Destroy(particle, 1f);
                     }
                     Debug.DrawLine(currentPos, nextPos, Color.red, 1f);
                 }
