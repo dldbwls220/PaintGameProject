@@ -70,6 +70,7 @@ public class InklingController : CharBase
     float _tempSpeed;
 
     bool _isShooting;
+    bool _isGround;
     bool _isJumping;
     bool _isClimbing;
     bool _isSwimming;
@@ -170,7 +171,7 @@ public class InklingController : CharBase
 
         }              
 
-        if (!_isMorphing)
+        if (!_isMorphing && _isGround)
         {
             if (_dir.magnitude == 0)
             {
@@ -258,6 +259,7 @@ public class InklingController : CharBase
         if (_charController.isGrounded) //isGrounded로 지면에 있는지 확인
         {
             _isJumping = false;
+            _isGround = true;
 
             // 땅에 있을 경우 중력을 약하게 줘 충동이 위 아래로 움직이는 걸 방지
             _gravityForce = -2;
@@ -273,12 +275,15 @@ public class InklingController : CharBase
             {
                 _finalMove.y = 5f;
                 _isJumping = true;
+                //ExchangeAnimation(AniState.Jump);
             }
         }
         else if (!_charController.isGrounded)
         {
+            _isGround = false;
             _currentVelocity = Vector3.Lerp(_currentVelocity, targetVelocity, jumpAccel * Time.deltaTime);
             _gravityForce = Physics.gravity.y;
+            ExchangeAnimation(AniState.Jump);
         }
         
         
@@ -318,14 +323,22 @@ public class InklingController : CharBase
         switch (state)
         {
             case AniState.Idle:
+                _aniController[(int)FormState.Inkling].SetBool("isGround", _isGround);
+                _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);
                 break;
             case AniState.Walk:
+                _aniController[(int)FormState.Inkling].SetBool("isGround", _isGround);
+                _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);
                 break;
             case AniState.Run:
                 _aniController[(int)FormState.Inkling].SetBool("isSlowed", false);
                 _aniController[(int)FormState.Half].SetBool("isSlowed", false);
+                _aniController[(int)FormState.Inkling].SetBool("isGround", _isGround);
+                _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);
                 break;
             case AniState.Jump:
+                _aniController[(int)FormState.Inkling].SetBool("isGround", _isGround);
+                _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);
                 break;
             case AniState.Shoot:
                 break;
