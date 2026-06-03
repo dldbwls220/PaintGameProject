@@ -10,8 +10,6 @@ public class InkProjectile : MonoBehaviour
 
     [SerializeField] InklingController _inkling; // test
 
-    float lastShootTime = 0;
-
     [Header("Ink Projectile Setting")]
     [SerializeField] float _minSpeed;
     [SerializeField] float _maxSpeed;
@@ -78,9 +76,20 @@ public class InkProjectile : MonoBehaviour
                         
                         // 1. 잉크 방울이 팡! 하고 터지는 이펙트나 사운드 연출 생성
                         // PlaySplashEffect(hit.point);
+                        GameObject go = Resources.Load<GameObject>("Object/Particle/Ink_Splash");
+                        Quaternion angle = Quaternion.identity;
+
+                        if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Wall"))
+                        {
+                            angle = Quaternion.Euler(new Vector3(-90,0,0));
+                        }
+
+
+                        GameObject splashP = Instantiate(go, nextPos, angle);
 
                         // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
                         Destroy(projectile);
+                        Destroy(splashP, 1f);
                     }
 
                     // 잉크 칠하는 로직 실행
@@ -95,14 +104,15 @@ public class InkProjectile : MonoBehaviour
 
                         GameObject go = Resources.Load<GameObject>("Object/Particle/HitParticle");
 
-                        GameObject particle = Instantiate(go, nextPos, Quaternion.identity);
+                        GameObject hitP = Instantiate(go, nextPos, Quaternion.identity);
+
 
                         // 1. 잉크 방울이 팡! 하고 터지는 이펙트나 사운드 연출 생성
                         // PlaySplashEffect(hit.point);
 
                         // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
                         Destroy(projectile);
-                        Destroy(particle, 1f);
+                        Destroy(hitP, 1f);
                     }
                     Debug.DrawLine(currentPos, nextPos, Color.red, 1f);
                 }
