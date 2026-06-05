@@ -24,19 +24,19 @@ public class InkProjectile : MonoBehaviour
     private void Start()
     {
         _inkling = GetComponent<InklingController>();
-
         _testProjectile = Resources.Load<GameObject>("TestProjectile");
     }
 
     public void Launch(Vector3 startPos, Vector3 dir)
     {
         _shootFX.Play();
+        //ObjectPool._instance.Spawn();
         StartCoroutine(SimulateArc(startPos, dir));
     }
 
     IEnumerator SimulateArc(Vector3 startPos, Vector3 direction)
     {
-        GameObject projectile = Instantiate(_testProjectile, startPos, Quaternion.identity);
+        //GameObject projectile = Instantiate(_testProjectile, startPos, Quaternion.identity);
 
         float ranSpeed = Random.Range(_minSpeed, _maxSpeed);
 
@@ -44,6 +44,8 @@ public class InkProjectile : MonoBehaviour
         Vector3 currentVelocity = direction.normalized * ranSpeed;
 
         float timeStep = Time.deltaTime;
+
+        GameObject projectile = GameManager._instance._pool.Get(InkProjectileState.InkBullet);
 
         // 무한히 떨어지는 것을 방지하기 위한 루프
         while (currentPos.y > -20f) 
@@ -57,7 +59,7 @@ public class InkProjectile : MonoBehaviour
             //현제 위치에서 다음 위치의 방향과 거리 계산
             Vector3 displacement = nextPos - currentPos;
             float distance = displacement.magnitude;
-            Vector3 dir = displacement.normalized;
+            Vector3 dir = displacement.normalized;        
 
             if (projectile != null)
             {
@@ -73,7 +75,7 @@ public class InkProjectile : MonoBehaviour
                 {
                     if (projectile != null)
                     {
-                        
+
                         // 1. 잉크 방울이 팡! 하고 터지는 이펙트나 사운드 연출 생성
                         // PlaySplashEffect(hit.point);
                         GameObject go = Resources.Load<GameObject>("Object/Particle/Ink_Splash");
@@ -81,14 +83,14 @@ public class InkProjectile : MonoBehaviour
 
                         if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Wall"))
                         {
-                            angle = Quaternion.Euler(new Vector3(-90,0,0));
+                            angle = Quaternion.Euler(new Vector3(-90, 0, 0));
                         }
 
 
                         GameObject splashP = Instantiate(go, nextPos, angle);
 
                         // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
-                        Destroy(projectile);
+                        projectile.SetActive(false);
                         Destroy(splashP, 1f);
                     }
 
@@ -111,7 +113,7 @@ public class InkProjectile : MonoBehaviour
                         // PlaySplashEffect(hit.point);
 
                         // 2. 잉크 오브젝트를 메모리에서 깔끔하게 삭제 (사라지게 함)
-                        Destroy(projectile);
+                        projectile.SetActive(false);
                         Destroy(hitP, 1f);
                     }
                     Debug.DrawLine(currentPos, nextPos, Color.red, 1f);
@@ -129,7 +131,7 @@ public class InkProjectile : MonoBehaviour
             yield return null;
         }
 
-        if (projectile != null) Destroy(projectile);
+        if (projectile != null) projectile.SetActive(false); 
     }
 
     void PaintInk(RaycastHit hit)
@@ -150,4 +152,5 @@ public class InkProjectile : MonoBehaviour
         // 서버에는 파티클 수천 개를 보낼 필요 없이, 
         // "hit.point(또는 UV)"랑 "잉크 반경" 딱 두 개만 패킷으로 보내면 동기화 끝입니다.
     }
+
 }

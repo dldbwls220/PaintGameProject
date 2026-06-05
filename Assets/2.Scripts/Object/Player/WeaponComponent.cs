@@ -19,8 +19,7 @@ public class WeaponComponent : MonoBehaviour
     bool _soundOn;
 
     void Start()
-    {
-        //_inkling = GetComponent<InklingController>();
+    {        
         _projectile = GetComponent<InkProjectile>();
 
         _triggered = false;

@@ -104,4 +104,14 @@ namespace DefineEnum
     }
 
     #endregion[커스터마이징]
+
+    #region[풀링]
+
+    public enum InkProjectileState
+    {
+        InkBullet,
+        InkSplash
+    }
+
+    #endregion[풀링]
 }
