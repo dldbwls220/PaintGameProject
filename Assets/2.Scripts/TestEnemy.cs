@@ -9,7 +9,6 @@ public class TestEnemy : MonoBehaviour
         if (other.CompareTag("AttackInk"))
         {
             Debug.Log("피격 확인");
-            Destroy(other.gameObject);
         }
     }
 }

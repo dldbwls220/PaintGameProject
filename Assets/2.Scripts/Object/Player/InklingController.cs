@@ -285,7 +285,10 @@ public class InklingController : CharBase
             _isGround = false;
             _currentVelocity = Vector3.Lerp(_currentVelocity, targetVelocity, jumpAccel * Time.deltaTime);
             _gravityForce = Physics.gravity.y;
-            ExchangeAnimation(AniState.Jump);
+            if (_isSquid)
+                ExchangeAnimation(AniState.Squid_Jump);
+            else
+                ExchangeAnimation(AniState.Jump);
         }
         
         
@@ -341,7 +344,7 @@ public class InklingController : CharBase
             case AniState.Jump:
                 _aniController[(int)FormState.Inkling].SetBool("FootSwitch", _footSwitch);
                 _aniController[(int)FormState.Inkling].SetBool("isGround", _isGround);
-                _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);
+                _aniController[(int)FormState.Inkling].SetBool("isJumping", _nowJump);             
                 break;
             case AniState.Shoot:
                 break;
@@ -368,6 +371,18 @@ public class InklingController : CharBase
             case AniState.Slowed_Walk:
                 _aniController[(int)FormState.Inkling].SetBool("isSlowed", true);
                 _aniController[(int)FormState.Half].SetBool("isSlowed", true);
+                break;
+            case AniState.Squid_Idle:
+                _aniController[(int)FormState.Squid].SetBool("isGround", _isGround);
+                _aniController[(int)FormState.Squid].SetBool("isJumping", _nowJump);
+                break;
+            case AniState.Squid_Walk:
+                _aniController[(int)FormState.Squid].SetBool("isGround", _isGround);
+                _aniController[(int)FormState.Squid].SetBool("isJumping", _nowJump);
+                break;
+            case AniState.Squid_Jump:
+                _aniController[(int)FormState.Squid].SetBool("isGround", _isGround);
+                _aniController[(int)FormState.Squid].SetBool("isJumping", _nowJump);
                 break;
         }
 

@@ -233,6 +233,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: isShooting
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: isSquid
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2529704335274835709}
   m_Solo: 0
@@ -1441,6 +1444,9 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: isJumping
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: isSquid
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3307440304707542634}

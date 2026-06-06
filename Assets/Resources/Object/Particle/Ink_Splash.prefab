@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1320151888187572662}
   - component: {fileID: 2542475416314428894}
   - component: {fileID: 2683078021225129694}
+  - component: {fileID: -3749829260416573505}
   m_Layer: 0
   m_Name: Ink_Splash
   m_TagString: Untagged
@@ -4904,6 +4905,18 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!114 &-3749829260416573505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4712812498915546899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8976a71301554747b3b6702c6fc5bce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoDisableParticle
 --- !u!1 &4727075622540074139
 GameObject:
   m_ObjectHideFlags: 0

@@ -110,7 +110,8 @@ namespace DefineEnum
     public enum InkProjectileState
     {
         InkBullet,
-        InkSplash
+        InkSplash,
+        InkHit
     }
 
     #endregion[Ç®¸µ]

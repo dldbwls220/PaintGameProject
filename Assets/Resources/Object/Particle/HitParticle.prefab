@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 195268219746553090}
   - component: {fileID: 8189298985083017042}
   - component: {fileID: 7680487166128521391}
+  - component: {fileID: -1029088439814020449}
   m_Layer: 0
   m_Name: HitParticle
   m_TagString: Untagged
@@ -4903,3 +4904,15 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!114 &-1029088439814020449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 294876349431089311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8976a71301554747b3b6702c6fc5bce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoDisableParticle

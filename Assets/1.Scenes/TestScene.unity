@@ -342,6 +342,37 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0032504126, y: 0.0048253844, z: -2.3283064e-10}
     m_Extent: {x: 0.00082166865, y: 0.0018554289, z: 0.0023808063}
   m_DirtyAABB: 0
+--- !u!1 &78507236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 78507237}
+  m_Layer: 0
+  m_Name: InkHit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &78507237
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78507236}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 315788190}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &91456523
 GameObject:
   m_ObjectHideFlags: 0
@@ -10787,6 +10818,10 @@ MonoBehaviour:
     _objPrefab: {fileID: 4712812498915546899, guid: 5d57eb9e838d9784e80fb2f9955a6012, type: 3}
     _count: 20
     _tfPoolParent: {fileID: 145472255}
+  - _name: InkHit
+    _objPrefab: {fileID: 294876349431089311, guid: 7d5df22c7ad279c4f8fa3bf2ede3ae18, type: 3}
+    _count: 20
+    _tfPoolParent: {fileID: 78507237}
 --- !u!4 &315788190
 Transform:
   m_ObjectHideFlags: 0
@@ -10802,6 +10837,7 @@ Transform:
   m_Children:
   - {fileID: 1866652812}
   - {fileID: 145472255}
+  - {fileID: 78507237}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &317378405
@@ -36123,6 +36159,14 @@ PrefabInstance:
     - target: {fileID: 5627778696368991294, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: _maxSpeed
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5627778696368991294, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: _maxRadius
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5627778696368991294, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: _minRadius
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5627778696368991294, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: _gravityModify
