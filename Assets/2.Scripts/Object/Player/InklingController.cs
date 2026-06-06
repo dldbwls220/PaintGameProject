@@ -123,6 +123,7 @@ public class InklingController : CharBase
 
         _inklingMPB = new MaterialPropertyBlock();
 
+        InitTeamColor();
         SwitchRender(FormState.Half, false);
         SwitchRender(FormState.Squid, false);
 
@@ -457,9 +458,18 @@ public class InklingController : CharBase
 
         foreach (SkinnedMeshRenderer ren in _inkingRender)
         {
-            ren.GetPropertyBlock(_inklingMPB);
-            _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
-            ren.SetPropertyBlock(_inklingMPB);             
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", new Color(_teamColor.r, _teamColor.g, _teamColor.b, alpha));
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+            else
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+                ren.SetPropertyBlock(_inklingMPB);
+            }          
         }
 
         foreach (MeshRenderer ren in _inkTankRender)
@@ -481,6 +491,62 @@ public class InklingController : CharBase
             {
                 ren.GetPropertyBlock(_inklingMPB);
                 _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+        }
+    }
+
+    void InitTeamColor()
+    {
+        foreach (SkinnedMeshRenderer ren in _inkingRender)
+        {
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", _teamColor);
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+            else if (ren.name.Contains("_TeamE"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_EmissionColor", _teamColor);
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+        }
+
+        foreach (SkinnedMeshRenderer ren in _halfRender)
+        {
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", _teamColor);
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+            else if (ren.name.Contains("_TeamE"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_EmissionColor", _teamColor);
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+        }
+
+        foreach (SkinnedMeshRenderer ren in _squidRender)
+        {
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", _teamColor);
+                _inklingMPB.SetColor("_EmissionColor", _teamColor);
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+        }
+
+        foreach (MeshRenderer ren in _inkTankRender)
+        {
+            if (ren.name.Contains("M_Ink"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", _teamColor);
                 ren.SetPropertyBlock(_inklingMPB);
             }
         }

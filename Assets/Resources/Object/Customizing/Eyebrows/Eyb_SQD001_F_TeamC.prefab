@@ -106,7 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2370109976992978849}
   m_Layer: 0
-  m_Name: Eyb_SQD001_F
+  m_Name: Eyb_SQD001_F_TeamC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

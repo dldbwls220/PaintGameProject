@@ -30,7 +30,7 @@ public abstract class CharBase : MonoBehaviour
         _name = name;
         _walkSpeed = walkSpeed;        
         _runSpeed = runSpeed;
-        _teamColor = color ?? Color.navyBlue;
+        _teamColor = color ?? Color.aquamarine;
         _enemyColor = Color.darkRed;
         _maxHp = maxHp;
         _currentHP = _maxHp;

@@ -141,7 +141,7 @@ public class InkProjectile : MonoBehaviour
         if (p != null)
         {
             float radius = Random.Range(_minRadius, _maxRadius);
-            PaintManager.instance.paint(p, hit.point, radius, _hardness, _strength, /*_inkling._myColor*/ Color.navyBlue);
+            PaintManager.instance.paint(p, hit.point, radius, _hardness, _strength, /*_inkling._myColor*/ Color.aquamarine);
         }
 
         Debug.Log($"잉크 충돌! 위치: {hit.point}");

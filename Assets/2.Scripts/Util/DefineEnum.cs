@@ -66,18 +66,18 @@ namespace DefineEnum
 
     public enum HairState
     {
-        Har_SQD000_F,
-        Har_SQD001_F,
-        Har_SQD003_F,
-        Har_SQD004_F
+        Har_SQD000_F_TeamE,
+        Har_SQD001_F_TeamE,
+        Har_SQD003_F_TeamE,
+        Har_SQD004_F_TeamE
     }
 
     public enum EyebrowsState
     {
-        Eyb_SQD000_F,
-        Eyb_SQD001_F,
-        Eyb_SQD002_F,
-        Eyb_SQD003_F
+        Eyb_SQD000_F_TeamC,
+        Eyb_SQD001_F_TeamC,
+        Eyb_SQD002_F_TeamC,
+        Eyb_SQD003_F_TeamC
     }
 
     public enum HeadState
