@@ -36365,7 +36365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5526676462442257824, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: _eyebrowsState
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5627778696368991294, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: _maxSpeed

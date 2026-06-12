@@ -506,7 +506,8 @@ public class InklingController : CharBase
                 _inklingMPB.SetColor("_BaseColor", _teamColor);
                 ren.SetPropertyBlock(_inklingMPB);
             }
-            else if (ren.name.Contains("_TeamE"))
+
+            if (ren.name.Contains("_TeamE"))
             {
                 ren.GetPropertyBlock(_inklingMPB);
                 _inklingMPB.SetColor("_EmissionColor", _teamColor);

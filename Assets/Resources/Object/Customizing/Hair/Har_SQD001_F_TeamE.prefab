@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 6515746947304307124}
   - component: {fileID: 562467192128417989}
   m_Layer: 0
-  m_Name: Har_SQD001_F__M_TeamColor
+  m_Name: Har_SQD001_F__TeamE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
