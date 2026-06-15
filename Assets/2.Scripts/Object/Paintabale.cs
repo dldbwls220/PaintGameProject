@@ -36,7 +36,29 @@ public class Paintabale : MonoBehaviour
         _supportTexture.filterMode = FilterMode.Bilinear;
 
         _renderer = GetComponent<Renderer>();
-        _renderer.material.SetTexture(_maskTextureID, _extendIslandsRenderTexture);
+
+        if (_renderer == null)
+        {
+            Debug.LogError($"[Paintabale] Renderer가 없습니다: {gameObject.name}");
+            return;
+        }
+
+        // 다중 머티리얼 슬롯 모두에 _MaskTexture 적용
+        bool hasPaintable = false;
+        foreach (Material mat in _renderer.materials)
+        {
+            if (mat.HasProperty(_maskTextureID))
+            {
+                mat.SetTexture(_maskTextureID, _extendIslandsRenderTexture);
+                hasPaintable = true;
+            }
+        }
+
+        if (!hasPaintable)
+        {
+            Debug.LogError($"[Paintabale] '{gameObject.name}'의 머티리얼 중 _MaskTexture 프로퍼티를 가진 것이 없습니다. M_Paintable 셰이더 머티리얼이 필요합니다.");
+            return;
+        }
 
         PaintManager.instance.initTextures(this);
     }
@@ -46,18 +68,25 @@ public class Paintabale : MonoBehaviour
         if (hit.collider.gameObject == this.gameObject)
         {
             Vector2 uv = hit.textureCoord;
-            // 2. RenderTexture���� �ش� UV�� �ȼ� �б�
+
+            // 타일링으로 [0,1] 범위를 벗어날 수 있으므로 Repeat으로 정규화
+            uv.x = Mathf.Repeat(uv.x, 1f);
+            uv.y = Mathf.Repeat(uv.y, 1f);
+
+            int px = Mathf.Clamp(Mathf.FloorToInt(uv.x * TEXTURE_SIZE), 0, TEXTURE_SIZE - 1);
+            int py = Mathf.Clamp(Mathf.FloorToInt(uv.y * TEXTURE_SIZE), 0, TEXTURE_SIZE - 1);
+
             Texture2D tempTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
             RenderTexture prev = RenderTexture.active;
             RenderTexture.active = _extendIslandsRenderTexture;
 
-            tempTex.ReadPixels(new Rect(uv.x * TEXTURE_SIZE, uv.y * TEXTURE_SIZE, 1, 1), 0, 0);
+            tempTex.ReadPixels(new Rect(px, py, 1, 1), 0, 0);
             tempTex.Apply();
 
             RenderTexture.active = prev;
             Color detectedColor = tempTex.GetPixel(0, 0);
 
-            Destroy(tempTex); // �޸� ���� ����
+            Destroy(tempTex);
             return detectedColor;
         }
         return Color.clear;

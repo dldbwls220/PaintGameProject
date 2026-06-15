@@ -45,7 +45,7 @@ public class InklingController : CharBase
     [SerializeField] GameObject _shootRoot;
     [Space]
 
-    //Á¤º¸ º¯¼ö
+    //ì •ë³´ ë³€ìˆ˜
     AniState _nowState;
     FormState _nowForm;
 
@@ -258,13 +258,14 @@ public class InklingController : CharBase
             }
         }
 
-        if (_charController.isGrounded) //isGrounded·Î Áö¸é¿¡ ÀÖ´ÂÁö È®ÀÎ
+        if (_charController.isGrounded) //isGroundedë¡œ ì§€ë©´ì— ìˆëŠ”ì§€ í™•ì¸
         {
             _isJumping = false;
             _isGround = true;
 
-            // ¶¥¿¡ ÀÖÀ» °æ¿ì Áß·ÂÀ» ¾àÇÏ°Ô Áà Ãæµ¿ÀÌ À§ ¾Æ·¡·Î ¿òÁ÷ÀÌ´Â °É ¹æÁö
-            _gravityForce = -2;
+            // ë•…ì— ìˆì„ ê²½ìš° ì¤‘ë ¥ì„ ì•½í•˜ê²Œ ì¤˜ ì¶©ë™ì´ ìœ„ ì•„ë˜ë¡œ ì›€ì§ì´ëŠ” ê±¸ ë°©ì§€
+            _gravityForce = 0;
+            _finalMove.y = -2;
 
             if(_isSwimming)
             {
@@ -281,7 +282,7 @@ public class InklingController : CharBase
                 //ExchangeAnimation(AniState.Jump);
             }
         }
-        else if (!_charController.isGrounded)
+        else
         {
             _isGround = false;
             _currentVelocity = Vector3.Lerp(_currentVelocity, targetVelocity, jumpAccel * Time.deltaTime);
@@ -301,7 +302,7 @@ public class InklingController : CharBase
 
             _isClimbing = true;
 
-            Debug.Log("º®Å¸±â");
+            Debug.Log("ë²½íƒ€ê¸°");
         }
         else _isClimbing = false;
 
@@ -309,9 +310,9 @@ public class InklingController : CharBase
         _finalMove.z = _currentVelocity.z;
         _finalMove.y += _gravityForce * Time.deltaTime; 
 
-        _charController.Move(_finalMove * Time.deltaTime); // SimpleMove´Â Áß·ÂÀ» ÀÚµ¿À¸·Î Àû¿ëÀ» ÇÏ¸ç Å×½ºÆ®¸¦ ÇÒ ¶§ »ç¿ë Move´Â ¸ğµçÀû Á÷Á¢ Á¦¾î
+        _charController.Move(_finalMove * Time.deltaTime); // SimpleMoveëŠ” ì¤‘ë ¥ì„ ìë™ìœ¼ë¡œ ì ìš©ì„ í•˜ë©° í…ŒìŠ¤íŠ¸ë¥¼ í•  ë•Œ ì‚¬ìš© MoveëŠ” ëª¨ë“ ì  ì§ì ‘ ì œì–´
 
-        Debug.Log("Á¡ÇÁÁß : " + _isJumping);
+        Debug.Log("ì í”„ì¤‘ : " + _isJumping);
     }
 
 
@@ -558,16 +559,16 @@ public class InklingController : CharBase
         if (_charController.isGrounded)
         {
             Ray ray = new Ray(transform.position + Vector3.up * 0.1f, Vector3.down);
-            // 1. Ä³¸¯ÅÍ À§Ä¡¿¡¼­ ¾Æ·¡·Î ·¹ÀÌ¸¦ ½÷¼­ UV ÁÂÇ¥¸¦ Ã£À½
+            // 1. ìºë¦­í„° ìœ„ì¹˜ì—ì„œ ì•„ë˜ë¡œ ë ˆì´ë¥¼ ì´ì„œ UV ì¢Œí‘œë¥¼ ì°¾ìŒ
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Paintabale paintable = hit.collider.GetComponent<Paintabale>();
+                Paintabale paintable = hit.collider.GetComponentInParent<Paintabale>();
                 if (paintable != null)
                 {
-                    // 3. ³×°¡ ¸¸µç ¸Ş¼­µå È£Ãâ!
+                    // 3. ë„¤ê°€ ë§Œë“  ë©”ì„œë“œ í˜¸ì¶œ!
                     Color groundColor = paintable.CheckPaintColor(hit);
 
-                    // 4. °á°ú È°¿ë
+                    // 4. ê²°ê³¼ í™œìš©
                     CheckFloorStatus(groundColor);
                 }
             }
@@ -579,7 +580,7 @@ public class InklingController : CharBase
 
     void CheckFloorStatus(Color col)
     {
-        //¾ËÆÄ°ªÀÌ ³·À¸¸é À×Å©°¡ ¾ø´Â °÷ [cite: 22, 23]
+        //ì•ŒíŒŒê°’ì´ ë‚®ìœ¼ë©´ ì‰í¬ê°€ ì—†ëŠ” ê³³ [cite: 22, 23]
         if (col.a < 0.1f)
         {
             _isSameColor = true;
@@ -599,12 +600,12 @@ public class InklingController : CharBase
         if (distToMyTeam < distToEnemyTeam && distToMyTeam < 0.5f)
         {
             _isSameColor = true;
-            Debug.Log("¿ì¸® ÆÀ ±¸¿ªÀÔ´Ï´Ù!");
+            Debug.Log("ìš°ë¦¬ íŒ€ êµ¬ì—­ì…ë‹ˆë‹¤!");
         }
         else if (distToEnemyTeam < distToMyTeam && distToEnemyTeam < 0.5f)
         {
             _isSameColor = false;
-            Debug.Log("»ó´ë ÆÀ ±¸¿ªÀÔ´Ï´Ù!");
+            Debug.Log("ìƒëŒ€ íŒ€ êµ¬ì—­ì…ë‹ˆë‹¤!");
         }
     }
 
@@ -661,17 +662,17 @@ public class InklingController : CharBase
         }
     }
 
-    public void GetDamage(float dmg)
-    {
-        if ((_currentHP -= dmg) >= 0)
-        {
-            _currentHP = 0;
-        }
-        else
-        {
+    //public void GetDamage(float dmg)
+    //{
+    //    if ((_currentHP -= dmg) >= 0)
+    //    {
+    //        _currentHP = 0;
+    //    }
+    //    else
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
     IEnumerator MorphToSquid(int state)
     {

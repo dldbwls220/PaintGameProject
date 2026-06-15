@@ -51,7 +51,7 @@ public class WallClimbing : MonoBehaviour
     {
         if (Physics.SphereCast(transform.position, _sphereCastRadius, transform.forward, out _frontWallHit, _detectionLegth, _wallLayer))
         {
-            Paintabale paintable = _frontWallHit.collider.GetComponent<Paintabale>();
+            Paintabale paintable = _frontWallHit.collider.GetComponentInParent<Paintabale>();
 
             if (paintable != null)
             {
@@ -60,7 +60,7 @@ public class WallClimbing : MonoBehaviour
                 if (wallColor.a < 0.1f)
                 {
                     _isWallFront = false;
-                    Debug.Log("À×Å©°¡ ¾ø´Â º®ÀÔ´Ï´Ù!");
+                    Debug.Log("ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½!");
                 }
 
                 float distToMyTeam = Mathf.Abs(wallColor.r - _inkling._myColor.r) + Mathf.Abs(wallColor.g - _inkling._myColor.g) + Mathf.Abs(wallColor.b - _inkling._myColor.b);
@@ -70,20 +70,25 @@ public class WallClimbing : MonoBehaviour
                 if (distToMyTeam < distToEnemyTeam && distToMyTeam < 0.5f)
                 {
                     _isWallFront = true;
-                    Debug.Log("¿ì¸® ÆÀ º®ÀÔ´Ï´Ù!");
+                    Debug.Log("ï¿½ì¸® ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½!");
                 }
                 else if (distToEnemyTeam < distToMyTeam && distToEnemyTeam < 0.5f)
                 {
                     _isWallFront = false;
-                    Debug.Log("»ó´ë ÆÀ º®ÀÔ´Ï´Ù!");
+                    Debug.Log("ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½!");
                 }
-            }          
+
+                _wallLookAnglel = Vector3.Angle(transform.forward, -_frontWallHit.normal);
+            }
         }
-        else _isWallFront = false;
+        else 
+        { 
+            _isWallFront = false;
+            
+        }
 
-        _wallLookAnglel = Vector3.Angle(transform.forward, -_frontWallHit.normal);
 
-        Debug.Log("º®Å¸±â °¡´É?" + _isWallFront);
+        Debug.Log("ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?" + _isWallFront);
     }
 
     private void OnDrawGizmos()

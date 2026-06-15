@@ -15,12 +15,11 @@ public class InkTankComponent : MonoBehaviour
     bool _isCharging;
 
     bool _canRefillTank =>
-        _inkling._nowSquid &&
-        _inkling._nowSameColor &&
+        ((_inkling._nowSquid &&
         _inkling._nowSameColor &&
         _inkling._nowOnPaint &&
-        !_inkling._nowJump ||
-        _inkling._nowClimb;
+        !_inkling._nowJump) ||
+        _inkling._nowClimb);
 
     void Start()
     {

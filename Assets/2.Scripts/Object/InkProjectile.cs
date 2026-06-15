@@ -23,7 +23,7 @@ public class InkProjectile : MonoBehaviour
 
     private void Start()
     {
-        _inkling = GetComponent<InklingController>();
+        //_inkling = GetComponent<InklingController>();
         _testProjectile = Resources.Load<GameObject>("TestProjectile");
     }
 
@@ -47,16 +47,16 @@ public class InkProjectile : MonoBehaviour
 
         GameObject projectile = GameManager._instance._pool.Get(InkProjectileState.InkBullet);
 
-        // ¹«ÇÑÈ÷ ¶³¾îÁö´Â °ÍÀ» ¹æÁöÇÏ±â À§ÇÑ ·çÇÁ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         while (currentPos.y > -20f) 
         {
-            //Áß·Â Àû¿ë
+            //ï¿½ß·ï¿½ ï¿½ï¿½ï¿½ï¿½
             currentVelocity.y += _gravityModify * Physics.gravity.y * timeStep;
 
-            //µµ´ŞÇÒ ¿¹»ó À§Ä¡ °è»ê
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½
             Vector3 nextPos = currentPos + (currentVelocity * timeStep);
 
-            //ÇöÁ¦ À§Ä¡¿¡¼­ ´ÙÀ½ À§Ä¡ÀÇ ¹æÇâ°ú °Å¸® °è»ê
+            //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
             Vector3 displacement = nextPos - currentPos;
             float distance = displacement.magnitude;
             Vector3 dir = displacement.normalized;        
@@ -68,7 +68,7 @@ public class InkProjectile : MonoBehaviour
                 projectile.transform.forward = dir;
             }
 
-            //·¹ÀÌÄÉ½ºÆ® ¹ß»ç
+            //ï¿½ï¿½ï¿½ï¿½ï¿½É½ï¿½Æ® ï¿½ß»ï¿½
             if (Physics.Raycast(currentPos, dir, out RaycastHit hit, distance))
             {
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Wall") || hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
@@ -76,7 +76,7 @@ public class InkProjectile : MonoBehaviour
                     if (projectile != null)
                     {
 
-                        // 1. À×Å© ¹æ¿ïÀÌ ÆÎ! ÇÏ°í ÅÍÁö´Â ÀÌÆåÆ®³ª »ç¿îµå ¿¬Ãâ »ı¼º
+                        // 1. ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½! ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         // PlaySplashEffect(hit.point);
                         GameObject splashP = GameManager._instance._pool.Get(InkProjectileState.InkSplash);
                         splashP.transform.position = currentPos;
@@ -90,11 +90,11 @@ public class InkProjectile : MonoBehaviour
                             splashP.transform.rotation = Quaternion.Euler(0, 0, 0);
                         }
 
-                        // 2. À×Å© ¿ÀºêÁ§Æ®¸¦ ¸Ş¸ğ¸®¿¡¼­ ±ò²ûÇÏ°Ô »èÁ¦ (»ç¶óÁö°Ô ÇÔ)
+                        // 2. ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ş¸ğ¸®¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
                         projectile.SetActive(false);
                     }
 
-                    // À×Å© Ä¥ÇÏ´Â ·ÎÁ÷ ½ÇÇà
+                    // ï¿½ï¿½Å© Ä¥ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     PaintInk(hit);
                     Debug.DrawLine(currentPos, nextPos, Color.cyan, 1f);
                 }
@@ -107,10 +107,10 @@ public class InkProjectile : MonoBehaviour
                         GameObject hitP = GameManager._instance._pool.Get(InkProjectileState.InkHit);
                         hitP.transform.position = currentPos;
 
-                        // 1. À×Å© ¹æ¿ïÀÌ ÆÎ! ÇÏ°í ÅÍÁö´Â ÀÌÆåÆ®³ª »ç¿îµå ¿¬Ãâ »ı¼º
+                        // 1. ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½! ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         // PlaySplashEffect(hit.point);
 
-                        // 2. À×Å© ¿ÀºêÁ§Æ®¸¦ ¸Ş¸ğ¸®¿¡¼­ ±ò²ûÇÏ°Ô »èÁ¦ (»ç¶óÁö°Ô ÇÔ)
+                        // 2. ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ş¸ğ¸®¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
                         projectile.SetActive(false);
                     }
                     Debug.DrawLine(currentPos, nextPos, Color.red, 1f);
@@ -120,7 +120,7 @@ public class InkProjectile : MonoBehaviour
                 yield break;
             }
 
-            //Ãæµ¹ÀÌ ¾øÀ¸¸é À§Ä¡ °»½Å
+            //ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
             currentPos = nextPos;
 
             Debug.DrawLine(currentPos, nextPos, Color.cyan, 1f);
@@ -133,21 +133,25 @@ public class InkProjectile : MonoBehaviour
 
     void PaintInk(RaycastHit hit)
     {
-        // hit.point = ºÎµúÈù 3D ÁÂÇ¥
-        // hit.textureCoord = ºÎµúÈù ¸Ş½¬ÀÇ UV ÁÂÇ¥ (¿©±â¿¡ À×Å© ÅØ½ºÃ³¸¦ ±×¸²)
+        // hit.point = ï¿½Îµï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ç¥
+        // hit.textureCoord = ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ş½ï¿½ï¿½ï¿½ UV ï¿½ï¿½Ç¥ (ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½Å© ï¿½Ø½ï¿½Ã³ï¿½ï¿½ ï¿½×¸ï¿½)
 
-        Paintabale p = hit.transform.GetComponent<Paintabale>();
-        
+        // GetComponent â†’ GetComponentInParent: Paintabaleì´ ë¶€ëª¨ì— ë¶™ì€ ê³„ì¸µ êµ¬ì¡°ë„ ëŒ€ì‘
+        Paintabale p = hit.transform.GetComponentInParent<Paintabale>();
+
         if (p != null)
         {
             float radius = Random.Range(_minRadius, _maxRadius);
             PaintManager.instance.paint(p, hit.point, radius, _hardness, _strength, /*_inkling._myColor*/ Color.aquamarine);
+            Debug.Log($"ì‰í¬ ì¶©ëŒ! ìœ„ì¹˜: {hit.point}");
+        }
+        else
+        {
+            Debug.LogWarning($"Paintabale ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŒ: {hit.transform.name} (ë¶€ëª¨ í¬í•¨)");
         }
 
-        Debug.Log($"À×Å© Ãæµ¹! À§Ä¡: {hit.point}");
-
-        // ¼­¹ö¿¡´Â ÆÄÆ¼Å¬ ¼öÃµ °³¸¦ º¸³¾ ÇÊ¿ä ¾øÀÌ, 
-        // "hit.point(¶Ç´Â UV)"¶û "À×Å© ¹İ°æ" µü µÎ °³¸¸ ÆĞÅ¶À¸·Î º¸³»¸é µ¿±âÈ­ ³¡ÀÔ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬ ï¿½ï¿½Ãµ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½, 
+        // "hit.point(ï¿½Ç´ï¿½ UV)"ï¿½ï¿½ "ï¿½ï¿½Å© ï¿½İ°ï¿½" ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
     }
 
 }

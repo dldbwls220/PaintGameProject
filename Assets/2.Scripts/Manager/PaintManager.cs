@@ -38,19 +38,21 @@ public class PaintManager : Singleton<PaintManager>
 
     public void initTextures(Paintabale paintable)
     {
-        RenderTexture mask = paintable.getmask();
         RenderTexture uvIslands = paintable.getUVIslands();
-        RenderTexture extend = paintable.getExtend();
-        RenderTexture support = paintable.getSupport();
         Renderer rend = paintable.getRenderer();
-
-        _command.SetRenderTarget(mask);
-        _command.SetRenderTarget(extend);
-        _command.SetRenderTarget(support);
 
         _paintMaterial.SetFloat(_prepareUVID, 1);
         _command.SetRenderTarget(uvIslands);
-        _command.DrawRenderer(rend, _paintMaterial, 0);
+
+        // ëª¨ë“  ì„œë¸Œë©”ì‹œì˜ UV ì•„ì¼ëœë“œë¥¼ ì´ˆê¸°í™”
+        int subMeshCount = rend.GetComponent<MeshFilter>() != null
+            ? rend.GetComponent<MeshFilter>().sharedMesh.subMeshCount
+            : 1;
+
+        for (int i = 0; i < subMeshCount; i++)
+        {
+            _command.DrawRenderer(rend, _paintMaterial, i);
+        }
 
         Graphics.ExecuteCommandBuffer(_command);
         _command.Clear();
@@ -65,8 +67,8 @@ public class PaintManager : Singleton<PaintManager>
         RenderTexture support = paintable.getSupport();
         Renderer rend = paintable.getRenderer();
 
-        Mesh mesh = paintable.GetComponent<MeshFilter>().sharedMesh; // ¸Ş½¬ °¡Á®¿À±â
-        Matrix4x4 matrix = paintable.transform.localToWorldMatrix;   // º¯È¯ Çà·Ä
+        Mesh mesh = paintable.GetComponent<MeshFilter>().sharedMesh; // ë©”ì‰¬ ê°€ì ¸ì˜¤ê¸°
+        Matrix4x4 matrix = paintable.transform.localToWorldMatrix;   // ë³€í™˜ í–‰ë ¬
 
         //_paintMaterial.SetFloat(_prepareUVID, 0);
         //_paintMaterial.SetVector(_positionID, pos);
@@ -101,8 +103,12 @@ public class PaintManager : Singleton<PaintManager>
 
         _command.Clear();
         _command.SetRenderTarget(mask);
-        // DrawRenderer È£Ãâ ½Ã ¸¶Áö¸· ÀÎÀÚ·Î _propBlockÀ» Àü´Ş
-        _command.DrawMesh(mesh, matrix, _paintMaterial, 0, 0, _propBlock);
+
+        // ëª¨ë“  ì„œë¸Œë©”ì‹œì— í˜ì¸íŠ¸ ì ìš©
+        for (int i = 0; i < mesh.subMeshCount; i++)
+        {
+            _command.DrawMesh(mesh, matrix, _paintMaterial, i, 0, _propBlock);
+        }
 
         _command.SetRenderTarget(support);
         _command.Blit(mask, support);
@@ -113,6 +119,8 @@ public class PaintManager : Singleton<PaintManager>
         Graphics.ExecuteCommandBuffer(_command);
         _command.Clear();
 
-        Graphics.ExecuteCommandBuffer(_command);
+        Debug.Log("í˜ì¸íŠ¸ ì„±ê³µ");
+
+        //Graphics.ExecuteCommandBuffer(_command);
     }
 }
