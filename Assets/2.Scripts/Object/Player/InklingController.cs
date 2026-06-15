@@ -683,7 +683,7 @@ public class InklingController : CharBase
         _aniController[(int)FormState.Inkling].SetInteger("AniState", state);
         _aniController[(int)FormState.Half].SetInteger("AniState", state);
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         SwitchRender(FormState.Half, false);
         SwitchRender(FormState.Squid, true);

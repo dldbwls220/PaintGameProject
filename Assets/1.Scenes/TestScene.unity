@@ -36343,12 +36343,32 @@ PrefabInstance:
       propertyPath: m_Name
       value: Squid__M_Body_TeamC_TeamE
       objectReference: {fileID: 0}
+    - target: {fileID: 3659907548573581181, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3659907548573581181, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: m_LengthScale
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4157311553039989182, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4157311553039989182, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010101192562483219, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.9896785
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010101192562483219, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010101192562483219, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5526676462442257824, guid: b3efed2f0204f564397d65c29d8427f0, type: 3}
