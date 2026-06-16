@@ -113,13 +113,16 @@ public class PaintManager : Singleton<PaintManager>
         _command.SetRenderTarget(support);
         _command.Blit(mask, support);
 
+        _extendMaterial.SetFloat(_uvOffsetID, paintable._extendsIslandOffset);
+        _extendMaterial.SetTexture(_uvIslandsID, uvIslands);
+
         _command.SetRenderTarget(extend);
         _command.Blit(mask, extend, _extendMaterial);
 
         Graphics.ExecuteCommandBuffer(_command);
         _command.Clear();
 
-        Debug.Log("페인트 성공");
+        Debug.Log($"[Paint] obj={paintable.name} pos={pos} radius={radius} scale={paintable.transform.lossyScale}");
 
         //Graphics.ExecuteCommandBuffer(_command);
     }

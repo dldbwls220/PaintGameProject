@@ -133,10 +133,10 @@ public class InkProjectile : MonoBehaviour
 
     void PaintInk(RaycastHit hit)
     {
-        // hit.point = �ε��� 3D ��ǥ
-        // hit.textureCoord = �ε��� �޽��� UV ��ǥ (���⿡ ��ũ �ؽ�ó�� �׸�)
+        float radius1 = Random.Range(_minRadius, _maxRadius);
 
-        // GetComponent → GetComponentInParent: Paintabale이 부모에 붙은 계층 구조도 대응
+        WorldInkManager.instance.Paint(hit.point, Color.aquamarine, radius1);
+
         Paintabale p = hit.transform.GetComponentInParent<Paintabale>();
 
         if (p != null)
@@ -149,9 +149,6 @@ public class InkProjectile : MonoBehaviour
         {
             Debug.LogWarning($"Paintabale 컴포넌트를 찾을 수 없음: {hit.transform.name} (부모 포함)");
         }
-
-        // �������� ��ƼŬ ��õ ���� ���� �ʿ� ����, 
-        // "hit.point(�Ǵ� UV)"�� "��ũ �ݰ�" �� �� ���� ��Ŷ���� ������ ����ȭ ���Դϴ�.
     }
 
 }
