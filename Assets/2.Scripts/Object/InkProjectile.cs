@@ -47,16 +47,12 @@ public class InkProjectile : MonoBehaviour
 
         GameObject projectile = GameManager._instance._pool.Get(InkProjectileState.InkBullet);
 
-        // ������ �������� ���� �����ϱ� ���� ����
         while (currentPos.y > -20f) 
         {
-            //�߷� ����
             currentVelocity.y += _gravityModify * Physics.gravity.y * timeStep;
 
-            //������ ���� ��ġ ���
             Vector3 nextPos = currentPos + (currentVelocity * timeStep);
 
-            //���� ��ġ���� ���� ��ġ�� ����� �Ÿ� ���
             Vector3 displacement = nextPos - currentPos;
             float distance = displacement.magnitude;
             Vector3 dir = displacement.normalized;        
@@ -68,16 +64,12 @@ public class InkProjectile : MonoBehaviour
                 projectile.transform.forward = dir;
             }
 
-            //�����ɽ�Ʈ �߻�
             if (Physics.Raycast(currentPos, dir, out RaycastHit hit, distance))
             {
                 if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Wall") || hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                 {
                     if (projectile != null)
                     {
-
-                        // 1. ��ũ ����� ��! �ϰ� ������ ����Ʈ�� ���� ���� ����
-                        // PlaySplashEffect(hit.point);
                         GameObject splashP = GameManager._instance._pool.Get(InkProjectileState.InkSplash);
                         splashP.transform.position = currentPos;
 
@@ -90,11 +82,11 @@ public class InkProjectile : MonoBehaviour
                             splashP.transform.rotation = Quaternion.Euler(0, 0, 0);
                         }
 
-                        // 2. ��ũ ������Ʈ�� �޸𸮿��� ����ϰ� ���� (������� ��)
+                        
                         projectile.SetActive(false);
                     }
 
-                    // ��ũ ĥ�ϴ� ���� ����
+                   
                     PaintInk(hit);
                     Debug.DrawLine(currentPos, nextPos, Color.cyan, 1f);
                 }
@@ -107,10 +99,7 @@ public class InkProjectile : MonoBehaviour
                         GameObject hitP = GameManager._instance._pool.Get(InkProjectileState.InkHit);
                         hitP.transform.position = currentPos;
 
-                        // 1. ��ũ ����� ��! �ϰ� ������ ����Ʈ�� ���� ���� ����
-                        // PlaySplashEffect(hit.point);
-
-                        // 2. ��ũ ������Ʈ�� �޸𸮿��� ����ϰ� ���� (������� ��)
+                       
                         projectile.SetActive(false);
                     }
                     Debug.DrawLine(currentPos, nextPos, Color.red, 1f);
@@ -120,7 +109,7 @@ public class InkProjectile : MonoBehaviour
                 yield break;
             }
 
-            //�浹�� ������ ��ġ ����
+           
             currentPos = nextPos;
 
             Debug.DrawLine(currentPos, nextPos, Color.cyan, 1f);
@@ -135,7 +124,7 @@ public class InkProjectile : MonoBehaviour
     {
         float radius1 = Random.Range(_minRadius, _maxRadius);
 
-        WorldInkManager.instance.Paint(hit.point, Color.aquamarine, radius1);
+        WorldInkManager.instance.Paint(hit.point, Color.aquamarine, radius1, _hardness);
 
         Paintabale p = hit.transform.GetComponentInParent<Paintabale>();
 
