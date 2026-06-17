@@ -47,4 +47,34 @@ public class WorldInkReceiver : MonoBehaviour
             mat.SetFloat (_mapSizeID,    WorldInkManager.instance.MapSize);
         }
     }
+
+    public Color CheckPaintColor(RaycastHit hit)
+    {
+        WorldInkManager mgr = WorldInkManager.instance;
+
+        // 월드 XZ → 잉크 텍스처 UV 변환
+        float u = (hit.point.x - mgr.MapOffset.x) / mgr.MapSize;
+        float v = (hit.point.z - mgr.MapOffset.y) / mgr.MapSize;
+
+        // 맵 범위 밖이면 빈 색상 반환
+        if (u < 0f || u > 1f || v < 0f || v > 1f)
+            return Color.clear;
+
+        int textureSize = mgr.InkTexture.width;
+        int px = Mathf.Clamp(Mathf.FloorToInt(u * textureSize), 0, textureSize - 1);
+        int py = Mathf.Clamp(Mathf.FloorToInt(v * textureSize), 0, textureSize - 1);
+
+        Texture2D tempTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+        RenderTexture prev = RenderTexture.active;
+        RenderTexture.active = mgr.InkTexture;
+
+        tempTex.ReadPixels(new Rect(px, py, 1, 1), 0, 0);
+        tempTex.Apply();
+
+        RenderTexture.active = prev;
+        Color detectedColor = tempTex.GetPixel(0, 0);
+
+        Destroy(tempTex);
+        return detectedColor;
+    }
 }

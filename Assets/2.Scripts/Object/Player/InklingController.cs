@@ -563,6 +563,9 @@ public class InklingController : CharBase
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 Paintabale paintable = hit.collider.GetComponentInParent<Paintabale>();
+
+                WorldInkReceiver receiver = hit.collider.GetComponent<WorldInkReceiver>();
+
                 if (paintable != null)
                 {
                     // 3. 네가 만든 메서드 호출!
@@ -570,6 +573,13 @@ public class InklingController : CharBase
 
                     // 4. 결과 활용
                     CheckFloorStatus(groundColor);
+                }
+
+                if (receiver != null)
+                {
+                    Color inkcolor = receiver.CheckPaintColor(hit);
+
+                    CheckFloorStatus(inkcolor);
                 }
             }
 

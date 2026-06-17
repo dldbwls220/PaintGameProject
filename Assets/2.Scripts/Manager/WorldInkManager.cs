@@ -89,6 +89,20 @@ public class WorldInkManager : Singleton<WorldInkManager>
         Debug.Log($"[WorldInk] 페인트 성공 UV=({u:F3}, {v:F3}) radius={uvRadius:F4}");
     }
 
+    void OnDrawGizmos()
+    {
+        // MapOffset은 Vector2(X, Z)이므로 Vector3로 변환 필요
+        // DrawCube의 첫 번째 인자는 중심점이므로 mapSize * 0.5 만큼 이동
+        Vector3 center = new Vector3(_mapOffset.x + _mapSize * 0.5f, 0f, _mapOffset.y + _mapSize * 0.5f);
+        Vector3 size   = new Vector3(_mapSize, 0f, _mapSize);
+
+        Gizmos.color = new Color(0f, 0f, 1f, 0.2f);
+        Gizmos.DrawCube(center, size);         // 반투명 채우기
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(center, size);     // 테두리
+    }
+
     void OnDisable()
     {
         if (_inkRenderTexture != null)
