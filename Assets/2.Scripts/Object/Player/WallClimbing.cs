@@ -60,7 +60,6 @@ public class WallClimbing : MonoBehaviour
                 if (wallColor.a < 0.1f)
                 {
                     _isWallFront = false;
-                    Debug.Log("��ũ�� ���� ���Դϴ�!");
                 }
 
                 float distToMyTeam = Mathf.Abs(wallColor.r - _inkling._myColor.r) + Mathf.Abs(wallColor.g - _inkling._myColor.g) + Mathf.Abs(wallColor.b - _inkling._myColor.b);
@@ -70,12 +69,10 @@ public class WallClimbing : MonoBehaviour
                 if (distToMyTeam < distToEnemyTeam && distToMyTeam < 0.5f)
                 {
                     _isWallFront = true;
-                    Debug.Log("�츮 �� ���Դϴ�!");
                 }
                 else if (distToEnemyTeam < distToMyTeam && distToEnemyTeam < 0.5f)
                 {
                     _isWallFront = false;
-                    Debug.Log("��� �� ���Դϴ�!");
                 }
 
                 _wallLookAnglel = Vector3.Angle(transform.forward, -_frontWallHit.normal);
@@ -87,8 +84,6 @@ public class WallClimbing : MonoBehaviour
             
         }
 
-
-        Debug.Log("��Ÿ�� ����?" + _isWallFront);
     }
 
     private void OnDrawGizmos()

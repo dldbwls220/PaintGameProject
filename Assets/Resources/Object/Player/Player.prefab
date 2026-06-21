@@ -15490,12 +15490,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5010101192562483219}
     - target: {fileID: 7167460713095057762, guid: 5fe7957355010dc49afc4296aa1e7ed3, type: 3}
+      propertyPath: _hardness
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7167460713095057762, guid: 5fe7957355010dc49afc4296aa1e7ed3, type: 3}
       propertyPath: _maxSpeed
       value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7167460713095057762, guid: 5fe7957355010dc49afc4296aa1e7ed3, type: 3}
       propertyPath: _minSpeed
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7167460713095057762, guid: 5fe7957355010dc49afc4296aa1e7ed3, type: 3}
+      propertyPath: _strength
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 7167460713095057762, guid: 5fe7957355010dc49afc4296aa1e7ed3, type: 3}
       propertyPath: _maxRadius
