@@ -29,7 +29,15 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        if (_inputHandler == null && NetworkPlayer._instance != null)
+        {
+            _inputHandler = NetworkPlayer._instance.GetComponent<CharacterInputHandler>();
+        }
 
+        if (_inputHandler != null)
+        {
+            input.Set(_inputHandler.GetNetworkInput());
+        }
     }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }

@@ -73,4 +73,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2932a22a079ce474ba3b02fcd2765dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spawner
-  _networkPlayer: {fileID: 7516535867900397471, guid: 167803ccbd63ae441a3f87d8b9462a70, type: 3}
+  _networkPlayer: {fileID: -4205617023733384634, guid: 98b99b743a8647d43a00c05d6d68afbe, type: 3}
