@@ -1,6 +1,9 @@
+using DefineEnum;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 // InklingController를 건드리지 않고 Simple KCC 기반으로 Fusion 2 네트워크 이동을 처리하는 래퍼
 [RequireComponent(typeof(InklingController))]
@@ -17,8 +20,28 @@ public class NetworkInklingMovement : NetworkBehaviour
     SimpleKCC _kcc;
     InklingController _inklingController;
 
-    [Networked] public NetworkBool IsSquid { get; set; }
-    [Networked] public NetworkBool IsShooting { get; set; }
+    [Header("Inkling Anim N Render Setting")]
+    [SerializeField] Animator[] _anim;
+    [SerializeField] MultiAimConstraint _multiAC;
+    [SerializeField] GameObject[] _modelObj;
+    SkinnedMeshRenderer[] _inkingRender;
+    SkinnedMeshRenderer[] _halfRender;
+    SkinnedMeshRenderer[] _squidRender;
+    MaterialPropertyBlock _inklingMPB;
+
+    [Header("Camera Setting")]
+    [SerializeField] GameObject _cameraRoot;
+    [SerializeField] float _maxAlpha;
+    [SerializeField] float _minAlpha;
+    [SerializeField] float _upperThreshold = 35f;
+    [SerializeField] float _lowerThreshold = -35f;
+
+    [Networked] public NetworkBool _isSquid { get; set; }
+    [Networked] public NetworkBool _isShooting { get; set; }
+    [Networked] public NetworkBool _isGrounded { get; set; }
+    [Networked] public NetworkBool _isMoving  { get; set; }
+    [Networked] public NetworkBool _switchFoot { get; set; }
+    [Networked] public float _layerWeight { get; set; }
 
     public override void Spawned()
     {
@@ -29,7 +52,21 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingController.InitCharacter("sam");
         _inklingController.enabled = false;
 
+        _inkingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
+        _halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
+        _squidRender = _modelObj[(int)FormState.Squid].GetComponentsInChildren<SkinnedMeshRenderer>();
+        _inklingMPB = new MaterialPropertyBlock();
+
         _kcc.SetGravity(_gravity);
+
+        if (HasInputAuthority)
+        {
+            _cameraRoot.SetActive(true);
+        }
+        else
+        {
+            _cameraRoot.SetActive(false);
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -41,10 +78,11 @@ public class NetworkInklingMovement : NetworkBehaviour
         Vector3 camRight = new Vector3(camForward.z, 0f, -camForward.x);
 
         Vector3 dir = camForward * input._movementInput.z + camRight * input._movementInput.x;
+        dir.Normalize();
 
         // 네트워크 상태 업데이트
-        IsSquid = input._isSquidPressed;
-        IsShooting = input._isShootPressed;
+        _isSquid = input._isSquidPressed;
+        _isShooting = input._isShootPressed;
 
         // 속도 결정 (InklingController 상태 참조)
         float speed = _walkSpeed;
@@ -56,7 +94,10 @@ public class NetworkInklingMovement : NetworkBehaviour
         // 점프 (float impulse)
         float jumpImpulse = 0f;
         if (input._isJumpPressed && _kcc.IsGrounded)
+        {
+            _switchFoot = !_switchFoot;
             jumpImpulse = _jumpImpulse;
+        }
 
         // 회전
         if (dir.sqrMagnitude > 0.01f)
@@ -69,10 +110,138 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         // KCC 이동 (방향 * 속도, 점프 impulse는 float)
         _kcc.Move(dir * speed, jumpImpulse);
+
+        int targetWeight;
+
+        if (_isShooting)
+        {
+            _multiAC.weight = 1;
+            targetWeight = 1;
+        }
+        else
+        {
+            _multiAC.weight = 0;
+            targetWeight = 0;
+        }
+
+        _layerWeight = Mathf.MoveTowards(_layerWeight, targetWeight, 8 * Runner.DeltaTime);
+
+        _isGrounded = _kcc.IsGrounded;
+        _isMoving = dir.magnitude > 0.01f;
     }
 
     public override void Render()
     {
-        // 원격 플레이어 시각 보간은 SimpleKCC가 자동 처리
+        var moveVelocity = GetAnimationMoveVelocity();
+
+        if (_isGrounded)
+        {
+            _anim[(int)FormState.Inkling].SetBool("isGround", _isGrounded);
+            _anim[(int)FormState.Inkling].SetBool("isJumping", !_isGrounded);            
+            _anim[(int)FormState.Inkling].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
+
+            _anim[(int)FormState.Inkling].SetFloat("RNL", moveVelocity.x);
+            _anim[(int)FormState.Inkling].SetFloat("FNB", moveVelocity.z);
+
+            _anim[(int)FormState.Half].SetFloat("RNL", moveVelocity.x);
+            _anim[(int)FormState.Half].SetFloat("FNB", moveVelocity.z);
+        }
+        else
+        {
+            _anim[(int)FormState.Inkling].SetBool("isGround", _isGrounded);
+            _anim[(int)FormState.Inkling].SetBool("isJumping", !_isGrounded);
+            _anim[(int)FormState.Inkling].SetBool("FootSwitch", _switchFoot);
+            _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Jump);
+        }
+
+        _anim[(int)FormState.Inkling].SetBool("isShooting", _isShooting);
+        _anim[(int)FormState.Inkling].SetLayerWeight(1, _layerWeight);
+
+        if (HasInputAuthority)
+        {
+            float angle = Camera.main.transform.eulerAngles.x;
+            if (angle > 180) angle -= 360;
+            AngleTransparency(angle);
+        }
+    }
+
+
+    void AngleTransparency(float angle)
+    {
+        float alpha = 1;
+        float dither = 0;
+
+        if (angle > _upperThreshold)
+        {
+            float range = 70f - _upperThreshold;
+            float progress = (angle - _upperThreshold) / range;
+            alpha = Mathf.Lerp(_maxAlpha, _minAlpha, progress);
+            dither = Mathf.Lerp(_minAlpha, _maxAlpha, progress);
+        }
+        else if (angle < _lowerThreshold)
+        {
+            float range = Mathf.Abs(-70f - _lowerThreshold);
+            float progress = (_lowerThreshold - angle) / range;
+            alpha = Mathf.Lerp(_maxAlpha, _minAlpha, progress);
+            dither = Mathf.Lerp(_minAlpha, _maxAlpha, progress);
+        }
+
+        foreach (SkinnedMeshRenderer ren in _inkingRender)
+        {
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+            else
+            {
+                ren.GetPropertyBlock(_inklingMPB);
+                _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+                ren.SetPropertyBlock(_inklingMPB);
+            }
+        }
+
+        //foreach (MeshRenderer ren in _inkTankRender)
+        //{
+        //    if (ren.name.Contains("M_BombLine") || ren.name.Contains("M_Glass") || ren.name.Contains("M_Ink"))
+        //    {
+        //        ren.GetPropertyBlock(_inklingMPB);
+        //        _inklingMPB.SetFloat("_DitherAlpha", dither);
+        //        ren.SetPropertyBlock(_inklingMPB);
+
+        //        if (ren.name.Contains("M_Ink"))
+        //        {
+        //            ren.GetPropertyBlock(_inklingMPB);
+        //            _inklingMPB.SetVector("_Offset", new Vector2(0, _inkOffset));
+        //            ren.SetPropertyBlock(_inklingMPB);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ren.GetPropertyBlock(_inklingMPB);
+        //        _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+        //        ren.SetPropertyBlock(_inklingMPB);
+        //    }
+        //}
+    }
+
+    private Vector3 GetAnimationMoveVelocity()
+    {
+        if (_kcc.RealSpeed < 0.01f)
+            return default;
+
+        var velocity = _kcc.RealVelocity;
+
+        // We only care about X an Z directions.
+        velocity.y = 0f;
+
+        if (velocity.sqrMagnitude > 1f)
+        {
+            velocity.Normalize();
+        }
+
+        // Transform velocity vector to local space.
+        return transform.InverseTransformVector(velocity);
     }
 }

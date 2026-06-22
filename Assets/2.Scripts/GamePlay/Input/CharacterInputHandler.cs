@@ -24,6 +24,8 @@ public class CharacterInputHandler : MonoBehaviour
         _isSquidPressed = Input.GetKey(KeyCode.LeftShift);
     }
 
+
+
     public NetworkInputData GetNetworkInput()
     {
         NetworkInputData inputdata = new NetworkInputData();

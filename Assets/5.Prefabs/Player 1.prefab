@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6072463068796525162}
   - component: {fileID: 1362125314605480961}
   m_Layer: 6
-  m_Name: squid_idle
+  m_Name: Squid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16025,10 +16025,31 @@ MonoBehaviour:
   _slowSpeed: 1
   _jumpImpulse: 8
   _gravity: -20
-  _IsSquid:
+  _anim:
+  - {fileID: 8075598938875740562}
+  - {fileID: 514055887281546978}
+  - {fileID: 1362125314605480961}
+  _multiAC: {fileID: 26589746309510797}
+  _modelObj:
+  - {fileID: 2383145448294594164}
+  - {fileID: 2721369098694474116}
+  - {fileID: 56758026341452454}
+  _cameraRoot: {fileID: 0}
+  _maxAlpha: 1
+  _minAlpha: 0.2
+  _upperThreshold: 35
+  _lowerThreshold: -35
+  __isSquid:
     _value: 0
-  _IsShooting:
+  __isShooting:
     _value: 0
+  __isGrounded:
+    _value: 0
+  __isMoving:
+    _value: 0
+  __switchFoot:
+    _value: 0
+  __layerWeight: 0
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0
