@@ -95,8 +95,10 @@ public class InklingController : CharBase
     public bool _nowClimb { get { return _isClimbing; } }
 
     void Start()
-    {        
-        InitCharacter("sam");
+    {
+        // NetworkInklingMovement가 있으면 Spawned()에서 초기화를 담당
+        if (GetComponent<NetworkInklingMovement>() == null)
+            InitCharacter("sam");
     }
 
     public void InitCharacter(string name)

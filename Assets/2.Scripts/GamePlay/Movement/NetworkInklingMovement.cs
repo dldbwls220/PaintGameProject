@@ -42,6 +42,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _isMoving  { get; set; }
     [Networked] public NetworkBool _switchFoot { get; set; }
     [Networked] public float _layerWeight { get; set; }
+    [Networked] public float _targetWeight {  get; set; }
 
     public override void Spawned()
     {
@@ -111,20 +112,16 @@ public class NetworkInklingMovement : NetworkBehaviour
         // KCC 이동 (방향 * 속도, 점프 impulse는 float)
         _kcc.Move(dir * speed, jumpImpulse);
 
-        int targetWeight;
-
         if (_isShooting)
         {
-            _multiAC.weight = 1;
-            targetWeight = 1;
+            _targetWeight = 1;
         }
         else
         {
-            _multiAC.weight = 0;
-            targetWeight = 0;
+            _targetWeight = 0;
         }
 
-        _layerWeight = Mathf.MoveTowards(_layerWeight, targetWeight, 8 * Runner.DeltaTime);
+        _layerWeight = Mathf.MoveTowards(_layerWeight, _targetWeight, 8 * Runner.DeltaTime);
 
         _isGrounded = _kcc.IsGrounded;
         _isMoving = dir.magnitude > 0.01f;
@@ -156,8 +153,9 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _anim[(int)FormState.Inkling].SetBool("isShooting", _isShooting);
         _anim[(int)FormState.Inkling].SetLayerWeight(1, _layerWeight);
+        _multiAC.weight = _layerWeight;
 
-        if (HasInputAuthority)
+        if (HasInputAuthority && Camera.main != null)
         {
             float angle = Camera.main.transform.eulerAngles.x;
             if (angle > 180) angle -= 360;

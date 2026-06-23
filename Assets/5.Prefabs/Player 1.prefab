@@ -16034,7 +16034,7 @@ MonoBehaviour:
   - {fileID: 2383145448294594164}
   - {fileID: 2721369098694474116}
   - {fileID: 56758026341452454}
-  _cameraRoot: {fileID: 0}
+  _cameraRoot: {fileID: 135784256729044453}
   _maxAlpha: 1
   _minAlpha: 0.2
   _upperThreshold: 35
