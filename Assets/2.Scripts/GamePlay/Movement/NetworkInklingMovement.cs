@@ -1,6 +1,7 @@
 using DefineEnum;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -23,7 +24,9 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Header("Inkling Anim N Render Setting")]
     [SerializeField] Animator[] _anim;
     [SerializeField] MultiAimConstraint _multiAC;
+    [SerializeField] RigBuilder _rigBuilder;
     [SerializeField] GameObject[] _modelObj;
+    [SerializeField] GameObject _mouseTarget;
     SkinnedMeshRenderer[] _inkingRender;
     SkinnedMeshRenderer[] _halfRender;
     SkinnedMeshRenderer[] _squidRender;
@@ -59,6 +62,8 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingMPB = new MaterialPropertyBlock();
 
         _kcc.SetGravity(_gravity);
+
+        AddAimSource();
 
         if (HasInputAuthority)
         {
@@ -222,6 +227,25 @@ public class NetworkInklingMovement : NetworkBehaviour
         //        ren.SetPropertyBlock(_inklingMPB);
         //    }
         //}
+    }
+
+    void AddAimSource()
+    {
+        var sourceObj = _multiAC.data.sourceObjects;
+
+        GameObject go = Instantiate(_mouseTarget, transform);
+
+        go.name = $"MouseTarget{this.name}";
+
+        var newsource = new WeightedTransform(go.transform, 1);
+        sourceObj.Add(newsource);
+
+        _multiAC.data.sourceObjects = sourceObj;
+
+        if (_rigBuilder != null)
+        {
+            _rigBuilder.Build();
+        }
     }
 
     private Vector3 GetAnimationMoveVelocity()

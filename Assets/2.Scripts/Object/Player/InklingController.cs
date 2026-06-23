@@ -18,8 +18,8 @@ public class InklingController : CharBase
     [Header("Animation & Visuals")]
     [SerializeField] Animator[] _anim;
     [SerializeField] ParticleSystem _paintParticle;
-    [SerializeField] MultiAimConstraint _multiAC;
-    [SerializeField] RigBuilder _rigBuilder;
+    //[SerializeField] MultiAimConstraint _multiAC;
+    //[SerializeField] RigBuilder _rigBuilder;
     [Space]
 
     CharacterController _charController;
@@ -115,7 +115,7 @@ public class InklingController : CharBase
         _tempSpeed = _runSpeed;
         _inkTankOffset = 0;
 
-        AddAimSource();
+        //AddAimSource();
         _clothChanger.SetCustomization();
 
         _inkingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -152,7 +152,7 @@ public class InklingController : CharBase
         {
             targetWeight = 1;
             _currentWeight = Mathf.MoveTowards(_currentWeight, targetWeight, 8 * Time.deltaTime);
-            _multiAC.weight = 1;
+            //_multiAC.weight = 1;
             _isShooting = true;
             _aniController[(int)FormState.Inkling].SetBool("isShooting", true);
             _aniController[(int)FormState.Inkling].SetLayerWeight(1, _currentWeight);
@@ -165,7 +165,7 @@ public class InklingController : CharBase
         {
             targetWeight = 0;
             _currentWeight = Mathf.MoveTowards(_currentWeight, targetWeight, 8 * Time.deltaTime);
-            _multiAC.weight = 0;
+            //_multiAC.weight = 0;
             _isShooting = false;
             _aniController[(int)FormState.Inkling].SetBool("isShooting", false);
             _aniController[(int)FormState.Inkling].SetLayerWeight(1, _currentWeight);
@@ -659,20 +659,20 @@ public class InklingController : CharBase
         }
     }
 
-    void AddAimSource()
-    {
-        var sourceObj = _multiAC.data.sourceObjects;
+    //void AddAimSource()
+    //{
+    //    var sourceObj = _multiAC.data.sourceObjects;
 
-        var newsource = new WeightedTransform(_mouseTarget.transform, 1);
-        sourceObj.Add(newsource);
+    //    var newsource = new WeightedTransform(_mouseTarget.transform, 1);
+    //    sourceObj.Add(newsource);
 
-        _multiAC.data.sourceObjects = sourceObj;
+    //    _multiAC.data.sourceObjects = sourceObj;
 
-        if (_rigBuilder != null)
-        {
-            _rigBuilder.Build();
-        }
-    }
+    //    if (_rigBuilder != null)
+    //    {
+    //        _rigBuilder.Build();
+    //    }
+    //}
 
     //public void GetDamage(float dmg)
     //{

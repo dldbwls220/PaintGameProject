@@ -8,23 +8,24 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public static NetworkPlayer _instance { get { return _uniqueinstance; } }
 
-    
+    [Networked] public int SpawnIndex { get; set; }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void SetSpawnIndex(int index)
     {
-        
+        SpawnIndex = index;
+        gameObject.name = $"Player {index}";
     }
 
     public override void Spawned()
     {
+        gameObject.name = $"Player {SpawnIndex}";
+
         if (Object.HasInputAuthority)
         {
             _uniqueinstance = this;
-
-            Debug.Log("Spawned local Player");
+            Debug.Log($"Spawned local Player {SpawnIndex}");
         }
-        else Debug.Log("Spawned remote Player");
+        else Debug.Log($"Spawned remote Player {SpawnIndex}");
     }
 
     public void PlayerLeft(PlayerRef player)
