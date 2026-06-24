@@ -35,7 +35,8 @@ namespace DefineEnum
         EyeColor,
         Head,
         Shirts,
-        Shoes
+        Shoes,
+        Bottom
     }
 
     #endregion[Ä³¸¯ÅÍ]
@@ -96,6 +97,15 @@ namespace DefineEnum
         Gray_Hoodie,
         Orca_Bolero,
         Takoroka_Nylon_Vintage
+    }
+
+    public enum BottomState
+    {
+        Btm_000_F,
+        Btm_001_F,
+        Btm_002_F,
+        Btm_003_F,
+        Btm_004_F
     }
 
     public enum ShoeState

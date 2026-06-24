@@ -63,6 +63,10 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _kcc.SetGravity(_gravity);
 
+        //SwitchRender(FormState.Inkling, true);
+        //SwitchRender(FormState.Half, false);
+        //SwitchRender(FormState.Squid, false);
+
         AddAimSource();
 
         if (HasInputAuthority)
@@ -168,7 +172,37 @@ public class NetworkInklingMovement : NetworkBehaviour
         }
     }
 
+    void SwitchRender(FormState state, bool isOn)
+    {
+        switch (state)
+        {
+            case FormState.Inkling:
+                for (int i = 0; i < _inkingRender.Length; i++)
+                {
+                    _inkingRender[i].enabled = isOn;
+                }
 
+                //for (int i = 0; i < _inkTankRender.Length; i++)
+                //{
+                //    _inkTankRender[i].enabled = isOn;
+                //}
+
+                break;
+            case FormState.Half:
+                for (int i = 0; i < _halfRender.Length; i++)
+                {
+                    _halfRender[i].enabled = isOn;
+                }
+                break;
+            case FormState.Squid:
+                for (int i = 0; i < _squidRender.Length; i++)
+                {
+                    _squidRender[i].enabled = isOn;
+                }
+                break;
+        }
+
+    }
     void AngleTransparency(float angle)
     {
         float alpha = 1;
