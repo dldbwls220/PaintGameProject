@@ -6,12 +6,19 @@ public class CharacterInputHandler : MonoBehaviour
     bool _isJumpPressed;
     bool _isShootPressed;
     bool _isSquidPressed;
+    Vector3 _aimTargetPosition;
 
     Camera _mainCam;
+    MouseTarget _mouseTarget;
 
     void Start()
     {
         _mainCam = Camera.main;
+    }
+
+    public void SetMouseTarget(MouseTarget target)
+    {
+        _mouseTarget = target;
     }
 
     void Update()
@@ -22,6 +29,9 @@ public class CharacterInputHandler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) _isJumpPressed = true;
         _isShootPressed = Input.GetMouseButton(0);
         _isSquidPressed = Input.GetKey(KeyCode.LeftShift);
+
+        if (_mouseTarget != null)
+            _aimTargetPosition = _mouseTarget.transform.position;
     }
 
 
@@ -45,6 +55,7 @@ public class CharacterInputHandler : MonoBehaviour
             inputdata._cameraForwardRight = new Vector2(camForward.x, camForward.z);
         }
 
+        inputdata._aimTargetPosition = _aimTargetPosition;
         _isJumpPressed = false; // 점프는 한 프레임만
         return inputdata;
     }

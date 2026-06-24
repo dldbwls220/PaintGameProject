@@ -16,9 +16,9 @@ public class MouseTarget : MonoBehaviour
 
     void Update()
     {
+        if (Camera.main == null) return;
         GetMousePos();
     }
-
     void GetMousePos()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

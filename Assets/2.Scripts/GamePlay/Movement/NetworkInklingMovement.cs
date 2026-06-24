@@ -44,8 +44,16 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _isGrounded { get; set; }
     [Networked] public NetworkBool _isMoving  { get; set; }
     [Networked] public NetworkBool _switchFoot { get; set; }
+    [Networked] public NetworkBool _isMorphingSquid { get; set; }
+    [Networked] public NetworkBool _isMorphingInkling { get; set; }
+    [Networked] public TickTimer _morphTimer { get; set; }
+    [Networked] public Vector3 _camForward { get; set; }
+    [Networked] public Vector3 _camRight { get; set; }
+    [Networked] public Vector3 _aimTargetPosition { get; set; }
     [Networked] public float _layerWeight { get; set; }
     [Networked] public float _targetWeight {  get; set; }
+
+    GameObject _aimTargetObj;
 
     public override void Spawned()
     {
@@ -63,9 +71,9 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _kcc.SetGravity(_gravity);
 
-        //SwitchRender(FormState.Inkling, true);
-        //SwitchRender(FormState.Half, false);
-        //SwitchRender(FormState.Squid, false);
+        SwitchRender(FormState.Inkling, true);
+        SwitchRender(FormState.Half, false);
+        SwitchRender(FormState.Squid, false);
 
         AddAimSource();
 
@@ -83,16 +91,42 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         if (!GetInput(out NetworkInputData input)) return;
 
-        // 카메라 방향 기반 이동 방향 계산
-        Vector3 camForward = new Vector3(input._cameraForwardRight.x, 0f, input._cameraForwardRight.y).normalized;
-        Vector3 camRight = new Vector3(camForward.z, 0f, -camForward.x);
+        // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
+        _aimTargetPosition = input._aimTargetPosition;
 
-        Vector3 dir = camForward * input._movementInput.z + camRight * input._movementInput.x;
+        // 카메라 방향 기반 이동 방향 계산
+        _camForward = new Vector3(input._cameraForwardRight.x, 0f, input._cameraForwardRight.y).normalized;
+        _camRight = new Vector3(_camForward.z, 0f, -_camForward.x);
+
+        Vector3 dir = _camForward * input._movementInput.z + _camRight * input._movementInput.x;
         dir.Normalize();
 
         // 네트워크 상태 업데이트
-        _isSquid = input._isSquidPressed;
         _isShooting = input._isShootPressed;
+
+        if (input._isSquidPressed && !_isMorphingSquid && !_isSquid)
+        {
+            _isMorphingSquid = true;
+            _isSquid = true;
+            _morphTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
+        }
+
+        if (_isMorphingSquid && _morphTimer.Expired(Runner))
+        {            
+            _isMorphingSquid = false;
+        }
+
+        if (!input._isSquidPressed && !_isMorphingInkling && _isSquid)
+        {
+            _isMorphingInkling = true;
+            _isSquid = false;
+            _morphTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
+        }
+
+        if (_isMorphingInkling && _morphTimer.Expired(Runner))
+        {
+            _isMorphingInkling = false;
+        }
 
         // 속도 결정 (InklingController 상태 참조)
         float speed = _walkSpeed;
@@ -113,8 +147,13 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (dir.sqrMagnitude > 0.01f)
         {
             Quaternion targetRot = input._isShootPressed
-                ? Quaternion.LookRotation(camForward)
+                ? Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime)
                 : Quaternion.LookRotation(dir);
+            _kcc.SetLookRotation(targetRot);
+        }
+        else if (_isShooting && dir.sqrMagnitude == 0)
+        {
+            Quaternion targetRot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime);
             _kcc.SetLookRotation(targetRot);
         }
 
@@ -140,29 +179,81 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         var moveVelocity = GetAnimationMoveVelocity();
 
+
+        _anim[(int)FormState.Inkling].SetBool("isSquid", _isSquid);
+        _anim[(int)FormState.Inkling].SetBool("isShooting", _isShooting);
+        _anim[(int)FormState.Inkling].SetBool("isGround", _isGrounded);
+        _anim[(int)FormState.Inkling].SetBool("isJumping", !_isGrounded);
+        _anim[(int)FormState.Inkling].SetBool("FootSwitch", _switchFoot);
+
+        _anim[(int)FormState.Half].SetBool("isSquid", _isSquid);
+
+        _anim[(int)FormState.Squid].SetBool("isGround", _isGrounded);
+        _anim[(int)FormState.Squid].SetBool("isJumping", !_isGrounded);
+
+        if (_isMorphingSquid)
+        {
+            SwitchRender(FormState.Half, true);
+            SwitchRender(FormState.Inkling, false);
+            SwitchRender(FormState.Squid, false);
+
+            _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Morph_toSquid);
+            _anim[(int)FormState.Half].SetInteger("AniState", (int)AniState.Morph_toSquid);
+        }
+        else if (_isSquid && !_isMorphingSquid)
+        {
+            SwitchRender(FormState.Inkling, false);
+            SwitchRender(FormState.Half, false);
+            SwitchRender(FormState.Squid, true);
+        }
+
+        if(_isMorphingInkling)
+        {
+            SwitchRender(FormState.Inkling, false);
+            SwitchRender(FormState.Half, true);
+            SwitchRender(FormState.Squid, false);
+            _anim[(int)FormState.Half].SetTrigger("ToHuman");
+            _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Morph_toHuman);
+            _anim[(int)FormState.Half].SetInteger("AniState", (int)AniState.Morph_toHuman);
+        }
+        else if(!_isSquid && !_isMorphingInkling)
+        {
+            SwitchRender(FormState.Inkling, true);
+            SwitchRender(FormState.Half, false);
+            SwitchRender(FormState.Squid, false);
+        }
+
         if (_isGrounded)
         {
-            _anim[(int)FormState.Inkling].SetBool("isGround", _isGrounded);
-            _anim[(int)FormState.Inkling].SetBool("isJumping", !_isGrounded);            
-            _anim[(int)FormState.Inkling].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
+            if (_isSquid && !_isMorphingSquid)
+            {
+                _anim[(int)FormState.Squid].SetInteger("AniState", _isMoving ? (int)AniState.Squid_Walk : (int)AniState.Squid_Idle);
+            }
+            else
+            {
+                _anim[(int)FormState.Inkling].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
+                _anim[(int)FormState.Half].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
 
-            _anim[(int)FormState.Inkling].SetFloat("RNL", moveVelocity.x);
-            _anim[(int)FormState.Inkling].SetFloat("FNB", moveVelocity.z);
+                _anim[(int)FormState.Inkling].SetFloat("RNL", moveVelocity.x);
+                _anim[(int)FormState.Inkling].SetFloat("FNB", moveVelocity.z);
 
-            _anim[(int)FormState.Half].SetFloat("RNL", moveVelocity.x);
-            _anim[(int)FormState.Half].SetFloat("FNB", moveVelocity.z);
+                _anim[(int)FormState.Half].SetFloat("RNL", moveVelocity.x);
+                _anim[(int)FormState.Half].SetFloat("FNB", moveVelocity.z);
+            }          
         }
         else
         {
-            _anim[(int)FormState.Inkling].SetBool("isGround", _isGrounded);
-            _anim[(int)FormState.Inkling].SetBool("isJumping", !_isGrounded);
-            _anim[(int)FormState.Inkling].SetBool("FootSwitch", _switchFoot);
             _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Jump);
         }
 
-        _anim[(int)FormState.Inkling].SetBool("isShooting", _isShooting);
         _anim[(int)FormState.Inkling].SetLayerWeight(1, _layerWeight);
         _multiAC.weight = _layerWeight;
+
+        // 원격 플레이어의 조준 타겟을 동기화된 위치로 이동
+        if (!HasInputAuthority && _aimTargetObj != null)
+        {
+            _aimTargetObj.transform.position = _aimTargetPosition;
+        }
 
         if (HasInputAuthority && Camera.main != null)
         {
@@ -270,6 +361,21 @@ public class NetworkInklingMovement : NetworkBehaviour
         GameObject go = Instantiate(_mouseTarget, transform);
 
         go.name = $"MouseTarget{this.name}";
+        _aimTargetObj = go;
+
+        if (HasInputAuthority)
+        {
+            // 입력 핸들러에 MouseTarget 등록 → 조준 위치를 NetworkInputData로 전송
+            var inputHandler = GetComponent<CharacterInputHandler>();
+            if (inputHandler != null)
+                inputHandler.SetMouseTarget(go.GetComponent<MouseTarget>());
+        }
+
+        if (!HasInputAuthority)
+        {
+            go.GetComponent<MouseTarget>().enabled = false;
+            go.transform.localPosition = Vector3.forward * 10f;
+        }
 
         var newsource = new WeightedTransform(go.transform, 1);
         sourceObj.Add(newsource);
