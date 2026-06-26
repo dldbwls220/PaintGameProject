@@ -108,7 +108,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             _isMorphingSquid = true;
             _isSquid = true;
-            _morphTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
+            _morphTimer = TickTimer.CreateFromSeconds(Runner, 0.1f);
         }
 
         if (_isMorphingSquid && _morphTimer.Expired(Runner))
@@ -120,7 +120,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             _isMorphingInkling = true;
             _isSquid = false;
-            _morphTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
+            _morphTimer = TickTimer.CreateFromSeconds(Runner, 0.1f);
         }
 
         if (_isMorphingInkling && _morphTimer.Expired(Runner))
@@ -213,6 +213,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             SwitchRender(FormState.Half, true);
             SwitchRender(FormState.Squid, false);
             _anim[(int)FormState.Half].SetTrigger("ToHuman");
+            _anim[(int)FormState.Inkling].SetTrigger("ToHuman");
             _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Morph_toHuman);
             _anim[(int)FormState.Half].SetInteger("AniState", (int)AniState.Morph_toHuman);
         }
@@ -229,7 +230,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             {
                 _anim[(int)FormState.Squid].SetInteger("AniState", _isMoving ? (int)AniState.Squid_Walk : (int)AniState.Squid_Idle);
             }
-            else
+            else if (!_isMorphingSquid && !_isMorphingInkling)
             {
                 _anim[(int)FormState.Inkling].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
                 _anim[(int)FormState.Half].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
