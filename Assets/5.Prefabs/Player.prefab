@@ -15663,6 +15663,7 @@ MonoBehaviour:
   - {fileID: 514055887281546978}
   - {fileID: 1362125314605480961}
   _paintParticle: {fileID: 0}
+  _rigBuilder: {fileID: 0}
   _attackOwner: {fileID: 0}
   _shoot: {fileID: 1107342513915051819}
   _modelObj:
@@ -15670,7 +15671,6 @@ MonoBehaviour:
   - {fileID: 2721369098694474116}
   - {fileID: 56758026341452454}
   _inkTankObj: {fileID: 3602998000751584377}
-  _mouseTarget: {fileID: 0}
   _shootRoot: {fileID: 9077617254665921393}
   _customizeState: 0
   _inkTankOffset: 0
@@ -15715,6 +15715,7 @@ MonoBehaviour:
   _eyebrowsState: 0
   _headState: 0
   _bodyState: 0
+  _bottomState: 0
   _shoeState: 0
 --- !u!114 &724614364050638123
 MonoBehaviour:
@@ -15858,6 +15859,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ce1aa0b8a424d549bebfd4427e369d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkInklingMovement
+  _projectilePrefab: {fileID: -8632199437834742506, guid: 584a0b01541683b44af74ebd8df56ad2, type: 3}
+  _inkRoot: {fileID: 272800994173257516}
+  _shootSpeed: 30
+  _shootRate: 0.1
+  _inkColor: {r: 0, g: 1, b: 1, a: 1}
   _walkSpeed: 5
   _swimSpeed: 7.5
   _slowSpeed: 1
@@ -15889,6 +15895,13 @@ MonoBehaviour:
     _value: 0
   __switchFoot:
     _value: 0
+  __isMorphingSquid:
+    _value: 0
+  __isMorphingInkling:
+    _value: 0
+  __camForward: {x: 0, y: 0, z: 0}
+  __camRight: {x: 0, y: 0, z: 0}
+  __aimTargetPosition: {x: 0, y: 0, z: 0}
   __layerWeight: 0
   __targetWeight: 0
 --- !u!1 &8962964323798496639

@@ -11,6 +11,15 @@ using UnityEngine.Animations.Rigging;
 [RequireComponent(typeof(SimpleKCC))]
 public class NetworkInklingMovement : NetworkBehaviour
 {
+    [Header("Weapon")]
+    [SerializeField] private NetworkObject _projectilePrefab;
+    [SerializeField] private Transform _inkRoot;
+    [SerializeField] private float _shootSpeed = 20f;
+    [SerializeField] private float _shootRate = 0.1f;
+    [SerializeField] private Color _inkColor = Color.cyan;
+
+    [Networked] private TickTimer _shootTimer { get; set; }
+
     [Header("Movement Settings")]
     [SerializeField] float _walkSpeed = 5f;
     [SerializeField] float _swimSpeed = 7.5f;   // 아군 잉크 위 스쿼드 속도
@@ -103,6 +112,19 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         // 네트워크 상태 업데이트
         _isShooting = input._isShootPressed;
+
+        // 발사체 스폰 (StateAuthority만 실행, 쿨다운 체크)
+        if (_isShooting && !_isSquid && _shootTimer.ExpiredOrNotRunning(Runner) && HasStateAuthority)
+        {
+            _shootTimer = TickTimer.CreateFromSeconds(Runner, _shootRate);
+
+            if (_projectilePrefab != null && _inkRoot != null)
+            {
+                Vector3 shootDir = (_aimTargetPosition - _inkRoot.position).normalized;
+                var obj = Runner.Spawn(_projectilePrefab, _inkRoot.position, Quaternion.LookRotation(shootDir), Object.InputAuthority);
+                obj.GetComponent<NetworkInkProjectile>()?.Initialize(_inkRoot.position, shootDir * _shootSpeed, _inkColor);
+            }
+        }
 
         if (input._isSquidPressed && !_isMorphingSquid && !_isSquid)
         {
