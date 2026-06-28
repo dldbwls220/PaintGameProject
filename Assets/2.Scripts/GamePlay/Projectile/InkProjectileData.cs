@@ -9,4 +9,5 @@ public struct InkProjectileData : INetworkStruct
     public NetworkBool IsFinished;
     public Vector3 ImpactPosition;
     public Vector3 ImpactNormal;
+    public float PaintRadius;
 }

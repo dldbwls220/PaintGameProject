@@ -1,8 +1,6 @@
 using DefineEnum;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -11,12 +9,16 @@ using UnityEngine.Animations.Rigging;
 [RequireComponent(typeof(SimpleKCC))]
 public class NetworkInklingMovement : NetworkBehaviour
 {
+    [Header("Class Reference")]
+    [SerializeField] InklingRenderController _renderC;
+
     [Header("Weapon")]
     [SerializeField] private NetworkObject _projectilePrefab;
     [SerializeField] private Transform _inkRoot;
     [SerializeField] private float _shootSpeed = 20f;
     [SerializeField] private float _shootRate = 0.1f;
     [SerializeField] private Color _inkColor = Color.cyan;
+    [SerializeField] private Color _enemyColor = Color.lightPink;
 
     [Networked] private TickTimer _shootTimer { get; set; }
 
@@ -31,22 +33,22 @@ public class NetworkInklingMovement : NetworkBehaviour
     InklingController _inklingController;
 
     [Header("Inkling Anim N Render Setting")]
-    [SerializeField] Animator[] _anim;
+    //[SerializeField] Animator[] _anim;
     [SerializeField] MultiAimConstraint _multiAC;
     [SerializeField] RigBuilder _rigBuilder;
-    [SerializeField] GameObject[] _modelObj;
+    //[SerializeField] GameObject[] _modelObj;
     [SerializeField] GameObject _mouseTarget;
-    SkinnedMeshRenderer[] _inkingRender;
-    SkinnedMeshRenderer[] _halfRender;
-    SkinnedMeshRenderer[] _squidRender;
+    //SkinnedMeshRenderer[] _inkingRender;
+    //SkinnedMeshRenderer[] _halfRender;
+    //SkinnedMeshRenderer[] _squidRender;
     MaterialPropertyBlock _inklingMPB;
 
     [Header("Camera Setting")]
     [SerializeField] GameObject _cameraRoot;
-    [SerializeField] float _maxAlpha;
-    [SerializeField] float _minAlpha;
-    [SerializeField] float _upperThreshold = 35f;
-    [SerializeField] float _lowerThreshold = -35f;
+    //[SerializeField] float _maxAlpha;
+    //[SerializeField] float _minAlpha;
+    //[SerializeField] float _upperThreshold = 35f;
+    //[SerializeField] float _lowerThreshold = -35f;
 
     [Networked] public NetworkBool _isSquid { get; set; }
     [Networked] public NetworkBool _isShooting { get; set; }
@@ -55,6 +57,12 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _switchFoot { get; set; }
     [Networked] public NetworkBool _isMorphingSquid { get; set; }
     [Networked] public NetworkBool _isMorphingInkling { get; set; }
+    [Networked] public NetworkBool _isSameColor { get; set; }
+    [Networked] public NetworkBool _isOnPaint { get; set; }
+
+    // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
+    bool _prevIsOnPaint;
+    bool _prevIsSameColor;
     [Networked] public TickTimer _morphTimer { get; set; }
     [Networked] public Vector3 _camForward { get; set; }
     [Networked] public Vector3 _camRight { get; set; }
@@ -72,17 +80,17 @@ public class NetworkInklingMovement : NetworkBehaviour
         // InklingController 초기화 후 Update 루프는 KCC가 대신 처리
         _inklingController.InitCharacter("sam");
         _inklingController.enabled = false;
-
-        _inkingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
-        _halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
-        _squidRender = _modelObj[(int)FormState.Squid].GetComponentsInChildren<SkinnedMeshRenderer>();
-        _inklingMPB = new MaterialPropertyBlock();
+        _renderC.Init();
+        //_inkingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
+        //_halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
+        //_squidRender = _modelObj[(int)FormState.Squid].GetComponentsInChildren<SkinnedMeshRenderer>();
+        //_inklingMPB = new MaterialPropertyBlock();
 
         _kcc.SetGravity(_gravity);
 
-        SwitchRender(FormState.Inkling, true);
-        SwitchRender(FormState.Half, false);
-        SwitchRender(FormState.Squid, false);
+        //SwitchRender(FormState.Inkling, true);
+        //SwitchRender(FormState.Half, false);
+        //SwitchRender(FormState.Squid, false);
 
         AddAimSource();
 
@@ -110,7 +118,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         Vector3 dir = _camForward * input._movementInput.z + _camRight * input._movementInput.x;
         dir.Normalize();
 
-        // 네트워크 상태 업데이트
         _isShooting = input._isShootPressed;
 
         // 발사체 스폰 (StateAuthority만 실행, 쿨다운 체크)
@@ -126,6 +133,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             }
         }
 
+        // 캐릭터 변신 여부 bool을 이용해 확인
         if (input._isSquidPressed && !_isMorphingSquid && !_isSquid)
         {
             _isMorphingSquid = true;
@@ -152,10 +160,10 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         // 속도 결정 (InklingController 상태 참조)
         float speed = _walkSpeed;
-        if (_inklingController._nowSquid && _inklingController._nowOnPaint && _inklingController._nowSameColor)
-            speed = _swimSpeed;
-        else if (!_inklingController._nowSameColor)
-            speed = _slowSpeed;
+        //if (_inklingController._nowSquid && _inklingController._nowOnPaint && _inklingController._nowSameColor)
+        //    speed = _swimSpeed;
+        //else if (!_inklingController._nowSameColor)
+        //    speed = _slowSpeed;
 
         // 점프 (float impulse)
         float jumpImpulse = 0f;
@@ -195,82 +203,103 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _isGrounded = _kcc.IsGrounded;
         _isMoving = dir.magnitude > 0.01f;
+
+        CheckPaintColor();
     }
 
     public override void Render()
     {
-        var moveVelocity = GetAnimationMoveVelocity();
+        LogPaintStatusChange();
+
+        //var moveVelocity = GetAnimationMoveVelocity();
 
 
-        _anim[(int)FormState.Inkling].SetBool("isSquid", _isSquid);
-        _anim[(int)FormState.Inkling].SetBool("isShooting", _isShooting);
-        _anim[(int)FormState.Inkling].SetBool("isGround", _isGrounded);
-        _anim[(int)FormState.Inkling].SetBool("isJumping", !_isGrounded);
-        _anim[(int)FormState.Inkling].SetBool("FootSwitch", _switchFoot);
+        //_anim[(int)FormState.Inkling].SetBool("isSquid", _isSquid);
+        //_anim[(int)FormState.Inkling].SetBool("isShooting", _isShooting);
+        //_anim[(int)FormState.Inkling].SetBool("isGround", _isGrounded);
+        //_anim[(int)FormState.Inkling].SetBool("isJumping", !_isGrounded);
+        //_anim[(int)FormState.Inkling].SetBool("FootSwitch", _switchFoot);
 
-        _anim[(int)FormState.Half].SetBool("isSquid", _isSquid);
+        //_anim[(int)FormState.Half].SetBool("isSquid", _isSquid);
 
-        _anim[(int)FormState.Squid].SetBool("isGround", _isGrounded);
-        _anim[(int)FormState.Squid].SetBool("isJumping", !_isGrounded);
+        //_anim[(int)FormState.Squid].SetBool("isGround", _isGrounded);
+        //_anim[(int)FormState.Squid].SetBool("isJumping", !_isGrounded);
 
-        if (_isMorphingSquid)
+        //if (_isMorphingSquid)
+        //{
+        //    SwitchRender(FormState.Half, true);
+        //    SwitchRender(FormState.Inkling, false);
+        //    SwitchRender(FormState.Squid, false);
+
+        //    _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Morph_toSquid);
+        //    _anim[(int)FormState.Half].SetInteger("AniState", (int)AniState.Morph_toSquid);
+        //}
+        //else if (_isSquid && !_isMorphingSquid)
+        //{
+        //    SwitchRender(FormState.Inkling, false);
+        //    SwitchRender(FormState.Half, false);
+        //    SwitchRender(FormState.Squid, true);
+        //}
+
+        //if(_isMorphingInkling)
+        //{
+        //    SwitchRender(FormState.Inkling, false);
+        //    SwitchRender(FormState.Half, true);
+        //    SwitchRender(FormState.Squid, false);
+        //    _anim[(int)FormState.Half].SetTrigger("ToHuman");
+        //    _anim[(int)FormState.Inkling].SetTrigger("ToHuman");
+        //    _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Morph_toHuman);
+        //    _anim[(int)FormState.Half].SetInteger("AniState", (int)AniState.Morph_toHuman);
+        //}
+        //else if(!_isSquid && !_isMorphingInkling)
+        //{
+        //    SwitchRender(FormState.Inkling, true);
+        //    SwitchRender(FormState.Half, false);
+        //    SwitchRender(FormState.Squid, false);
+        //}
+
+        //if (_isGrounded)
+        //{
+        //    if (_isSquid && !_isMorphingSquid)
+        //    {
+        //        _anim[(int)FormState.Squid].SetInteger("AniState", _isMoving ? (int)AniState.Squid_Walk : (int)AniState.Squid_Idle);
+        //    }
+        //    else if (!_isMorphingSquid && !_isMorphingInkling)
+        //    {
+        //        _anim[(int)FormState.Inkling].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
+        //        _anim[(int)FormState.Half].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
+
+        //        _anim[(int)FormState.Inkling].SetFloat("RNL", moveVelocity.x);
+        //        _anim[(int)FormState.Inkling].SetFloat("FNB", moveVelocity.z);
+
+        //        _anim[(int)FormState.Half].SetFloat("RNL", moveVelocity.x);
+        //        _anim[(int)FormState.Half].SetFloat("FNB", moveVelocity.z);
+        //    }          
+        //}
+        //else
+        //{
+        //    _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Jump);
+        //}
+
+        //_anim[(int)FormState.Inkling].SetLayerWeight(1, _layerWeight);
+        //_multiAC.weight = _layerWeight;
+
+        var state = new InklingRenderController.RenderState
         {
-            SwitchRender(FormState.Half, true);
-            SwitchRender(FormState.Inkling, false);
-            SwitchRender(FormState.Squid, false);
+            isSquid = _isSquid,
+            isMorphingSquid = _isMorphingSquid,
+            isMorphingInkling = _isMorphingInkling,
+            isGrounded = _isGrounded,
+            isMoving = _isMoving,
+            isShooting = _isShooting,
+            switchFoot = _switchFoot,
+            layerWeight = _layerWeight,
+            localMoveVelocity = GetAnimationMoveVelocity(),
+            cameraAngleX = GetCameraAngle(),   // 아래 헬퍼
+            hasInputAuthority = HasInputAuthority,
+        };
 
-            _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Morph_toSquid);
-            _anim[(int)FormState.Half].SetInteger("AniState", (int)AniState.Morph_toSquid);
-        }
-        else if (_isSquid && !_isMorphingSquid)
-        {
-            SwitchRender(FormState.Inkling, false);
-            SwitchRender(FormState.Half, false);
-            SwitchRender(FormState.Squid, true);
-        }
-
-        if(_isMorphingInkling)
-        {
-            SwitchRender(FormState.Inkling, false);
-            SwitchRender(FormState.Half, true);
-            SwitchRender(FormState.Squid, false);
-            _anim[(int)FormState.Half].SetTrigger("ToHuman");
-            _anim[(int)FormState.Inkling].SetTrigger("ToHuman");
-            _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Morph_toHuman);
-            _anim[(int)FormState.Half].SetInteger("AniState", (int)AniState.Morph_toHuman);
-        }
-        else if(!_isSquid && !_isMorphingInkling)
-        {
-            SwitchRender(FormState.Inkling, true);
-            SwitchRender(FormState.Half, false);
-            SwitchRender(FormState.Squid, false);
-        }
-
-        if (_isGrounded)
-        {
-            if (_isSquid && !_isMorphingSquid)
-            {
-                _anim[(int)FormState.Squid].SetInteger("AniState", _isMoving ? (int)AniState.Squid_Walk : (int)AniState.Squid_Idle);
-            }
-            else if (!_isMorphingSquid && !_isMorphingInkling)
-            {
-                _anim[(int)FormState.Inkling].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
-                _anim[(int)FormState.Half].SetInteger("AniState", _isMoving ? (int)AniState.Run : (int)AniState.Idle);
-
-                _anim[(int)FormState.Inkling].SetFloat("RNL", moveVelocity.x);
-                _anim[(int)FormState.Inkling].SetFloat("FNB", moveVelocity.z);
-
-                _anim[(int)FormState.Half].SetFloat("RNL", moveVelocity.x);
-                _anim[(int)FormState.Half].SetFloat("FNB", moveVelocity.z);
-            }          
-        }
-        else
-        {
-            _anim[(int)FormState.Inkling].SetInteger("AniState", (int)AniState.Jump);
-        }
-
-        _anim[(int)FormState.Inkling].SetLayerWeight(1, _layerWeight);
-        _multiAC.weight = _layerWeight;
+        _renderC.UpdateRender(state);
 
         // 원격 플레이어의 조준 타겟을 동기화된 위치로 이동
         if (!HasInputAuthority && _aimTargetObj != null)
@@ -278,80 +307,80 @@ public class NetworkInklingMovement : NetworkBehaviour
             _aimTargetObj.transform.position = _aimTargetPosition;
         }
 
-        if (HasInputAuthority && Camera.main != null)
-        {
-            float angle = Camera.main.transform.eulerAngles.x;
-            if (angle > 180) angle -= 360;
-            AngleTransparency(angle);
-        }
+        //if (HasInputAuthority && Camera.main != null)
+        //{
+        //    float angle = Camera.main.transform.eulerAngles.x;
+        //    if (angle > 180) angle -= 360;
+        //    AngleTransparency(angle);
+        //}
     }
 
-    void SwitchRender(FormState state, bool isOn)
-    {
-        switch (state)
-        {
-            case FormState.Inkling:
-                for (int i = 0; i < _inkingRender.Length; i++)
-                {
-                    _inkingRender[i].enabled = isOn;
-                }
+    //void SwitchRender(FormState state, bool isOn)
+    //{
+    //    switch (state)
+    //    {
+    //        case FormState.Inkling:
+    //            for (int i = 0; i < _inkingRender.Length; i++)
+    //            {
+    //                _inkingRender[i].enabled = isOn;
+    //            }
 
-                //for (int i = 0; i < _inkTankRender.Length; i++)
-                //{
-                //    _inkTankRender[i].enabled = isOn;
-                //}
+    //            //for (int i = 0; i < _inkTankRender.Length; i++)
+    //            //{
+    //            //    _inkTankRender[i].enabled = isOn;
+    //            //}
 
-                break;
-            case FormState.Half:
-                for (int i = 0; i < _halfRender.Length; i++)
-                {
-                    _halfRender[i].enabled = isOn;
-                }
-                break;
-            case FormState.Squid:
-                for (int i = 0; i < _squidRender.Length; i++)
-                {
-                    _squidRender[i].enabled = isOn;
-                }
-                break;
-        }
+    //            break;
+    //        case FormState.Half:
+    //            for (int i = 0; i < _halfRender.Length; i++)
+    //            {
+    //                _halfRender[i].enabled = isOn;
+    //            }
+    //            break;
+    //        case FormState.Squid:
+    //            for (int i = 0; i < _squidRender.Length; i++)
+    //            {
+    //                _squidRender[i].enabled = isOn;
+    //            }
+    //            break;
+    //    }
 
-    }
-    void AngleTransparency(float angle)
-    {
-        float alpha = 1;
-        float dither = 0;
+    //}
+    //void AngleTransparency(float angle)
+    //{
+    //    float alpha = 1;
+    //    float dither = 0;
 
-        if (angle > _upperThreshold)
-        {
-            float range = 70f - _upperThreshold;
-            float progress = (angle - _upperThreshold) / range;
-            alpha = Mathf.Lerp(_maxAlpha, _minAlpha, progress);
-            dither = Mathf.Lerp(_minAlpha, _maxAlpha, progress);
-        }
-        else if (angle < _lowerThreshold)
-        {
-            float range = Mathf.Abs(-70f - _lowerThreshold);
-            float progress = (_lowerThreshold - angle) / range;
-            alpha = Mathf.Lerp(_maxAlpha, _minAlpha, progress);
-            dither = Mathf.Lerp(_minAlpha, _maxAlpha, progress);
-        }
+    //    if (angle > _upperThreshold)
+    //    {
+    //        float range = 70f - _upperThreshold;
+    //        float progress = (angle - _upperThreshold) / range;
+    //        alpha = Mathf.Lerp(_maxAlpha, _minAlpha, progress);
+    //        dither = Mathf.Lerp(_minAlpha, _maxAlpha, progress);
+    //    }
+    //    else if (angle < _lowerThreshold)
+    //    {
+    //        float range = Mathf.Abs(-70f - _lowerThreshold);
+    //        float progress = (_lowerThreshold - angle) / range;
+    //        alpha = Mathf.Lerp(_maxAlpha, _minAlpha, progress);
+    //        dither = Mathf.Lerp(_minAlpha, _maxAlpha, progress);
+    //    }
 
-        foreach (SkinnedMeshRenderer ren in _inkingRender)
-        {
-            if (ren.name.Contains("_TeamC"))
-            {
-                ren.GetPropertyBlock(_inklingMPB);
-                _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
-                ren.SetPropertyBlock(_inklingMPB);
-            }
-            else
-            {
-                ren.GetPropertyBlock(_inklingMPB);
-                _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
-                ren.SetPropertyBlock(_inklingMPB);
-            }
-        }
+    //    foreach (SkinnedMeshRenderer ren in _inkingRender)
+    //    {
+    //        if (ren.name.Contains("_TeamC"))
+    //        {
+    //            ren.GetPropertyBlock(_inklingMPB);
+    //            _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+    //            ren.SetPropertyBlock(_inklingMPB);
+    //        }
+    //        else
+    //        {
+    //            ren.GetPropertyBlock(_inklingMPB);
+    //            _inklingMPB.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+    //            ren.SetPropertyBlock(_inklingMPB);
+    //        }
+    //    }
 
         //foreach (MeshRenderer ren in _inkTankRender)
         //{
@@ -375,7 +404,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         //        ren.SetPropertyBlock(_inklingMPB);
         //    }
         //}
-    }
+    //}
 
     void AddAimSource()
     {
@@ -411,7 +440,14 @@ public class NetworkInklingMovement : NetworkBehaviour
         }
     }
 
-    private Vector3 GetAnimationMoveVelocity()
+    float GetCameraAngle()
+    {
+        if (Camera.main == null) return 0f;
+        float a = Camera.main.transform.eulerAngles.x;
+        return a > 180 ? a - 360 : a;
+    }
+
+    Vector3 GetAnimationMoveVelocity()
     {
         if (_kcc.RealSpeed < 0.01f)
             return default;
@@ -428,5 +464,70 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         // Transform velocity vector to local space.
         return transform.InverseTransformVector(velocity);
+    }
+
+    void LogPaintStatusChange()
+    {
+        bool onPaint    = _isOnPaint;
+        bool sameColor  = _isSameColor;
+
+        if (onPaint == _prevIsOnPaint && sameColor == _prevIsSameColor) return;
+
+        string who       = HasInputAuthority ? "[나]" : $"[원격:{Object.InputAuthority}]";
+        string paintStr  = onPaint ? (sameColor ? "아군 잉크" : "적 잉크") : "잉크 없음";
+
+        Debug.Log($"{who} {Object.name} 페인트 상태 변경 → {paintStr}  (isOnPaint={onPaint}, isSameColor={sameColor})");
+
+        _prevIsOnPaint   = onPaint;
+        _prevIsSameColor = sameColor;
+    }
+
+    void CheckPaintColor()
+    {
+        if (_isGrounded)
+        {
+            Ray ray = new Ray(transform.position + Vector3.up * 0.1f, Vector3.down);
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                WorldInkReceiver receiver = hit.collider.GetComponent<WorldInkReceiver>();
+
+                if (receiver != null)
+                {
+                    Color color = receiver.CheckPaintColor(hit);
+
+                    CheckFloorStatus(color);
+                }
+            }
+        }
+    }
+
+    void CheckFloorStatus(Color col)
+    {
+        //알파값이 낮으면 잉크가 없는 곳 [cite: 22, 23]
+        if (col.a < 0.1f)
+        {
+            _isSameColor = false;
+            _isOnPaint = false;
+            Debug.Log("NotOnPaint");
+        }
+
+        _isOnPaint = true;
+
+
+        float distToMyTeam = Mathf.Abs(col.r - _inkColor.r) + Mathf.Abs(col.g - _inkColor.g) + Mathf.Abs(col.b - _inkColor.b);
+
+        float distToEnemyTeam = Mathf.Abs(col.r - _enemyColor.r) + Mathf.Abs(col.g - _enemyColor.g) + Mathf.Abs(col.b - _enemyColor.b);
+
+        if (distToMyTeam < distToEnemyTeam && distToMyTeam < 0.5f)
+        {
+            _isSameColor = true;
+            Debug.Log("우리 팀 구역입니다!");
+        }
+        else if (distToEnemyTeam < distToMyTeam && distToEnemyTeam < 0.5f)
+        {
+            _isSameColor = false;
+            Debug.Log("상대 팀 구역입니다!");
+        }
     }
 }
