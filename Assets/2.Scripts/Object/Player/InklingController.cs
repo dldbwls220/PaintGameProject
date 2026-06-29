@@ -116,7 +116,7 @@ public class InklingController : CharBase
         _inkTankOffset = 0;
 
         //AddAimSource();
-        _clothChanger.SetCustomization();
+        //_clothChanger.SetCustomization();
 
         _inkingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
         _halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();

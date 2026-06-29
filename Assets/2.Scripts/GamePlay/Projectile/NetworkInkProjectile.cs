@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class NetworkInkProjectile : NetworkBehaviour
 {
@@ -23,6 +24,11 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Networked] private int _finishedTick { get; set; }
 
     private bool _hitVisualPlayed = false;
+    MaterialPropertyBlock _mpb;
+    MaterialPropertyBlock _trailMpb;
+    MeshRenderer _mesh;
+    TrailRenderer _trailRenderer;
+    ParticleSystem[] _splashParticle;
 
     // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
     private const int DESPAWN_DELAY_TICKS = 10;
@@ -37,10 +43,20 @@ public class NetworkInkProjectile : NetworkBehaviour
             IsFinished = false
         };
         _inkColor = inkColor;
+        
     }
 
     public override void Spawned()
     {
+        _mpb = new MaterialPropertyBlock();
+        _trailMpb = new MaterialPropertyBlock();
+        _mesh = GetComponent<MeshRenderer>();
+        _trailRenderer = GetComponent<TrailRenderer>();
+        _splashParticle = GetComponentsInChildren<ParticleSystem>();
+
+        _mesh.material.EnableKeyword("_EMISSION");
+       
+
         if (_shootFX != null)
             _shootFX.Play();
     }
@@ -96,6 +112,8 @@ public class NetworkInkProjectile : NetworkBehaviour
         Vector3 vel = _data.Velocity + new Vector3(0f, -_gravity, 0f) * time;
         if (vel.sqrMagnitude > 0.01f)
             transform.forward = vel.normalized;
+
+        ApplyProjectileColor();
     }
 
     private void OnHitVisual(RaycastHit hit)
@@ -104,6 +122,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         if (fxPrefab != null)
         {
             var fx = Instantiate(fxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+            ApplyColorToFX(fx);
             Destroy(fx, 3f);
         }
     }
@@ -134,6 +153,7 @@ public class NetworkInkProjectile : NetworkBehaviour
             if (fxPrefab != null)
             {
                 var fx = Instantiate(fxPrefab, point, Quaternion.LookRotation(normal));
+                ApplyColorToFX(fx);
                 Destroy(fx, 3f);
             }
             _hitVisualPlayed = true;
@@ -145,5 +165,27 @@ public class NetworkInkProjectile : NetworkBehaviour
         float time = (tick - _data.FireTick) * Runner.DeltaTime;
         if (time <= 0f) return _data.Position;
         return _data.Position + _data.Velocity * time + new Vector3(0f, -_gravity, 0f) * (time * time * 0.5f);
+    }
+
+    void ApplyColorToFX(GameObject fx)
+    {
+        foreach (var ps in fx.GetComponentsInChildren<ParticleSystem>())
+        {
+            var main = ps.main;
+            main.startColor = _inkColor;
+        }
+    }
+
+    void ApplyProjectileColor()
+    {
+        _mesh.GetPropertyBlock(_mpb);
+        _mpb.SetColor("_BaseColor", _inkColor);
+        _mpb.SetColor("_EmissionColor", _inkColor);
+        _mesh.SetPropertyBlock(_mpb);
+
+        _trailRenderer.GetPropertyBlock(_trailMpb);
+        _trailMpb.SetColor("_BaseColor", _inkColor);
+        _trailMpb.SetColor("_EmissionColor", _inkColor);
+        _trailRenderer.SetPropertyBlock(_trailMpb);
     }
 }

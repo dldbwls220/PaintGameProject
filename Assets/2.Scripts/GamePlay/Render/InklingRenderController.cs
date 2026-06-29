@@ -24,7 +24,6 @@ public class InklingRenderController : MonoBehaviour
     MeshRenderer[] _inkTankRender;
     MaterialPropertyBlock _mpb;
 
-    // NetworkInklingMovement�� �� ������ ä���� �ѱ�� ������
     public struct RenderState
     {
         public bool isSquid;
@@ -34,9 +33,12 @@ public class InklingRenderController : MonoBehaviour
         public bool isShooting;
         public bool isMoving;
         public bool switchFoot;
+        public bool isSameColor;
+        public bool isSwimming;
         public float layerWeight;
-        public Vector3 localMoveVelocity;   // InverseTransformVector ���         
-        public float cameraAngleX;           // HasInputAuthority�� ���� ��ȿ
+        public Vector3 localMoveVelocity;       
+        public float cameraAngleX;
+        public float inktankOffset;
         public bool hasInputAuthority;
     }
 
@@ -59,6 +61,7 @@ public class InklingRenderController : MonoBehaviour
     {
         UpdateFormRender(s);
         UpdateAnimation(s);
+        UpdateInkRefillRender(s);
 
         if (s.hasInputAuthority)
             ApplyCameraTransparency(s.cameraAngleX);
@@ -76,10 +79,31 @@ public class InklingRenderController : MonoBehaviour
         }
         else if (s.isSquid)
         {
-            SwitchRender(FormState.Inkling, false);
-            SwitchRender(FormState.Half, false);
-            SwitchRender(FormState.Squid, true);
-            InkTankRender(false);
+            if(s.isSwimming)
+            {
+                if (!s.isGrounded)
+                {
+                    SwitchRender(FormState.Inkling, false);
+                    SwitchRender(FormState.Half, false);
+                    SwitchRender(FormState.Squid, true);
+                    InkTankRender(false);
+                }
+                else
+                {
+                    SwitchRender(FormState.Inkling, false);
+                    SwitchRender(FormState.Half, false);
+                    SwitchRender(FormState.Squid, false);
+                    InkTankRender(false);
+                }             
+            }
+            else
+            {
+                SwitchRender(FormState.Inkling, false);
+                SwitchRender(FormState.Half, false);
+                SwitchRender(FormState.Squid, true);
+                InkTankRender(false);
+            }
+           
         }
         else if (s.isMorphingInkling)
         {
@@ -197,6 +221,23 @@ public class InklingRenderController : MonoBehaviour
                 _mpb.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
                 ren.SetPropertyBlock(_mpb);
             }
+        }
+    }
+
+    void UpdateInkRefillRender(in RenderState state)
+    {
+        foreach (MeshRenderer ren in _inkTankRender)
+        {
+            if (ren.name.Contains("M_BombLine") || ren.name.Contains("M_Glass") || ren.name.Contains("M_Ink"))
+            {
+                if (ren.name.Contains("M_Ink"))
+                {
+                    ren.GetPropertyBlock(_mpb);
+                    _mpb.SetVector("_Offset", new Vector2(0, state.inktankOffset));
+                    ren.SetPropertyBlock(_mpb);
+                }
+            }
+
         }
     }
 

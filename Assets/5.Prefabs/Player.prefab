@@ -15894,17 +15894,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NetworkInklingMovement
   _renderC: {fileID: 3260018150636079900}
   _inkTankC: {fileID: 1323900764576403397}
+  _characterClothChanger: {fileID: 5526676462442257824}
   _projectilePrefab: {fileID: -8632199437834742506, guid: 584a0b01541683b44af74ebd8df56ad2, type: 3}
   _inkRoot: {fileID: 272800994173257516}
   _shootSpeed: 30
   _shootRate: 0.1
-  _inkColor: {r: 0, g: 1, b: 1, a: 1}
-  _enemyColor: {r: 1, g: 0.7137255, b: 0.7568628, a: 1}
+  _inktankOffset: 0
+  _teamColors1:
+  - {r: 1, g: 0, b: 0.8745098, a: 1}
+  - {r: 0.7607843, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0.23921569, b: 0, a: 1}
+  - {r: 0.7254902, g: 0, b: 1, a: 1}
+  _teamColors2:
+  - {r: 0, g: 1, b: 0.1254902, a: 1}
+  - {r: 0.23921569, g: 0, b: 1, a: 1}
+  - {r: 0, g: 0.7607843, b: 1, a: 1}
+  - {r: 0.27450982, g: 1, b: 0, a: 1}
   _walkSpeed: 5
   _swimSpeed: 7.5
   _slowSpeed: 1
   _jumpImpulse: 8
   _gravity: -20
+  _groundAccel: 50
+  _airAccel: 4
+  _swimAccel: 15
   _multiAC: {fileID: 26589746309510797}
   _rigBuilder: {fileID: 1875132854502961994}
   _mouseTarget: {fileID: 4842202179997333524, guid: 71d2575a5b3f4ca449f06b181a20367a, type: 3}
@@ -15927,7 +15940,7 @@ MonoBehaviour:
     _value: 0
   __isOnPaint:
     _value: 0
-  __isClimbing:
+  __isSwimming:
     _value: 0
   __camForward: {x: 0, y: 0, z: 0}
   __camRight: {x: 0, y: 0, z: 0}
@@ -15977,6 +15990,7 @@ MonoBehaviour:
   _maxInk: 100
   _currentInk: 0
   _fillSpeed: 5
+  _inktankOffset: 0
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0

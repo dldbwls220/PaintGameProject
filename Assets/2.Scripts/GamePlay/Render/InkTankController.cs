@@ -11,7 +11,7 @@ public class InkTankController : MonoBehaviour
     [SerializeField] float _maxInk = 100f;
     [SerializeField] float _currentInk;
     [SerializeField] float _fillSpeed;
-    float _inktankOffset;
+    [SerializeField] float _inktankOffset;
 
     RectTransform _rectT;
     Transform[] _sliderChildT;
@@ -22,7 +22,7 @@ public class InkTankController : MonoBehaviour
         public bool isSquid;
         public bool isSameColor;
         public bool isJumping;
-        public bool isClimbing;
+        public bool isSwimming;
     }
 
     public void Init()
@@ -66,13 +66,18 @@ public class InkTankController : MonoBehaviour
         _rectT.position = finalPosition;
     }
 
+    public float UpdateInktankOffset()
+    {
+        return _inktankOffset;
+    }
+
     void CheckInkRefillable(in InkTankState s)
     {
         _canCharge =
        ((s.isSquid &&
        s.isSameColor &&
-       !s.isJumping ||
-       s.isClimbing));
+       !s.isJumping &&
+       s.isSwimming));
     }
 
     void RefillInk()
@@ -86,6 +91,6 @@ public class InkTankController : MonoBehaviour
         _currentInk = Mathf.MoveTowards(_currentInk, _maxInk, fillSpeed * Time.deltaTime);
 
         float offsetSpeed = fillSpeed * (0.5f / _maxInk);
-        _inktankOffset = Mathf.MoveTowards(_inktankOffset, 0, offsetSpeed * Time.deltaTime);
+        _inktankOffset = Mathf.MoveTowards(_inktankOffset, 0, offsetSpeed * Time.deltaTime);       
     }
 }
