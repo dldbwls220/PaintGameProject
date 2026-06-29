@@ -176,7 +176,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         // 회전
         if (dir.sqrMagnitude > 0.01f)
         {
-            Quaternion targetRot = input._isShootPressed
+            Quaternion targetRot = input._isShootPressed && !_isSquid
                 ? Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime)
                 : Quaternion.LookRotation(dir);
             _kcc.SetLookRotation(targetRot);

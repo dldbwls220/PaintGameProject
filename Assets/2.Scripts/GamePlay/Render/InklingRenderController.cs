@@ -6,6 +6,7 @@ public class InklingRenderController : MonoBehaviour
 {
     [Header("Model Object")]
     [SerializeField] GameObject[] _modelObj;
+    [SerializeField] GameObject _inkTankObj;
 
     [Header("Animation")]
     [SerializeField] Animator[] _animator;
@@ -20,9 +21,10 @@ public class InklingRenderController : MonoBehaviour
     SkinnedMeshRenderer[] _inklingRender;
     SkinnedMeshRenderer[] _halfRender;
     SkinnedMeshRenderer[] _squidRender;
+    MeshRenderer[] _inkTankRender;
     MaterialPropertyBlock _mpb;
 
-    // NetworkInklingMovement°¡ ¸Å ÇÁ·¹ÀÓ Ã¤¿ö¼­ ³Ñ±â´Â ½º³À¼¦
+    // NetworkInklingMovementï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public struct RenderState
     {
         public bool isSquid;
@@ -33,8 +35,8 @@ public class InklingRenderController : MonoBehaviour
         public bool isMoving;
         public bool switchFoot;
         public float layerWeight;
-        public Vector3 localMoveVelocity;   // InverseTransformVector °á°ú         
-        public float cameraAngleX;           // HasInputAuthorityÀÏ ¶§¸¸ À¯È¿
+        public Vector3 localMoveVelocity;   // InverseTransformVector ï¿½ï¿½ï¿½         
+        public float cameraAngleX;           // HasInputAuthorityï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿
         public bool hasInputAuthority;
     }
 
@@ -43,14 +45,16 @@ public class InklingRenderController : MonoBehaviour
         _inklingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
         _halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
         _squidRender = _modelObj[(int)FormState.Squid].GetComponentsInChildren<SkinnedMeshRenderer>();
+        _inkTankRender = _inkTankObj.GetComponentsInChildren<MeshRenderer>();
         _mpb = new MaterialPropertyBlock();
 
         SwitchRender(FormState.Inkling, true);
         SwitchRender(FormState.Half, false);
         SwitchRender(FormState.Squid, false);
+        InkTankRender(false);
     }
 
-    // NetworkInklingMovement.Render() ¿¡¼­ È£Ãâ
+    // NetworkInklingMovement.Render() ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½
     public void UpdateRender(in RenderState s)
     {
         UpdateFormRender(s);
@@ -68,24 +72,28 @@ public class InklingRenderController : MonoBehaviour
             SwitchRender(FormState.Inkling, false);
             SwitchRender(FormState.Half, true);
             SwitchRender(FormState.Squid, false);
+            InkTankRender(false);
         }
         else if (s.isSquid)
         {
             SwitchRender(FormState.Inkling, false);
             SwitchRender(FormState.Half, false);
             SwitchRender(FormState.Squid, true);
+            InkTankRender(false);
         }
         else if (s.isMorphingInkling)
         {
             SwitchRender(FormState.Inkling, false);
             SwitchRender(FormState.Half, true);
             SwitchRender(FormState.Squid, false);
+            InkTankRender(false);
         }
         else
         {
             SwitchRender(FormState.Inkling, true);
             SwitchRender(FormState.Half, false);
             SwitchRender(FormState.Squid, false);
+            InkTankRender(true);
         }
     }
 
@@ -167,6 +175,29 @@ public class InklingRenderController : MonoBehaviour
             _mpb.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
             ren.SetPropertyBlock(_mpb);
         }
+
+        foreach (MeshRenderer ren in _inkTankRender)
+        {
+            if (ren.name.Contains("M_BombLine") || ren.name.Contains("M_Glass") || ren.name.Contains("M_Ink"))
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetFloat("_DitherAlpha", dither);
+                ren.SetPropertyBlock(_mpb);
+
+                //if (ren.name.Contains("M_Ink"))
+                //{
+                //    ren.GetPropertyBlock(_mpb);
+                //    _mpb.SetVector("_Offset", new Vector2(0, _inkOffset));
+                //    ren.SetPropertyBlock(_mpb);
+                //}
+            }
+            else
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+                ren.SetPropertyBlock(_mpb);
+            }
+        }
     }
 
     void SwitchRender(FormState state, bool isOn)
@@ -181,5 +212,10 @@ public class InklingRenderController : MonoBehaviour
 
         if (targets == null) return;
         foreach(var r in targets) r.enabled = isOn;
+    }
+
+    void InkTankRender(bool isOn)
+    {
+        foreach (var r in _inkTankRender) r.enabled = isOn;
     }
 }
