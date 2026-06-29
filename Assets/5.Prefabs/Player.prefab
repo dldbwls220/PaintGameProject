@@ -15624,6 +15624,7 @@ GameObject:
   - component: {fileID: 5526765953826089618}
   - component: {fileID: 4471312381918550399}
   - component: {fileID: 3260018150636079900}
+  - component: {fileID: 1323900764576403397}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -15892,6 +15893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkInklingMovement
   _renderC: {fileID: 3260018150636079900}
+  _inkTankC: {fileID: 1323900764576403397}
   _projectilePrefab: {fileID: -8632199437834742506, guid: 584a0b01541683b44af74ebd8df56ad2, type: 3}
   _inkRoot: {fileID: 272800994173257516}
   _shootSpeed: 30
@@ -15925,6 +15927,8 @@ MonoBehaviour:
     _value: 0
   __isOnPaint:
     _value: 0
+  __isClimbing:
+    _value: 0
   __camForward: {x: 0, y: 0, z: 0}
   __camRight: {x: 0, y: 0, z: 0}
   __aimTargetPosition: {x: 0, y: 0, z: 0}
@@ -15956,6 +15960,23 @@ MonoBehaviour:
   _minAlpha: 0.2
   _upperThreshold: 35
   _lowerThreshold: -35
+--- !u!114 &1323900764576403397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8955290842762730277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d29db47d6343cd4ebb5baef4f0426cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InkTankController
+  _inkSlider: {fileID: 1014054228314851023}
+  _screenOffset: {x: 180, y: 250}
+  _maxInk: 100
+  _currentInk: 0
+  _fillSpeed: 5
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0

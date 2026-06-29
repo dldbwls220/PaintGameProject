@@ -11,14 +11,15 @@ public class NetworkInklingMovement : NetworkBehaviour
 {
     [Header("Class Reference")]
     [SerializeField] InklingRenderController _renderC;
+    [SerializeField] InkTankController _inkTankC;
 
     [Header("Weapon")]
-    [SerializeField] private NetworkObject _projectilePrefab;
-    [SerializeField] private Transform _inkRoot;
-    [SerializeField] private float _shootSpeed = 20f;
-    [SerializeField] private float _shootRate = 0.1f;
-    [SerializeField] private Color _inkColor = Color.cyan;
-    [SerializeField] private Color _enemyColor = Color.lightPink;
+    [SerializeField] NetworkObject _projectilePrefab;
+    [SerializeField] Transform _inkRoot;
+    [SerializeField] float _shootSpeed = 20f;
+    [SerializeField] float _shootRate = 0.1f;
+    [SerializeField] Color _inkColor = Color.cyan;
+    [SerializeField] Color _enemyColor = Color.lightPink;
 
     [Networked] private TickTimer _shootTimer { get; set; }
 
@@ -59,6 +60,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _isMorphingInkling { get; set; }
     [Networked] public NetworkBool _isSameColor { get; set; }
     [Networked] public NetworkBool _isOnPaint { get; set; }
+    [Networked] public NetworkBool _isClimbing {  get; set; }
 
     // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
     bool _prevIsOnPaint;
@@ -81,6 +83,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingController.InitCharacter("sam");
         _inklingController.enabled = false;
         _renderC.Init();
+        _inkTankC.Init();
         //_inkingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
         //_halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
         //_squidRender = _modelObj[(int)FormState.Squid].GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -205,6 +208,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _isMoving = dir.magnitude > 0.01f;
 
         CheckPaintColor();
+        _inkTankC.SetInkUIPos();
     }
 
     public override void Render()
@@ -284,7 +288,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         //_anim[(int)FormState.Inkling].SetLayerWeight(1, _layerWeight);
         //_multiAC.weight = _layerWeight;
 
-        var state = new InklingRenderController.RenderState
+        var renderstate = new InklingRenderController.RenderState
         {
             isSquid = _isSquid,
             isMorphingSquid = _isMorphingSquid,
@@ -299,7 +303,17 @@ public class NetworkInklingMovement : NetworkBehaviour
             hasInputAuthority = HasInputAuthority,
         };
 
-        _renderC.UpdateRender(state);
+        _renderC.UpdateRender(renderstate);
+
+        var inkstate = new InkTankController.InkTankState
+        {
+            isSquid = _isSquid,
+            isSameColor = _isSameColor,
+            isJumping = !_isGrounded,
+            isClimbing = _isClimbing,
+        };
+
+        _inkTankC.UpdateInkStatus(inkstate);
 
         // 원격 플레이어의 조준 타겟을 동기화된 위치로 이동
         if (!HasInputAuthority && _aimTargetObj != null)
