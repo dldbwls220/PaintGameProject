@@ -13,20 +13,15 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] InklingRenderController _renderC;
     [SerializeField] InkTankController _inkTankC;
     [SerializeField] CharacterClothChanger _characterClothChanger;
+    [SerializeField] Weapon _weapon;
 
     [Header("Weapon")]
-    [SerializeField] NetworkObject _projectilePrefab;
-    [SerializeField] Transform _inkRoot;
-    [SerializeField] float _shootSpeed = 20f;
-    [SerializeField] float _shootRate = 0.1f;
     [SerializeField] float _inktankOffset;
     [SerializeField] Color[] _teamColors1;
     [SerializeField] Color[] _teamColors2;
 
     Color _inkColor;
     Color _enemyColor;
-
-    [Networked] private TickTimer _shootTimer { get; set; }
 
     [Header("Movement Settings")]
     [SerializeField] float _walkSpeed = 5f;
@@ -73,6 +68,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public Vector3 _camForward { get; set; }
     [Networked] public Vector3 _camRight { get; set; }
     [Networked] public Vector3 _aimTargetPosition { get; set; }
+    [Networked] public int _inkIdx { get; set; }
     [Networked] public float _layerWeight { get; set; }
     [Networked] public float _targetWeight {  get; set; }
 
@@ -128,16 +124,9 @@ public class NetworkInklingMovement : NetworkBehaviour
         _isShooting = input._isShootPressed;
 
         // 발사체 스폰 (StateAuthority만 실행, 쿨다운 체크)
-        if (_isShooting && !_isSquid && _shootTimer.ExpiredOrNotRunning(Runner) && HasStateAuthority)
+        if (_isShooting && !_isSquid && HasStateAuthority)
         {
-            _shootTimer = TickTimer.CreateFromSeconds(Runner, _shootRate);
-
-            if (_projectilePrefab != null && _inkRoot != null)
-            {
-                Vector3 shootDir = (_aimTargetPosition - _inkRoot.position).normalized;
-                var obj = Runner.Spawn(_projectilePrefab, _inkRoot.position, Quaternion.LookRotation(shootDir), Object.InputAuthority);
-                obj.GetComponent<NetworkInkProjectile>()?.Initialize(_inkRoot.position, shootDir * _shootSpeed, _inkColor);
-            }
+            _weapon.ShootProjectile(_aimTargetPosition, _inkColor);
         }
 
         // 캐릭터 변신 여부 bool을 이용해 확인
@@ -165,7 +154,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             _isMorphingInkling = false;
         }
 
-        if (_isSquid && _isSameColor) _isSwimming = true;
+        if (_isSquid && _isSameColor && _isOnPaint) _isSwimming = true;
         else _isSwimming = false;
 
         // 속도 결정 (InklingController 상태 참조)
@@ -238,6 +227,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             isSameColor = _isSameColor,
             layerWeight = _layerWeight,
             isSwimming = _isSwimming,
+            isOnPaint = _isOnPaint,
             localMoveVelocity = GetAnimationMoveVelocity(),
             cameraAngleX = GetCameraAngle(),
             teamColor = _inkColor,
@@ -271,7 +261,12 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (_isSwimming)
             speed = _swimSpeed;
         else if (!_isSwimming)
-            speed = _walkSpeed;
+        {
+            if (!_isOnPaint || (_isOnPaint && _isSameColor))
+                speed = _walkSpeed;
+            else if(_isOnPaint && !_isSameColor)
+                speed = _slowSpeed;
+        }
 
         return speed;
     }
@@ -352,25 +347,41 @@ public class NetworkInklingMovement : NetworkBehaviour
         _prevIsSameColor = sameColor;
     }
 
+    // 게임(세션)당 딱 한 번만 뽑히는 공용 색상 인덱스 — 호스트만 값을 정하고 네트워크로 전파한다
+    static bool s_teamColorIndexAssigned;
+    static int s_teamColorIndex;
+
     void AssignTeamColors()
     {
         var networkPlayer = GetComponent<NetworkPlayer>();
         int index = networkPlayer != null ? networkPlayer.SpawnIndex : 0;
 
-        int myIdx    = index % 2;
-
-        int ranIdx = Random.Range(0, _teamColors1.Length);
-        if(ranIdx == 0) 
+        if (HasStateAuthority)
         {
-            _inkColor = _teamColors1[ranIdx];
-            _enemyColor = _teamColors2[ranIdx];
+            // SpawnIndex == 1은 매치의 첫 스폰(=새 매치 시작)을 의미하므로 이때는 무조건 다시 뽑는다
+            if (index == 1 || !s_teamColorIndexAssigned)
+            {
+                s_teamColorIndex = Random.Range(0, _teamColors1.Length);
+                s_teamColorIndexAssigned = true;
+            }
+
+            _inkIdx = s_teamColorIndex;
+        }
+
+        int myIdx = index % 2;
+        Debug.Log("Index : " + index);
+        if (myIdx == 1)
+        {
+            _inkColor = _teamColors1[_inkIdx];
+            _enemyColor = _teamColors2[_inkIdx];
         }
         else
         {
-            _inkColor = _teamColors2[ranIdx];
-            _enemyColor = _teamColors1[ranIdx];
+            _inkColor = _teamColors2[_inkIdx];
+            _enemyColor = _teamColors1[_inkIdx];
         }
-       
+
+        Debug.Log(_inkIdx);
     }
 
     void CheckPaintColor()
@@ -407,8 +418,8 @@ public class NetworkInklingMovement : NetworkBehaviour
             _isOnPaint = false;
             Debug.Log("NotOnPaint");
         }
-
-        _isOnPaint = true;
+        else
+            _isOnPaint = true;
 
 
         float distToMyTeam = Mathf.Abs(col.r - _inkColor.r) + Mathf.Abs(col.g - _inkColor.g) + Mathf.Abs(col.b - _inkColor.b);

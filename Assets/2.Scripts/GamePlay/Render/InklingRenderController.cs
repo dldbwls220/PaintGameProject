@@ -35,6 +35,7 @@ public class InklingRenderController : MonoBehaviour
         public bool switchFoot;
         public bool isSameColor;
         public bool isSwimming;
+        public bool isOnPaint;
         public float layerWeight;
         public Vector3 localMoveVelocity;
         public Color teamColor;
@@ -255,7 +256,7 @@ public class InklingRenderController : MonoBehaviour
         {
             ren.GetPropertyBlock(_mpb);
             Color baseColor = ren.name.Contains("_TeamC")
-                ? _mpb.GetColor("_BaseColor")
+                ? s.teamColor
                 : Color.white;
             _mpb.SetColor("_BaseColor", new Color(baseColor.r, baseColor.g, baseColor.b, alpha));
             ren.SetPropertyBlock(_mpb);
