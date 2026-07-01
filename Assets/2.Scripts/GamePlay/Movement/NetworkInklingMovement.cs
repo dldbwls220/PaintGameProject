@@ -91,6 +91,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingController.enabled = false;
         _renderC.Init();
         _inkTankC.Init();
+        _renderC.SetTeamColor(_inkColor);
 
         _kcc.SetGravity(_gravity);
 
@@ -239,6 +240,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             isSwimming = _isSwimming,
             localMoveVelocity = GetAnimationMoveVelocity(),
             cameraAngleX = GetCameraAngle(),
+            teamColor = _inkColor,
             inktankOffset = _inktankOffset,
             hasInputAuthority = HasInputAuthority,
         };

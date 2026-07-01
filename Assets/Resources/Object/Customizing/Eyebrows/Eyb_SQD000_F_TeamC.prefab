@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 5700051808612078202}
   - component: {fileID: 8195153057616266446}
   m_Layer: 0
-  m_Name: Eyeblow01_Model__M_TeamColor
+  m_Name: Eyeblow01_Model__TeamC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

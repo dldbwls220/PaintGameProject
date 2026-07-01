@@ -36,7 +36,8 @@ public class InklingRenderController : MonoBehaviour
         public bool isSameColor;
         public bool isSwimming;
         public float layerWeight;
-        public Vector3 localMoveVelocity;       
+        public Vector3 localMoveVelocity;
+        public Color teamColor;
         public float cameraAngleX;
         public float inktankOffset;
         public bool hasInputAuthority;
@@ -56,6 +57,63 @@ public class InklingRenderController : MonoBehaviour
         InkTankRender(false);
     }
 
+    public void SetTeamColor(Color teamColor)
+    {
+        foreach (SkinnedMeshRenderer ren in _inklingRender)
+        {
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", teamColor);
+                ren.SetPropertyBlock(_mpb);
+            }
+
+            if (ren.name.Contains("_TeamE"))
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_EmissionColor", teamColor);
+                ren.SetPropertyBlock(_mpb);
+            }
+        }
+
+        foreach (SkinnedMeshRenderer ren in _halfRender)
+        {
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", teamColor);
+                ren.SetPropertyBlock(_mpb);
+            }
+            else if (ren.name.Contains("_TeamE"))
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_EmissionColor", teamColor);
+                ren.SetPropertyBlock(_mpb);
+            }
+        }
+
+        foreach (SkinnedMeshRenderer ren in _squidRender)
+        {
+            if (ren.name.Contains("_TeamC"))
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", teamColor);
+                _mpb.SetColor("_EmissionColor", teamColor);
+                ren.SetPropertyBlock(_mpb);
+            }
+        }
+
+        foreach (MeshRenderer ren in _inkTankRender)
+        {
+            if (ren.name.Contains("M_Ink"))
+            {
+                ren.GetPropertyBlock(_mpb);
+                _mpb.SetColor("_BaseColor", teamColor);
+                ren.SetPropertyBlock(_mpb);
+            }
+        }
+    }
+
     // NetworkInklingMovement.Render() ���� ȣ��
     public void UpdateRender(in RenderState s)
     {
@@ -64,7 +122,7 @@ public class InklingRenderController : MonoBehaviour
         UpdateInkRefillRender(s);
 
         if (s.hasInputAuthority)
-            ApplyCameraTransparency(s.cameraAngleX);
+            ApplyCameraTransparency(s);
     }
 
     void UpdateFormRender(in RenderState s)
@@ -175,20 +233,20 @@ public class InklingRenderController : MonoBehaviour
         }
     }
 
-    void ApplyCameraTransparency(float angle)
+    void ApplyCameraTransparency(in RenderState s)
     {
         float alpha = 1;
         float dither = 0;
 
-        if (angle > _upperThreshold)
+        if (s.cameraAngleX > _upperThreshold)
         {          
-            float t = (angle - _upperThreshold) / (70f - _upperThreshold);
+            float t = (s.cameraAngleX - _upperThreshold) / (70f - _upperThreshold);
             alpha = Mathf.Lerp(_maxAlpha, _minAlpha, t);
             dither = Mathf.Lerp(_minAlpha, _maxAlpha, t);
         }
-        else if (angle < _lowerThreshold)
+        else if (s.cameraAngleX < _lowerThreshold)
         {
-            float t = (_lowerThreshold - angle) / Mathf.Abs(-70f - _lowerThreshold);
+            float t = (_lowerThreshold - s.cameraAngleX) / Mathf.Abs(-70f - _lowerThreshold);
             alpha = Mathf.Lerp(_maxAlpha, _minAlpha, t);
             dither = Mathf.Lerp(_minAlpha, _maxAlpha, t);
         }
@@ -196,7 +254,10 @@ public class InklingRenderController : MonoBehaviour
         foreach (var ren in _inklingRender)
         {
             ren.GetPropertyBlock(_mpb);
-            _mpb.SetColor("_BaseColor", new Color(1, 1, 1, alpha));
+            Color baseColor = ren.name.Contains("_TeamC")
+                ? _mpb.GetColor("_BaseColor")
+                : Color.white;
+            _mpb.SetColor("_BaseColor", new Color(baseColor.r, baseColor.g, baseColor.b, alpha));
             ren.SetPropertyBlock(_mpb);
         }
 
@@ -207,13 +268,6 @@ public class InklingRenderController : MonoBehaviour
                 ren.GetPropertyBlock(_mpb);
                 _mpb.SetFloat("_DitherAlpha", dither);
                 ren.SetPropertyBlock(_mpb);
-
-                //if (ren.name.Contains("M_Ink"))
-                //{
-                //    ren.GetPropertyBlock(_mpb);
-                //    _mpb.SetVector("_Offset", new Vector2(0, _inkOffset));
-                //    ren.SetPropertyBlock(_mpb);
-                //}
             }
             else
             {
@@ -224,7 +278,9 @@ public class InklingRenderController : MonoBehaviour
         }
     }
 
-    void UpdateInkRefillRender(in RenderState state)
+    
+
+    void UpdateInkRefillRender(in RenderState s)
     {
         foreach (MeshRenderer ren in _inkTankRender)
         {
@@ -233,7 +289,7 @@ public class InklingRenderController : MonoBehaviour
                 if (ren.name.Contains("M_Ink"))
                 {
                     ren.GetPropertyBlock(_mpb);
-                    _mpb.SetVector("_Offset", new Vector2(0, state.inktankOffset));
+                    _mpb.SetVector("_Offset", new Vector2(0, s.inktankOffset));
                     ren.SetPropertyBlock(_mpb);
                 }
             }
