@@ -1,0 +1,105 @@
+using UnityEngine;
+using Fusion;
+
+public class WeaponManager : NetworkBehaviour
+{
+    [Header ("Class Reference")]
+    [SerializeField] InkTankController _inkTankC;
+
+    [Header("Weapon Setup")]
+    public Transform _inkShootTF;
+    public Transform _target;
+    public ParticleSystem _shootFX;
+    public Color _inkColor;
+    public float _totalInk;
+    public float _fillSpeed;
+    public Weapon[] _allWeapons;
+
+    [HideInInspector]
+    public bool _refillable;
+    public bool _isEmpty;
+    public bool _canCharge;
+    public float _inktankOffset = 0;
+
+    [Networked, HideInInspector] public Weapon _currentWeapon { get; set; }
+
+    [Networked] public float _currentInk { get; set; }
+
+    public struct InkTankState
+    {
+        public bool isSquid;
+        public bool isSameColor;
+        public bool isJumping;
+        public bool isSwimming;
+    }
+
+    public void Init(Color color, Transform target, float totalInk)
+    {
+        _inkTankC.Init();
+        _inkColor = color;
+        _target = target;
+        _totalInk = totalInk;
+        _currentInk = _totalInk;
+
+        _allWeapons = GetComponentsInChildren<Weapon>();
+
+        _currentWeapon = _allWeapons[0]; // �ӽ�
+    }
+
+    public void Shoot(bool isShootPressed)
+    {
+        _currentWeapon?.Shoot(_inkShootTF, _target.position, _inkColor, isShootPressed, _isEmpty);
+        _inkTankC.UpdateInkTank(_currentInk / _totalInk);
+    }
+
+    public void UpdateInkStatus(in InkTankState s)
+    {
+        CheckInkStatus(s);
+        _inkTankC.OnOffInkTank(s.isSquid);
+    }
+
+    public void UpdateShootSound()
+    {
+        _currentWeapon?.UpdateShootSound();
+    }
+
+    public float UpdateInktankOffset()
+    {
+        return _inktankOffset;
+    }
+
+    void CheckInkStatus(in InkTankState s)
+    {
+        _canCharge =
+       ((s.isSquid &&
+       s.isSameColor &&
+       !s.isJumping &&
+       s.isSwimming));
+
+        if(_currentInk <= 0) _isEmpty = true;
+        else _isEmpty = false;
+    }
+
+    public void RefillInk()
+    {
+        if (!_canCharge || _currentInk >= _totalInk)
+        {
+            return;
+        }
+
+        float fillSpeed = _totalInk / _fillSpeed;
+        _currentInk = Mathf.MoveTowards(_currentInk, _totalInk, fillSpeed * Runner.DeltaTime);
+
+        float offsetSpeed = fillSpeed * (0.5f / _totalInk);
+        _inktankOffset = Mathf.MoveTowards(_inktankOffset, 0, offsetSpeed * Runner.DeltaTime);
+
+        _inkTankC.UpdateInkTank(_currentInk / _totalInk);
+    }
+
+    public void PlayShootFX()
+    {
+        _shootFX.Play();
+    }
+
+    
+}

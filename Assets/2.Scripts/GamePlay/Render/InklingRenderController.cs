@@ -35,7 +35,7 @@ public class InklingRenderController : MonoBehaviour
         public bool switchFoot;
         public bool isSameColor;
         public bool isSwimming;
-        public bool isOnPaint;
+        public bool isSlowed;
         public float layerWeight;
         public Vector3 localMoveVelocity;
         public Color teamColor;
@@ -188,11 +188,13 @@ public class InklingRenderController : MonoBehaviour
         inkAnim.SetBool("isGround", s.isGrounded);
         inkAnim.SetBool("isJumping", !s.isGrounded);
         inkAnim.SetBool("FootSwitch", s.switchFoot);
+        inkAnim.SetBool("isSlowed", s.isSlowed);
         inkAnim.SetLayerWeight(1, s.layerWeight);
         _multiAC.weight = s.layerWeight;
 
         var halfAnim = _animator[(int)FormState.Half];
         halfAnim.SetBool("isSquid", s.isSquid);
+        halfAnim.SetBool("isSlowed", s.isSlowed);
 
         var squidAnim = _animator[((int)FormState.Squid)];
         squidAnim.SetBool("isGround", s.isGrounded);
@@ -218,14 +220,22 @@ public class InklingRenderController : MonoBehaviour
             }
             else
             {
-                inkAnim.SetInteger("AniState", s.isMoving ? (int)AniState.Run : (int)AniState.Idle);
-                halfAnim.SetInteger("AniState", s.isMoving ? (int)AniState.Run : (int)AniState.Idle);
+                if (s.isSlowed)
+                {
+                    inkAnim.SetInteger("AniState", s.isMoving ? (int)AniState.Slowed_Walk : (int)AniState.Slowed);
+                    halfAnim.SetInteger("AniState", s.isMoving ? (int)AniState.Slowed_Walk : (int)AniState.Slowed);
+                }
+                else
+                {
+                    inkAnim.SetInteger("AniState", s.isMoving ? (int)AniState.Run : (int)AniState.Idle);
+                    halfAnim.SetInteger("AniState", s.isMoving ? (int)AniState.Run : (int)AniState.Idle);
 
-                inkAnim.SetFloat("RNL", s.localMoveVelocity.x);
-                inkAnim.SetFloat("FNB", s.localMoveVelocity.z);
+                    inkAnim.SetFloat("RNL", s.localMoveVelocity.x);
+                    inkAnim.SetFloat("FNB", s.localMoveVelocity.z);
 
-                halfAnim.SetFloat("RNL", s.localMoveVelocity.x);
-                halfAnim.SetFloat("FNB", s.localMoveVelocity.z);
+                    halfAnim.SetFloat("RNL", s.localMoveVelocity.x);
+                    halfAnim.SetFloat("FNB", s.localMoveVelocity.z);
+                }               
             }
         }
         else

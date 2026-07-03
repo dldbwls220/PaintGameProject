@@ -11,8 +11,8 @@ public class NetworkInklingMovement : NetworkBehaviour
 {
     [Header("Class Reference")]
     [SerializeField] InklingRenderController _renderC;
-    [SerializeField] InkTankController _inkTankC;
     [SerializeField] CharacterClothChanger _characterClothChanger;
+    [SerializeField] WeaponManager _weaponManager;
     [SerializeField] Weapon _weapon;
 
     [Header("Weapon")]
@@ -60,6 +60,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _isSameColor { get; set; }
     [Networked] public NetworkBool _isOnPaint { get; set; }
     [Networked] public NetworkBool _isSwimming {  get; set; }
+    [Networked] public NetworkBool _isSlowed { get; set; }
 
     // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
     bool _prevIsOnPaint;
@@ -86,12 +87,13 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingController.InitCharacter("sam");
         _inklingController.enabled = false;
         _renderC.Init();
-        _inkTankC.Init();
         _renderC.SetTeamColor(_inkColor);
 
         _kcc.SetGravity(_gravity);
 
         AddAimSource();
+
+        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100);
 
         if (HasInputAuthority)
         {
@@ -108,8 +110,8 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (!GetInput(out NetworkInputData input)) return;
 
         CheckPaintColor();
-        _inkTankC.SetInkUIPos();
-        _inktankOffset = _inkTankC.UpdateInktankOffset();
+        
+        _inktankOffset = _weaponManager.UpdateInktankOffset();
 
         // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
         _aimTargetPosition = input._aimTargetPosition;
@@ -123,11 +125,18 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _isShooting = input._isShootPressed;
 
-        // 발사체 스폰 (StateAuthority만 실행, 쿨다운 체크)
-        if (_isShooting && !_isSquid && HasStateAuthority)
+        // 발사체 스폰 (StateAuthority만 실행, 쿨다운/단발-연사 체크는 Weapon 내부에서)
+        // 단발 무기의 rising-edge 감지를 위해 버튼을 뗀 상태에서도 매 틱 호출해야 함
+        if (!_isSquid && HasStateAuthority)
         {
-            _weapon.ShootProjectile(_aimTargetPosition, _inkColor);
+            _weaponManager.Shoot(_isShooting);
         }
+
+        //캐릭터 느려짐 여부 확인
+        if (_isOnPaint && !_isSameColor) _isSlowed = true;
+        else _isSlowed = false;
+
+        if (_isSlowed) input._isSquidPressed = false;
 
         // 캐릭터 변신 여부 bool을 이용해 확인
         if (input._isSquidPressed && !_isMorphingSquid && !_isSquid)
@@ -157,8 +166,10 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (_isSquid && _isSameColor && _isOnPaint) _isSwimming = true;
         else _isSwimming = false;
 
-        // 속도 결정 (InklingController 상태 참조)
-        float speed = UpdateSpeed();
+        
+
+            // 속도 결정 (InklingController 상태 참조)
+            float speed = UpdateSpeed();
         
 
         // 점프 (float impulse)
@@ -208,7 +219,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _isGrounded = _kcc.IsGrounded;
         _isMoving = dir.magnitude > 0.01f;
 
-
+        _weaponManager.RefillInk();
     }
 
     public override void Render()
@@ -227,7 +238,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             isSameColor = _isSameColor,
             layerWeight = _layerWeight,
             isSwimming = _isSwimming,
-            isOnPaint = _isOnPaint,
+            isSlowed = _isSlowed,
             localMoveVelocity = GetAnimationMoveVelocity(),
             cameraAngleX = GetCameraAngle(),
             teamColor = _inkColor,
@@ -237,7 +248,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _renderC.UpdateRender(renderstate);
 
-        var inkstate = new InkTankController.InkTankState
+        var inkstate = new WeaponManager.InkTankState
         {
             isSquid = _isSquid,
             isSameColor = _isSameColor,
@@ -245,7 +256,8 @@ public class NetworkInklingMovement : NetworkBehaviour
             isSwimming = _isSwimming,
         };
 
-        _inkTankC.UpdateInkStatus(inkstate);
+        _weaponManager.UpdateInkStatus(inkstate);
+        _weaponManager.UpdateShootSound();
 
         // 원격 플레이어의 조준 타겟을 동기화된 위치로 이동
         if (!HasInputAuthority && _aimTargetObj != null)
@@ -262,9 +274,9 @@ public class NetworkInklingMovement : NetworkBehaviour
             speed = _swimSpeed;
         else if (!_isSwimming)
         {
-            if (!_isOnPaint || (_isOnPaint && _isSameColor))
+            if (!_isSlowed)
                 speed = _walkSpeed;
-            else if(_isOnPaint && !_isSameColor)
+            else
                 speed = _slowSpeed;
         }
 

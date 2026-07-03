@@ -17,14 +17,6 @@ public class InkTankController : MonoBehaviour
     Transform[] _sliderChildT;
     bool _canCharge;
 
-    public struct InkTankState
-    {
-        public bool isSquid;
-        public bool isSameColor;
-        public bool isJumping;
-        public bool isSwimming;
-    }
-
     public void Init()
     {
         _rectT = _inkSlider.GetComponent<RectTransform>();
@@ -36,12 +28,6 @@ public class InkTankController : MonoBehaviour
         {
             tf.gameObject.SetActive(false);
         }
-    }
-
-    public void UpdateInkStatus(in InkTankState s)
-    {
-        CheckInkRefillable(s);
-        RefillInk();
     }
 
     public void SetInkUIPos()
@@ -66,31 +52,31 @@ public class InkTankController : MonoBehaviour
         _rectT.position = finalPosition;
     }
 
+    public void UpdateInkTank(float ink)
+    {
+        _inkSlider.value = ink;
+    }
+
     public float UpdateInktankOffset()
     {
         return _inktankOffset;
     }
 
-    void CheckInkRefillable(in InkTankState s)
+    public void OnOffInkTank(bool isSquid)
     {
-        _canCharge =
-       ((s.isSquid &&
-       s.isSameColor &&
-       !s.isJumping &&
-       s.isSwimming));
-    }
-
-    void RefillInk()
-    {
-        if (!_canCharge || _currentInk >= _maxInk)
+        if (isSquid)
         {
-            return;
+            foreach (Transform tf in _sliderChildT)
+            {
+                tf.gameObject.SetActive(true);
+            }
         }
-
-        float fillSpeed = _maxInk / _fillSpeed;
-        _currentInk = Mathf.MoveTowards(_currentInk, _maxInk, fillSpeed * Time.deltaTime);
-
-        float offsetSpeed = fillSpeed * (0.5f / _maxInk);
-        _inktankOffset = Mathf.MoveTowards(_inktankOffset, 0, offsetSpeed * Time.deltaTime);       
+        else if (!isSquid)
+        {
+            foreach (Transform tf in _sliderChildT)
+            {
+                tf.gameObject.SetActive(false);
+            }
+        }
     }
 }
