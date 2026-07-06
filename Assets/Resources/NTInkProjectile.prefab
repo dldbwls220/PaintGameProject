@@ -228,7 +228,7 @@ MonoBehaviour:
   _straightDuration: 0.15
   _hitMask:
     serializedVersion: 2
-    m_Bits: 896
+    m_Bits: 960
   _enemyMask:
     serializedVersion: 2
     m_Bits: 128

@@ -7364,7 +7364,7 @@ MonoBehaviour:
   BoxExtents: {x: 0, y: 0, z: 0}
   CapsuleExtents: 1.61
   Offset: {x: 0, y: 0.7, z: 0}
-  Root: {fileID: 0}
+  Root: {fileID: 1142648568571808731}
   GizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &6748656790582637910
 GameObject:
@@ -10031,6 +10031,7 @@ GameObject:
   - component: {fileID: 3260018150636079900}
   - component: {fileID: 1323900764576403397}
   - component: {fileID: 2499367210992749879}
+  - component: {fileID: 1142648568571808731}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -10212,6 +10213,7 @@ MonoBehaviour:
   - {fileID: 5526765953826089618}
   - {fileID: 4471312381918550399}
   - {fileID: 2499367210992749879}
+  - {fileID: 1142648568571808731}
   - {fileID: 1296707654976785007}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &7021932092903279290
@@ -10429,6 +10431,24 @@ MonoBehaviour:
   __inktankOffset: 0
   __currentWeapon: {fileID: 0}
   __currentInk: 0
+--- !u!114 &1142648568571808731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8955290842762730277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.HitboxRoot
+  Config: 3
+  BroadRadius: 1
+  Offset: {x: 0, y: 1, z: 0}
+  GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  Hitboxes:
+  - {fileID: 6161846713622275408}
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0
