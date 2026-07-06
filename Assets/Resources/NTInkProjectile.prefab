@@ -229,7 +229,11 @@ MonoBehaviour:
   _hitMask:
     serializedVersion: 2
     m_Bits: 896
+<<<<<<< HEAD
   _myTeamMask:
+=======
+  _enemyMask:
+>>>>>>> parent of c204a75 (hitbox test)
     serializedVersion: 2
     m_Bits: 0
   _minRadius: 0.8

@@ -89,7 +89,7 @@ public class NetworkInkProjectile : NetworkBehaviour
             {
                 if (lHit.Hitbox != null)
                 {
-                    Debug.Log("피격확인");
+                    
                 }
                 OnHit(lHit.Point, lHit.Normal, lHit.GameObject.layer);
             }

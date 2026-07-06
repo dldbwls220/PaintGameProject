@@ -7385,7 +7385,7 @@ MonoBehaviour:
   BoxExtents: {x: 0, y: 0, z: 0}
   CapsuleExtents: 1.61
   Offset: {x: 0, y: 0.7, z: 0}
-  Root: {fileID: 1142648568571808731}
+  Root: {fileID: 0}
   GizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &6748656790582637910
 GameObject:
@@ -10052,7 +10052,6 @@ GameObject:
   - component: {fileID: 3260018150636079900}
   - component: {fileID: 1323900764576403397}
   - component: {fileID: 2499367210992749879}
-  - component: {fileID: 1142648568571808731}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -10234,7 +10233,6 @@ MonoBehaviour:
   - {fileID: 5526765953826089618}
   - {fileID: 4471312381918550399}
   - {fileID: 2499367210992749879}
-  - {fileID: 1142648568571808731}
   - {fileID: 1296707654976785007}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &7021932092903279290
@@ -10453,6 +10451,7 @@ MonoBehaviour:
   __inktankOffset: 0
   __currentWeapon: {fileID: 0}
   __currentInk: 0
+<<<<<<< HEAD
 --- !u!114 &1142648568571808731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10472,6 +10471,8 @@ MonoBehaviour:
   Hitboxes:
   - {fileID: 6161846713622275408}
   - {fileID: 1378030875875665005}
+=======
+>>>>>>> parent of c204a75 (hitbox test)
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0
