@@ -75,8 +75,10 @@ public class Weapon : NetworkBehaviour
                 projectileDirection = dispersionRotation * shootDir;
             }
 
+            var team = GetComponentInParent<NetworkInklingMovement>()?._teamIndex ?? 0;
+
             var obj = Runner.Spawn(_projectilePrefab, inkRoot.position, Quaternion.LookRotation(projectileDirection), Object.InputAuthority);
-            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color, _straightDuration);
+            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color, _straightDuration, team);
         }
     }
 

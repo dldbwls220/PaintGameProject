@@ -72,7 +72,8 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public Vector3 _camForward { get; set; }
     [Networked] public Vector3 _camRight { get; set; }
     [Networked] public Vector3 _aimTargetPosition { get; set; }
-    [Networked] public int _inkIdx { get; set; }
+    [Networked] public int _teamIndex { get; set; }
+    [Networked] public int _inkIdx { get; private set; }
     [Networked] public float _layerWeight { get; set; }
     [Networked] public float _targetWeight {  get; set; }
 
@@ -289,27 +290,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         return speed;
     }
 
-    void AddVirtualCamera()
-    {
-        GameObject go = Instantiate(_vCamera);
-
-        CinemachineFreeLook cm = go.transform.GetComponent<CinemachineFreeLook>();
-
-        cm.Follow = transform;
-        cm.LookAt = transform;
-
-        if (HasInputAuthority)
-        {
-            go.SetActive(true);
-            //_audioListnerRoot.SetActive(true);
-        }
-        else
-        {
-            go.SetActive(false);
-            //_audioListnerRoot.SetActive(false);
-        }
-    }
-
     void AddAimSource()
     {
         var sourceObj = _multiAC.data.sourceObjects;
@@ -407,19 +387,19 @@ public class NetworkInklingMovement : NetworkBehaviour
             _inkIdx = s_teamColorIndex;
         }
 
-        int myIdx = index % 2;
+        _teamIndex = index % 2;
         Debug.Log("Index : " + index);
-        if (myIdx == 1)
+        if (_teamIndex == 1)
         {
             _inkColor = _teamColors1[_inkIdx];
             _enemyColor = _teamColors2[_inkIdx];
-            gameObject.layer = LayerMask.NameToLayer("player");
+            gameObject.layer = LayerMask.NameToLayer("Team1");
         }
         else
         {
             _inkColor = _teamColors2[_inkIdx];
             _enemyColor = _teamColors1[_inkIdx];
-            gameObject.layer = LayerMask.NameToLayer("Enemy");
+            gameObject.layer = LayerMask.NameToLayer("Team2");
         }
 
         Debug.Log(_inkIdx);
