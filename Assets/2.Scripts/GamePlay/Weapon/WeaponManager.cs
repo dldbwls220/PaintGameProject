@@ -49,9 +49,9 @@ public class WeaponManager : NetworkBehaviour
         _currentWeapon = _allWeapons[0]; //임시
     }
 
-    public void Shoot(bool isShootPressed)
+    public void Shoot(bool isShootPressed, int teamMask)
     {
-        _currentWeapon?.Shoot(_inkShootTF, _target.position, _inkColor, isShootPressed, _isEmpty);
+        _currentWeapon?.Shoot(_inkShootTF, _target.position, _inkColor, isShootPressed, _isEmpty, teamMask);
         _inkTankC.UpdateInkTank(_currentInk / _totalInk);
     }
 

@@ -53,6 +53,9 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] GameObject _audioListnerRoot;
     [SerializeField] GameObject _vCamera;
 
+    [Header("HitBox Setting")]
+    [SerializeField] GameObject _hitBoxObj;
+
     [Networked] public NetworkBool _isSquid { get; set; }
     [Networked] public NetworkBool _isShooting { get; set; }
     [Networked] public NetworkBool _isGrounded { get; set; }
@@ -95,7 +98,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         _kcc.SetGravity(_gravity);
 
         AddAimSource();
-        //AddVirtualCamera();
 
         _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100);
 
@@ -135,7 +137,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         // 단발 무기의 rising-edge 감지를 위해 버튼을 뗀 상태에서도 매 틱 호출해야 함
         if (!_isSquid && HasStateAuthority)
         {
-            _weaponManager.Shoot(_isShooting);
+            _weaponManager.Shoot(_isShooting, transform.gameObject.layer);
         }
 
         //캐릭터 느려짐 여부 확인
@@ -289,27 +291,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         return speed;
     }
 
-    void AddVirtualCamera()
-    {
-        GameObject go = Instantiate(_vCamera);
-
-        CinemachineFreeLook cm = go.transform.GetComponent<CinemachineFreeLook>();
-
-        cm.Follow = transform;
-        cm.LookAt = transform;
-
-        if (HasInputAuthority)
-        {
-            go.SetActive(true);
-            //_audioListnerRoot.SetActive(true);
-        }
-        else
-        {
-            go.SetActive(false);
-            //_audioListnerRoot.SetActive(false);
-        }
-    }
-
     void AddAimSource()
     {
         var sourceObj = _multiAC.data.sourceObjects;
@@ -413,13 +394,25 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             _inkColor = _teamColors1[_inkIdx];
             _enemyColor = _teamColors2[_inkIdx];
-            gameObject.layer = LayerMask.NameToLayer("player");
+
+            Transform[] child = _hitBoxObj.GetComponentsInChildren<Transform>();
+
+            foreach (Transform tf in child)
+            {
+                tf.gameObject.layer = LayerMask.NameToLayer("Team1");
+            }
         }
         else
         {
             _inkColor = _teamColors2[_inkIdx];
             _enemyColor = _teamColors1[_inkIdx];
-            gameObject.layer = LayerMask.NameToLayer("Enemy");
+
+            Transform[] child = _hitBoxObj.GetComponentsInChildren<Transform>();
+
+            foreach (Transform tf in child)
+            {
+                tf.gameObject.layer = LayerMask.NameToLayer("Team2");
+            }
         }
 
         Debug.Log(_inkIdx);

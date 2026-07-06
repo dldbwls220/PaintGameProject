@@ -228,10 +228,10 @@ MonoBehaviour:
   _straightDuration: 0.15
   _hitMask:
     serializedVersion: 2
-    m_Bits: 960
-  _enemyMask:
+    m_Bits: 896
+  _myTeamMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   _minRadius: 0.8
   _maxRadius: 1.5
   _hardness: 0.9

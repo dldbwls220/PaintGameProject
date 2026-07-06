@@ -33,7 +33,7 @@ public class Weapon : NetworkBehaviour
         _lastRenderedShotCount = _shotCount;
     }
 
-    public bool Shoot(Transform inkRoot,Vector3 shootTarget, Color color, bool isShootPressed, bool isEmpty)
+    public bool Shoot(Transform inkRoot,Vector3 shootTarget, Color color, bool isShootPressed, bool isEmpty, int teamMask)
     {
         bool isNewPress = isShootPressed && !_prevShootPressed;
         _prevShootPressed = isShootPressed;
@@ -53,7 +53,7 @@ public class Weapon : NetworkBehaviour
 
         Random.InitState(Runner.Tick * unchecked((int)Object.Id.Raw));
 
-        ShootProjectile(inkRoot, shootTarget, color);
+        ShootProjectile(inkRoot, shootTarget, color, teamMask);
         _shootTimer = TickTimer.CreateFromSeconds(Runner, _shootRate);
 
         UseInk();
@@ -63,7 +63,7 @@ public class Weapon : NetworkBehaviour
         return true;
     }
 
-    public void ShootProjectile(Transform inkRoot,Vector3 shootTarget, Color color)
+    public void ShootProjectile(Transform inkRoot,Vector3 shootTarget, Color color, int teamMask)
     {
         if (_projectilePrefab != null && inkRoot != null)
         {
@@ -76,7 +76,7 @@ public class Weapon : NetworkBehaviour
             }
 
             var obj = Runner.Spawn(_projectilePrefab, inkRoot.position, Quaternion.LookRotation(projectileDirection), Object.InputAuthority);
-            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color, _straightDuration);
+            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color, _straightDuration, teamMask);
         }
     }
 

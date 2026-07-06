@@ -7,7 +7,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     [SerializeField] private float _gravity = 20f;
     [SerializeField] private float _straightDuration = 0.15f; // 이 시간 동안은 중력 무시하고 직선 이동, 이후 낙하 시작
     [SerializeField] private LayerMask _hitMask;
-    [SerializeField] private LayerMask _enemyMask;
+    [SerializeField] private LayerMask _myTeamMask;
 
     [Header("Paint")]
     [SerializeField] private float _minRadius = 0.5f;
@@ -34,7 +34,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
     private const int DESPAWN_DELAY_TICKS = 10;
 
-    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float duration)
+    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float duration, int teamMask)
     {
         _data = new InkProjectileData
         {
@@ -45,6 +45,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         };
         _inkColor = inkColor;
         _straightDuration = duration;
+        _myTeamMask = teamMask;
         
     }
 
