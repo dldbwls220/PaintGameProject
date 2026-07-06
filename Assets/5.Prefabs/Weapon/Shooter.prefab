@@ -210,12 +210,13 @@ MonoBehaviour:
   _damage: 35
   _shootRate: 0.1
   _shootSpeed: 30
-  _dispersion: 0.5
+  _dispersion: 0.7
+  _straightDuration: 0.15
   _hitMask:
     serializedVersion: 2
     m_Bits: 128
-  _projectilePrefab: {fileID: 0}
-  _inkUseRate: 15
+  _projectilePrefab: {fileID: -8632199437834742506, guid: 584a0b01541683b44af74ebd8df56ad2, type: 3}
+  _inkUseRate: 40
   _shootSound: {fileID: 3808967891651108076}
   _emptySound: {fileID: 0}
 --- !u!1 &7535895926553821331
@@ -272,9 +273,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 0
   MinDistance: 3
-  MaxDistance: 500
+  MaxDistance: 8
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -282,10 +283,19 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.375
       value: 1
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.63834727
+      value: 0.22979787
+      inSlope: -1.6
+      outSlope: -1.6
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
@@ -297,8 +307,8 @@ AudioSource:
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -307,7 +317,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

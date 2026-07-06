@@ -10,6 +10,7 @@ public class Weapon : NetworkBehaviour
     [SerializeField] float _shootRate = 0.1f;
     [SerializeField] float _shootSpeed = 30f;
     [SerializeField] float _dispersion = 0.5f;
+    [SerializeField] private float _straightDuration = 0.15f;
     [SerializeField] LayerMask _hitMask;
 
     [Header("Ink Projectile Setup")]
@@ -75,7 +76,7 @@ public class Weapon : NetworkBehaviour
             }
 
             var obj = Runner.Spawn(_projectilePrefab, inkRoot.position, Quaternion.LookRotation(projectileDirection), Object.InputAuthority);
-            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color);
+            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color, _straightDuration);
         }
     }
 

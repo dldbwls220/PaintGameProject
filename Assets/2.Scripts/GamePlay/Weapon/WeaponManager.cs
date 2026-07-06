@@ -19,8 +19,8 @@ public class WeaponManager : NetworkBehaviour
     public bool _refillable;
     public bool _isEmpty;
     public bool _canCharge;
-    public float _inktankOffset = 0;
 
+    [Networked] public float _inktankOffset { get; set; } = 0;
     [Networked, HideInInspector] public Weapon _currentWeapon { get; set; }
 
     [Networked] public float _currentInk { get; set; }
@@ -43,7 +43,10 @@ public class WeaponManager : NetworkBehaviour
 
         _allWeapons = GetComponentsInChildren<Weapon>();
 
-        _currentWeapon = _allWeapons[0]; // �ӽ�
+        var main = _shootFX.main;
+        main.startColor = _inkColor;
+
+        _currentWeapon = _allWeapons[0]; //임시
     }
 
     public void Shoot(bool isShootPressed)

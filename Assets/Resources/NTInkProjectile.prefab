@@ -224,17 +224,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43661d6db518af346bdcade9b6a48b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkInkProjectile
-  _gravity: 40
+  _gravity: 300
+  _straightDuration: 0.15
   _hitMask:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 896
+  _enemyMask:
+    serializedVersion: 2
+    m_Bits: 128
   _minRadius: 0.8
   _maxRadius: 1.5
   _hardness: 0.9
   _strength: 0.9
   _shootFX: {fileID: 0}
   _splashFXPrefab: {fileID: 4712812498915546899, guid: 5d57eb9e838d9784e80fb2f9955a6012, type: 3}
-  _hitFXPrefab: {fileID: 0}
+  _hitFXPrefab: {fileID: 294876349431089311, guid: 7d5df22c7ad279c4f8fa3bf2ede3ae18, type: 3}
 --- !u!114 &-8632199437834742506
 MonoBehaviour:
   m_ObjectHideFlags: 0

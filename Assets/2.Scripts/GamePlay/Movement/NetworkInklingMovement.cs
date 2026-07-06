@@ -3,6 +3,7 @@ using Fusion;
 using Fusion.Addons.SimpleKCC;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using Cinemachine;
 
 // InklingController를 건드리지 않고 Simple KCC 기반으로 Fusion 2 네트워크 이동을 처리하는 래퍼
 [RequireComponent(typeof(InklingController))]
@@ -47,8 +48,10 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     MaterialPropertyBlock _inklingMPB;
 
-    [Header("Camera Setting")]
+    [Header("Camera N Audio Setting")]
     [SerializeField] GameObject _cameraRoot;
+    [SerializeField] GameObject _audioListnerRoot;
+    [SerializeField] GameObject _vCamera;
 
     [Networked] public NetworkBool _isSquid { get; set; }
     [Networked] public NetworkBool _isShooting { get; set; }
@@ -92,16 +95,19 @@ public class NetworkInklingMovement : NetworkBehaviour
         _kcc.SetGravity(_gravity);
 
         AddAimSource();
+        //AddVirtualCamera();
 
         _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100);
 
         if (HasInputAuthority)
         {
             _cameraRoot.SetActive(true);
+            _audioListnerRoot.SetActive(true);
         }
         else
         {
             _cameraRoot.SetActive(false);
+            _audioListnerRoot.SetActive(false);
         }
     }
 
@@ -283,6 +289,27 @@ public class NetworkInklingMovement : NetworkBehaviour
         return speed;
     }
 
+    void AddVirtualCamera()
+    {
+        GameObject go = Instantiate(_vCamera);
+
+        CinemachineFreeLook cm = go.transform.GetComponent<CinemachineFreeLook>();
+
+        cm.Follow = transform;
+        cm.LookAt = transform;
+
+        if (HasInputAuthority)
+        {
+            go.SetActive(true);
+            //_audioListnerRoot.SetActive(true);
+        }
+        else
+        {
+            go.SetActive(false);
+            //_audioListnerRoot.SetActive(false);
+        }
+    }
+
     void AddAimSource()
     {
         var sourceObj = _multiAC.data.sourceObjects;
@@ -386,11 +413,13 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             _inkColor = _teamColors1[_inkIdx];
             _enemyColor = _teamColors2[_inkIdx];
+            gameObject.layer = LayerMask.NameToLayer("player");
         }
         else
         {
             _inkColor = _teamColors2[_inkIdx];
             _enemyColor = _teamColors1[_inkIdx];
+            gameObject.layer = LayerMask.NameToLayer("Enemy");
         }
 
         Debug.Log(_inkIdx);

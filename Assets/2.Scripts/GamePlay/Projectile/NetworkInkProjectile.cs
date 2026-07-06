@@ -1,12 +1,13 @@
 using Fusion;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class NetworkInkProjectile : NetworkBehaviour
 {
     [Header("Physics")]
     [SerializeField] private float _gravity = 20f;
+    [SerializeField] private float _straightDuration = 0.15f; // 이 시간 동안은 중력 무시하고 직선 이동, 이후 낙하 시작
     [SerializeField] private LayerMask _hitMask;
+    [SerializeField] private LayerMask _enemyMask;
 
     [Header("Paint")]
     [SerializeField] private float _minRadius = 0.5f;
@@ -33,7 +34,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
     private const int DESPAWN_DELAY_TICKS = 10;
 
-    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor)
+    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float duration)
     {
         _data = new InkProjectileData
         {
@@ -43,6 +44,7 @@ public class NetworkInkProjectile : NetworkBehaviour
             IsFinished = false
         };
         _inkColor = inkColor;
+        _straightDuration = duration;
         
     }
 
@@ -80,17 +82,34 @@ public class NetworkInkProjectile : NetworkBehaviour
 
         Vector3 dir = displacement / distance;
 
-        if (Physics.Raycast(previousPos, dir, out RaycastHit hit, distance, _hitMask))
+        if (Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit lHit, _hitMask, HitOptions.IncludePhysX))
         {
             if (HasStateAuthority)
-                OnHit(hit);
+            {
+                if (lHit.Hitbox != null)
+                {
+                    
+                }
+                OnHit(lHit.Point, lHit.Normal, lHit.GameObject.layer);
+            }
             else if (!_hitVisualPlayed)
             {
-                OnHitVisual(hit);    // 비-SA 클라이언트: 레이턴시 없이 즉시 FX 재생
+                OnHitVisual(lHit.Point, lHit.Normal, lHit.GameObject.layer);    // 비-SA 클라이언트: 레이턴시 없이 즉시 FX 재생
                 _hitVisualPlayed = true;
             }
-            return;
         }
+
+        //if (Physics.Raycast(previousPos, dir, out RaycastHit hit, distance, _hitMask))
+        //{
+        //    if (HasStateAuthority)
+        //        OnHit(hit.point, hit.normal, hit.transform.gameObject.layer);
+        //    else if (!_hitVisualPlayed)
+        //    {
+        //        OnHitVisual(hit);    // 비-SA 클라이언트: 레이턴시 없이 즉시 FX 재생
+        //        _hitVisualPlayed = true;
+        //    }
+        //    return;
+        //}
 
         if (nextPos.y < -20f && HasStateAuthority)
         {
@@ -109,39 +128,47 @@ public class NetworkInkProjectile : NetworkBehaviour
         transform.position = GetMovePosition(renderTick);
 
         float time = (renderTick - _data.FireTick) * Runner.DeltaTime;
-        Vector3 vel = _data.Velocity + new Vector3(0f, -_gravity, 0f) * time;
+        Vector3 vel = GetVelocity(time);
         if (vel.sqrMagnitude > 0.01f)
             transform.forward = vel.normalized;
 
         ApplyProjectileColor();
     }
 
-    private void OnHitVisual(RaycastHit hit)
+    private void OnHitVisual(Vector3 point, Vector3 normal, int mask)
     {
-        GameObject fxPrefab = hit.normal.y > 0.7f ? _splashFXPrefab : _hitFXPrefab;
+        //GameObject fxPrefab = hit.normal.y > 0.7f ? _splashFXPrefab : _hitFXPrefab;
+        //if (fxPrefab != null)
+        //{
+        //    var fx = Instantiate(fxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+        //    ApplyColorToFX(fx);
+        //    Destroy(fx, 3f);
+        //}
+        bool isHitMaskLayer = (_hitMask.value & (1 << mask)) != 0;
+        GameObject fxPrefab = isHitMaskLayer ? _splashFXPrefab : _hitFXPrefab;
         if (fxPrefab != null)
         {
-            var fx = Instantiate(fxPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+            var fx = Instantiate(fxPrefab, point, Quaternion.LookRotation(normal));
             ApplyColorToFX(fx);
             Destroy(fx, 3f);
         }
     }
 
-    private void OnHit(RaycastHit hit)
+    private void OnHit(Vector3 point, Vector3 normal, int mask)
     {
         var data = _data;
         data.IsFinished = true;
-        data.ImpactPosition = hit.point;
-        data.ImpactNormal = hit.normal;
+        data.ImpactPosition = point;
+        data.ImpactNormal = normal;
         data.PaintRadius = Random.Range(_minRadius, _maxRadius);
         _data = data;
         _finishedTick = Runner.Tick;
 
-        RPC_OnHit(hit.point, hit.normal, _inkColor, data.PaintRadius);
+        RPC_OnHit(point, normal, _inkColor, data.PaintRadius, mask);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
+    private void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius, int mask)
     {
         // 페인팅: RenderTexture는 로컬이므로 모든 클라이언트에서 직접 호출 필요
         WorldInkManager.instance.Paint(point, color, paintRadius, _hardness);
@@ -149,10 +176,21 @@ public class NetworkInkProjectile : NetworkBehaviour
         // FX: OnHitVisual로 이미 재생했으면 스킵 (중복 방지)
         if (!_hitVisualPlayed)
         {
-            GameObject fxPrefab = normal.y > 0.7f ? _splashFXPrefab : _hitFXPrefab;
+            //GameObject fxPrefab = normal.y > 0.7f ? _splashFXPrefab : _hitFXPrefab;
+            //if (fxPrefab != null)
+            //{
+            //    var fx = Instantiate(fxPrefab, point, Quaternion.LookRotation(normal));
+            //    ApplyColorToFX(fx);
+            //    Destroy(fx, 3f);
+            //}
+
+
+            bool isHitMaskLayer = (_hitMask.value & (1 << mask)) != 0;
+            GameObject fxPrefab = isHitMaskLayer ? _splashFXPrefab : _hitFXPrefab;
             if (fxPrefab != null)
             {
-                var fx = Instantiate(fxPrefab, point, Quaternion.LookRotation(normal));
+
+                var fx = fxPrefab == _splashFXPrefab ? Instantiate(fxPrefab, point, Quaternion.LookRotation(normal)) : Instantiate(fxPrefab, point, Quaternion.identity);
                 ApplyColorToFX(fx);
                 Destroy(fx, 3f);
             }
@@ -164,7 +202,23 @@ public class NetworkInkProjectile : NetworkBehaviour
     {
         float time = (tick - _data.FireTick) * Runner.DeltaTime;
         if (time <= 0f) return _data.Position;
-        return _data.Position + _data.Velocity * time + new Vector3(0f, -_gravity, 0f) * (time * time * 0.5f);
+
+        if (time <= _straightDuration)
+            return _data.Position + _data.Velocity * time;
+
+        // 직선 구간 종료 지점부터 낙하 포물선 시작 (위치/속도 연속)
+        Vector3 straightEndPos = _data.Position + _data.Velocity * _straightDuration;
+        float fallTime = time - _straightDuration;
+        return straightEndPos + _data.Velocity * fallTime + new Vector3(0f, -_gravity, 0f) * (fallTime * fallTime * 0.5f);
+    }
+
+    private Vector3 GetVelocity(float time)
+    {
+        if (time <= _straightDuration)
+            return _data.Velocity;
+
+        float fallTime = time - _straightDuration;
+        return _data.Velocity + new Vector3(0f, -_gravity, 0f) * fallTime;
     }
 
     void ApplyColorToFX(GameObject fx)
