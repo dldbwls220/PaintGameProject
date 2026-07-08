@@ -6,7 +6,6 @@ using UnityEngine.Animations.Rigging;
 using Cinemachine;
 
 // InklingController를 건드리지 않고 Simple KCC 기반으로 Fusion 2 네트워크 이동을 처리하는 래퍼
-[RequireComponent(typeof(InklingController))]
 [RequireComponent(typeof(SimpleKCC))]
 public class NetworkInklingMovement : NetworkBehaviour
 {
@@ -82,14 +81,10 @@ public class NetworkInklingMovement : NetworkBehaviour
     public override void Spawned()
     {
         _kcc = GetComponent<SimpleKCC>();
-        _inklingController = GetComponent<InklingController>();
         _characterClothChanger.SetCustomization();
 
         AssignTeamColors();
 
-        // InklingController 초기화 후 Update 루프는 KCC가 대신 처리
-        _inklingController.InitCharacter("sam");
-        _inklingController.enabled = false;
         _renderC.Init();
         _renderC.SetTeamColor(_inkColor);
 
@@ -226,6 +221,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _isGrounded = _kcc.IsGrounded;
         _isMoving = dir.magnitude > 0.01f;
 
+        _weaponManager.AutoRefill(_isShooting);
         _weaponManager.RefillInk();
     }
 

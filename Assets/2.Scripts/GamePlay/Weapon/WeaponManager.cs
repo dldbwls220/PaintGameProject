@@ -13,12 +13,14 @@ public class WeaponManager : NetworkBehaviour
     public Color _inkColor;
     public float _totalInk;
     public float _fillSpeed;
+    public float _autoFillSpeed;
     public Weapon[] _allWeapons;
 
     [HideInInspector]
     public bool _refillable;
     public bool _isEmpty;
     public bool _canCharge;
+    public bool _isCharging;
 
     [Networked] public float _inktankOffset { get; set; } = 0;
     [Networked, HideInInspector] public Weapon _currentWeapon { get; set; }
@@ -83,12 +85,30 @@ public class WeaponManager : NetworkBehaviour
         else _isEmpty = false;
     }
 
+    public void AutoRefill(bool isShooting)
+    {
+        if (isShooting || _currentInk >= _totalInk || _isCharging) return;
+
+        float fillSpeed = _totalInk / _autoFillSpeed;
+        _currentInk = Mathf.MoveTowards(_currentInk, _totalInk, fillSpeed * Runner.DeltaTime);
+
+        float offsetSpeed = fillSpeed * (0.5f / _totalInk);
+        _inktankOffset = Mathf.MoveTowards(_inktankOffset, 0, offsetSpeed * Runner.DeltaTime);
+
+        _inkTankC.UpdateInkTank(_currentInk / _totalInk);
+
+        Debug.Log("자동충전");
+    }
+
     public void RefillInk()
     {
         if (!_canCharge || _currentInk >= _totalInk)
         {
+            _isCharging = false;
             return;
         }
+
+        _isCharging = true;
 
         float fillSpeed = _totalInk / _fillSpeed;
         _currentInk = Mathf.MoveTowards(_currentInk, _totalInk, fillSpeed * Runner.DeltaTime);

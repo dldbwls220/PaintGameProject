@@ -108,10 +108,10 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.14142135
     - _GlossyReflections: 1
-    - _InkMetallic: 0.04
-    - _InkNormalStr: 1
-    - _InkNormalTiling: 4
-    - _InkSmoothness: 0.9
+    - _InkMetallic: 0
+    - _InkNormalStr: 0.35
+    - _InkNormalTiling: 5
+    - _InkSmoothness: 0.65
     - _Metallic: 0
     - _Mode: 3
     - _OcclusionStrength: 1

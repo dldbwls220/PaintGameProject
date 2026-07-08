@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PlasticCaseColor_Variation
-  m_Shader: {fileID: 4800000, guid: 05451dbfa4b5e714ca909ff8b6a472fd, type: 3}
+  m_Shader: {fileID: 4800000, guid: 40367c96971ea204faac249d242911fa, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -77,6 +77,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WorldInkTexXY:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WorldInkTexXZ:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WorldInkTexZY:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -109,10 +121,10 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.14142135
     - _GlossyReflections: 1
-    - _InkMetallic: 0.04
-    - _InkNormalStr: 1
-    - _InkNormalTiling: 4
-    - _InkSmoothness: 0.9
+    - _InkMetallic: 0
+    - _InkNormalStr: 0.35
+    - _InkNormalTiling: 5
+    - _InkSmoothness: 0.65
     - _Metallic: 0.1
     - _Mode: 3
     - _OcclusionStrength: 1
@@ -127,6 +139,8 @@ Material:
     - _Surface: 0
     - _UVSec: 0
     - _WorkflowMode: 1
+    - _WorldMapHeight: 30
+    - _WorldMapMinY: 0
     - _WorldMapSize: 100
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1

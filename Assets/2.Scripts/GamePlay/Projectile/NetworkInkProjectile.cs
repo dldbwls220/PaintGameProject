@@ -160,7 +160,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
         // 페인팅: RenderTexture는 로컬이므로 모든 클라이언트에서 직접 호출 필요
-        WorldInkManager.instance.Paint(point, color, paintRadius, _hardness);
+        WorldInkManagerTriplanar.instance.Paint(point,normal, color, paintRadius, _hardness);
 
         GameObject fxPrefab = _splashFXPrefab;
         if (fxPrefab != null)
@@ -182,7 +182,7 @@ public class NetworkInkProjectile : NetworkBehaviour
             if (Camera.main != null)
             {
                 Vector3 dirToCam = (Camera.main.transform.position - point).normalized;
-                spawnPos = point + dirToCam * 0.15f;
+                spawnPos = point + dirToCam * 0.5f;
             }
 
             var fx = Instantiate(fxPrefab, spawnPos, Quaternion.identity);

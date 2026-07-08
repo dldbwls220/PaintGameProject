@@ -124,7 +124,7 @@ public class InkProjectile : MonoBehaviour
     {
         float radius1 = Random.Range(_minRadius, _maxRadius);
 
-        WorldInkManager.instance.Paint(hit.point, Color.aquamarine, radius1, _hardness);
+        WorldInkManagerTriplanar.instance.Paint(hit.point, hit.normal, Color.aquamarine, radius1, _hardness);
 
         Paintabale p = hit.transform.GetComponentInParent<Paintabale>();
 
