@@ -1,4 +1,4 @@
-Shader "WorldInk/DisplayZone"
+﻿Shader "WorldInk/DisplayZone"
 {
     Properties
     {
@@ -21,7 +21,6 @@ Shader "WorldInk/DisplayZone"
         _ZoneSizeU      ("Zone 가로 크기",              Float)       = 100
         _ZoneSizeV      ("Zone 세로 크기",              Float)       = 100
 
-        // 0 = XZ (바닥), 1 = XY (앞뒤 벽), 2 = ZY (좌우 벽)
         [HideInInspector]
         _ZoneAxis       ("Zone 투영 축",                Float)       = 0
     }
@@ -111,35 +110,27 @@ Shader "WorldInk/DisplayZone"
                 float3 pos = IN.positionWS;
                 float2 inkUV;
 
-                // Zone 투영 축에 따라 UV 계산
-                // _ZoneAxis: 0=XZ(바닥), 1=XY(앞뒤 벽), 2=ZY(좌우 벽)
                 if (_ZoneAxis < 0.5)
                 {
-                    // XZ : 바닥/천장
                     inkUV.x = (pos.x - _ZoneOffset.x) / _ZoneSizeU;
                     inkUV.y = (pos.z - _ZoneOffset.y) / _ZoneSizeV;
                 }
                 else if (_ZoneAxis < 1.5)
                 {
-                    // XY : 앞뒤 벽
                     inkUV.x = (pos.x - _ZoneOffset.x) / _ZoneSizeU;
                     inkUV.y = (pos.y - _ZoneOffset.y) / _ZoneSizeV;
                 }
                 else
                 {
-                    // ZY : 좌우 벽
                     inkUV.x = (pos.z - _ZoneOffset.x) / _ZoneSizeU;
                     inkUV.y = (pos.y - _ZoneOffset.y) / _ZoneSizeV;
                 }
 
-                // 잉크 노말맵 타일링 UV
                 float2 inkNormalUV = inkUV * _InkNormalTiling;
 
-                // 지형 샘플링
                 half4 baseColor    = SAMPLE_TEXTURE2D(_MainTex,  sampler_MainTex,  IN.uv);
                 half3 baseNormalTS = UnpackNormal(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, IN.uv));
 
-                // 잉크 샘플링
                 half4 inkColor    = SAMPLE_TEXTURE2D(_WorldInkTex,  sampler_WorldInkTex,  inkUV);
                 half3 inkNormalTS = UnpackNormal(SAMPLE_TEXTURE2D(_InkNormalMap, sampler_InkNormalMap, inkNormalUV));
                 inkNormalTS.xy   *= _InkNormalStr;
@@ -149,7 +140,6 @@ Shader "WorldInk/DisplayZone"
                 half3 baseNormalWS = TransformTangentToWorld(baseNormalTS, TBN);
                 half3 inkNormalWS  = TransformTangentToWorld(inkNormalTS,  TBN);
 
-                // 잉크 알파 기준 블렌딩
                 float ink = inkColor.a;
 
                 half3 albedo     = lerp(baseColor.rgb, inkColor.rgb,    ink);
@@ -157,7 +147,6 @@ Shader "WorldInk/DisplayZone"
                 half  smoothness = lerp(_Smoothness,   _InkSmoothness,  ink);
                 half  metallic   = lerp(_Metallic,     _InkMetallic,    ink);
 
-                // URP PBR 라이팅
                 InputData lightingInput       = (InputData)0;
                 lightingInput.positionWS      = pos;
                 lightingInput.normalWS        = normalWS;

@@ -91,6 +91,13 @@ public class NetworkInkProjectile : NetworkBehaviour
                 {
                     var hitOwner = lHit.GameObject.GetComponentInParent<NetworkInklingMovement>();
 
+                    Paintabale p = lHit.Collider.GetComponentInParent<Paintabale>();
+
+                    if (p != null)
+                    {
+                        PaintManager.instance.paint(p, lHit.Point, 1, 0.5f, 0.5f, _inkColor);
+                    }
+
                     if (hitOwner != null && hitOwner._teamIndex == _shooterTeam)
                     {
                         Debug.Log("아군입니다");
@@ -160,7 +167,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
         // 페인팅: RenderTexture는 로컬이므로 모든 클라이언트에서 직접 호출 필요
-        WorldInkManagerTriplanar.instance.Paint(point,normal, color, paintRadius, _hardness);
+        WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
 
         GameObject fxPrefab = _splashFXPrefab;
         if (fxPrefab != null)

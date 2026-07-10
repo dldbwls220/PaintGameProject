@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Zone 방식 잉크를 표시할 오브젝트에 붙이는 컴포넌트
@@ -45,16 +45,11 @@ public class WorldInkZoneReceiver : MonoBehaviour
                 continue;
             }
 
-            // Zone의 RenderTexture 연결
             mat.SetTexture(_inkTexID,  mgr.GetInkTexture(_zoneIndex));
-
-            // Zone의 범위 정보 전달 (셰이더에서 UV 변환에 사용)
-            mat.SetVector(_offsetID,   zone.offset);
-            mat.SetFloat (_sizeUID,    zone.sizeU);
-            mat.SetFloat (_sizeVID,    zone.sizeV);
-
-            // 투영 축 전달 (0=XZ, 1=XY, 2=ZY)
-            mat.SetFloat (_axisID,     (float)zone.axis);
+            mat.SetVector (_offsetID,  zone.offset);
+            mat.SetFloat  (_sizeUID,   zone.sizeU);
+            mat.SetFloat  (_sizeVID,   zone.sizeV);
+            mat.SetFloat  (_axisID,    (float)zone.axis);
         }
     }
 

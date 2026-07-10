@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: IronPinkGreen_gp
-  m_Shader: {fileID: 4800000, guid: 40367c96971ea204faac249d242911fa, type: 3}
+  m_Shader: {fileID: 4800000, guid: f257646b58f0ae344af371884a75e2dd, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -144,12 +144,16 @@ Material:
     - _WorldMapSize: 100
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
+    - _ZoneAxis: 0
+    - _ZoneSizeU: 100
+    - _ZoneSizeV: 100
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WorldMapOffset: {r: -50, g: -50, b: 0, a: 0}
+    - _ZoneOffset: {r: -50, g: -50, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &7891221742776084320

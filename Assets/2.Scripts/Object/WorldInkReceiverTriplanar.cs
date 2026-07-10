@@ -60,8 +60,6 @@ public class WorldInkReceiverTriplanar : MonoBehaviour
     /// </summary>
     public Color CheckPaintColor(RaycastHit hit)
     {
-        WorldInkManagerTriplanar mgr = WorldInkManagerTriplanar.instance;
-
         Vector3 absNormal = new Vector3(
             Mathf.Abs(hit.normal.x),
             Mathf.Abs(hit.normal.y),
