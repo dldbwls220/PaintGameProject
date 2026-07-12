@@ -10051,6 +10051,8 @@ GameObject:
   - component: {fileID: 1323900764576403397}
   - component: {fileID: 2499367210992749879}
   - component: {fileID: 1142648568571808731}
+  - component: {fileID: 3311113069015686545}
+  - component: {fileID: 2066191090572971395}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -10134,7 +10136,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8955290842762730277}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f4c27f108aee3d42a311fa4917f6a4c, type: 3}
   m_Name: 
@@ -10182,6 +10184,7 @@ MonoBehaviour:
   - {fileID: 4471312381918550399}
   - {fileID: 2499367210992749879}
   - {fileID: 1142648568571808731}
+  - {fileID: 2066191090572971395}
   - {fileID: 1296707654976785007}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &7021932092903279290
@@ -10276,6 +10279,8 @@ MonoBehaviour:
   _characterClothChanger: {fileID: 5526676462442257824}
   _weaponManager: {fileID: 2499367210992749879}
   _weapon: {fileID: 0}
+  _wallClimb: {fileID: 3311113069015686545}
+  _health: {fileID: 2066191090572971395}
   _inktankOffset: 0
   _teamColors1:
   - {r: 1, g: 0, b: 0.8745098, a: 1}
@@ -10322,6 +10327,8 @@ MonoBehaviour:
   __isSwimming:
     _value: 0
   __isSlowed:
+    _value: 0
+  __isWallClimb:
     _value: 0
   __camForward: {x: 0, y: 0, z: 0}
   __camRight: {x: 0, y: 0, z: 0}
@@ -10420,7 +10427,58 @@ MonoBehaviour:
   GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   Hitboxes:
   - {fileID: 6161846713622275408}
-  - {fileID: 0}
+  - {fileID: 5955464286726274748}
+--- !u!114 &3311113069015686545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8955290842762730277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d854391dac92d41baa124edb74d9ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallClimb
+  _sphereCastRadius: 0.1
+  _detectionLength: 0.7
+  _yOffset: 0.4
+  _climbSpeed: 6
+  _climbSideSpeed: 6
+  _idleSlideDown: 1
+  _inputDeadzone: 0.1
+  _maxWallLooking: 0
+  _minWallSurfaceAngle: 80
+  _maxWallSurfaceAngle: 100
+--- !u!114 &2066191090572971395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8955290842762730277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec2871de371ad34cb03335aac1a4ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  _maxHealth: 100
+  _hitDuration: 4
+  _healthRegenSpeed: 15
+  _radius: 1.5
+  _hardness: 0.9
+  _strength: 0.9
+  _minPaintRadius: 1
+  _maxPaintRadius: 2.5
+  _splashCount: 12
+  _splashCastRadius: 0.2
+  _paintMask:
+    serializedVersion: 2
+    m_Bits: 512
+  _deathSplashFX: {fileID: 8781502534069747683, guid: a3159f693dec9204ebc0539a46d50357, type: 3}
+  _isImmortal: 0
+  _isHit: 0
+  __currentHealth: 0
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0
@@ -10783,19 +10841,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.43713877
+      value: -0.43713868
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.04489304
+      value: 0.044893034
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.89357316
+      value: 0.8935732
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0917677
+      value: 0.091767706
       objectReference: {fileID: 0}
     - target: {fileID: 2458998470495186235, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_BindingMode
@@ -10911,19 +10969,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.46465173
+      value: -0.4646397
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.057834297
+      value: 0.057829577
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.87683684
+      value: 0.87684417
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.109138176
+      value: 0.109133
       objectReference: {fileID: 0}
     - target: {fileID: 6811113246019593056, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_CollideAgainst.m_Bits
@@ -10951,19 +11009,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7818936436460588382, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.43396196
+      value: -0.43396208
       objectReference: {fileID: 0}
     - target: {fileID: 7818936436460588382, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.069155216
+      value: 0.0691549
       objectReference: {fileID: 0}
     - target: {fileID: 7818936436460588382, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.8870801
+      value: 0.88708013
       objectReference: {fileID: 0}
     - target: {fileID: 7818936436460588382, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.14136313
+      value: 0.14136243
       objectReference: {fileID: 0}
     - target: {fileID: 8403499133837874067, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_ComponentOwner

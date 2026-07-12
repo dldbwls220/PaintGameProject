@@ -23,6 +23,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Networked] Color _inkColor { get; set; }
     [Networked] int _finishedTick { get; set; }
     [Networked] int _shooterTeam { get; set; }
+    [Networked] float _damage { get; set; }
 
     bool _visualHidden;
     MaterialPropertyBlock _mpb;
@@ -34,7 +35,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
     const int DESPAWN_DELAY_TICKS = 10;
 
-    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float duration, int teamIndex)
+    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float duration, int teamIndex, float damage)
     {
         _data = new InkProjectileData
         {
@@ -46,7 +47,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         _inkColor = inkColor;
         _straightDuration = duration;
         _shooterTeam = teamIndex;
-        
+        _damage = damage;
     }
 
     public override void Spawned()
@@ -91,20 +92,18 @@ public class NetworkInkProjectile : NetworkBehaviour
                 {
                     var hitOwner = lHit.GameObject.GetComponentInParent<NetworkInklingMovement>();
 
-                    Paintabale p = lHit.Collider.GetComponentInParent<Paintabale>();
-
-                    if (p != null)
-                    {
-                        PaintManager.instance.paint(p, lHit.Point, 1, 0.5f, 0.5f, _inkColor);
-                    }
-
                     if (hitOwner != null && hitOwner._teamIndex == _shooterTeam)
                     {
                         Debug.Log("아군입니다");
 
                         return; // 아군이면 이번 틱은 무시 (필요하면 관통 처리)
                     }
-                    OnHit(lHit.Point, lHit.Normal, true);
+                    else
+                    {
+                        OnHit(lHit.Point, lHit.Normal, true);
+                        ApplyDamage(lHit.Hitbox);
+                    }
+                        
                 }
                 else
                     OnHit(lHit.Point, lHit.Normal, false);
@@ -146,6 +145,14 @@ public class NetworkInkProjectile : NetworkBehaviour
 
         _mesh.enabled = false;
         _trailRenderer.enabled = false;
+    }
+
+    void ApplyDamage(Hitbox enemy)
+    {
+        Health enemyHealth = enemy.Root.GetComponent<Health>();
+        if (enemyHealth == null || !enemyHealth._isAlive) return;
+
+        if (enemyHealth.ApplyDamage(Object.InputAuthority, _damage, DefineEnum.MainWeaponState.Shooter) == false) return;
     }
 
     void OnHit(Vector3 point, Vector3 normal, bool isEnemyHit)

@@ -14,6 +14,8 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] CharacterClothChanger _characterClothChanger;
     [SerializeField] WeaponManager _weaponManager;
     [SerializeField] Weapon _weapon;
+    [SerializeField] WallClimb _wallClimb;
+    [SerializeField] Health _health;
 
     [Header("Weapon")]
     [SerializeField] float _inktankOffset;
@@ -63,6 +65,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _isOnPaint { get; set; }
     [Networked] public NetworkBool _isSwimming {  get; set; }
     [Networked] public NetworkBool _isSlowed { get; set; }
+    [Networked] public NetworkBool _isWallClimb { get; set; }
 
     // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
     bool _prevIsOnPaint;
@@ -87,6 +90,8 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _renderC.Init();
         _renderC.SetTeamColor(_inkColor);
+
+        _health.ApplyColorToFX(_enemyColor);
 
         _kcc.SetGravity(_gravity);
 
@@ -168,10 +173,8 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (_isSquid && _isSameColor && _isOnPaint) _isSwimming = true;
         else _isSwimming = false;
 
-        
-
-            // 속도 결정 (InklingController 상태 참조)
-            float speed = UpdateSpeed();
+        // 속도 결정 (InklingController 상태 참조)
+        float speed = UpdateSpeed();
         
 
         // 점프 (float impulse)
@@ -183,7 +186,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         }
 
         // 회전
-        if (dir.sqrMagnitude > 0.01f)
+        if (dir.sqrMagnitude > 0.01f && !_isWallClimb)
         {
             Quaternion targetRot = input._isShootPressed && !_isSquid
                 ? Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime)
@@ -202,7 +205,25 @@ public class NetworkInklingMovement : NetworkBehaviour
             : _isSwimming ? _swimAccel : _airAccel;
 
         Vector3 targetVelocity = dir * speed;
-        _currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, accel * Runner.DeltaTime);
+
+        if (_isSquid && _wallClimb.CheckWall(_inkColor, _enemyColor))
+        {
+            _isWallClimb = true;
+            _kcc.ResetVelocity();
+            targetVelocity = _wallClimb.ClimbingWall(input._climbAxis, input._sideAxis); // X/Z까지 완전히 덮어씀
+            _currentMoveVelocity = targetVelocity; // 관성 없이 즉시 반영 → 원본처럼 스냅한 반응
+            
+            //_kcc.SetLookRotation(_camForward);
+        }
+        else
+        {
+            _isWallClimb = false;
+            _currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, accel * Runner.DeltaTime);
+           
+        }
+
+        if(_isWallClimb) _kcc.SetGravity(0);
+        else _kcc.SetGravity(_gravity);
 
         // KCC 이동 (방향 * 속도, 점프 impulse는 float)
         _kcc.Move(_currentMoveVelocity, jumpImpulse);
@@ -261,6 +282,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _weaponManager.UpdateInkStatus(inkstate);
         _weaponManager.UpdateShootSound();
+        _health.PlayDeadSplashEffect();
 
         // 원격 플레이어의 조준 타겟을 동기화된 위치로 이동
         if (!HasInputAuthority && _aimTargetObj != null)
@@ -409,7 +431,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                WorldInkReceiver receiver = hit.collider.GetComponent<WorldInkReceiver>();
+                WorldInkZoneReceiver receiver = hit.collider.GetComponent<WorldInkZoneReceiver>();
 
                 if (receiver != null)
                 {

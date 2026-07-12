@@ -125,4 +125,20 @@ namespace DefineEnum
     }
 
     #endregion[풀링]
+
+    #region[무기]
+
+    public enum MainWeaponState
+    {
+        Shooter,
+        Charger,
+        Roller
+    }
+
+    public enum SubWeaponState
+    {
+
+    }
+
+    #endregion[무기]
 }

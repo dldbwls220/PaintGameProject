@@ -3,10 +3,12 @@ using UnityEngine;
 public class CharacterInputHandler : MonoBehaviour
 {
     Vector3 _moveInputVector = Vector3.zero;
+    Vector3 _aimTargetPosition;
+    float _climbAxis;
+    float _sideAxis;
     bool _isJumpPressed;
     bool _isShootPressed;
     bool _isSquidPressed;
-    Vector3 _aimTargetPosition;
 
     Camera _mainCam;
     MouseTarget _mouseTarget;
@@ -25,6 +27,9 @@ public class CharacterInputHandler : MonoBehaviour
     {
         _moveInputVector.x = Input.GetAxis("Horizontal");
         _moveInputVector.z = Input.GetAxis("Vertical");
+        _climbAxis = Input.GetAxis("Vertical");
+        _sideAxis = Input.GetAxis("Horizontal");
+
 
         if (Input.GetKeyDown(KeyCode.Space)) _isJumpPressed = true;
         _isShootPressed = Input.GetMouseButton(0);
@@ -44,6 +49,8 @@ public class CharacterInputHandler : MonoBehaviour
         inputdata._isJumpPressed = _isJumpPressed;
         inputdata._isShootPressed = _isShootPressed;
         inputdata._isSquidPressed = _isSquidPressed;
+        inputdata._climbAxis = _climbAxis;
+        inputdata._sideAxis = _sideAxis;
 
         // 카메라 방향을 struct에 담아 서버에서도 같은 방향으로 이동
         if (_mainCam != null)

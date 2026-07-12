@@ -5,6 +5,8 @@ public struct NetworkInputData : INetworkInput
 {
     public Vector3 _movementInput;
     public float _rotationInput;
+    public float _climbAxis;
+    public float _sideAxis;
     public NetworkBool _isJumpPressed;
     public NetworkBool _isShootPressed;
     public NetworkBool _isSquidPressed;
