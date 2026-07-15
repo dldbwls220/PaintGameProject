@@ -5,7 +5,6 @@ public class NetworkInkProjectile : NetworkBehaviour
 {
     [Header("Physics")]
     [SerializeField] float _gravity = 20f;
-    [SerializeField] float _straightDuration = 0.15f; // 이 시간 동안은 중력 무시하고 직선 이동, 이후 낙하 시작
     [SerializeField] LayerMask _hitMask;
 
     [Header("Paint")]
@@ -24,6 +23,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Networked] int _finishedTick { get; set; }
     [Networked] int _shooterTeam { get; set; }
     [Networked] float _damage { get; set; }
+    [Networked] float _straightDistance { get; set; } // 이 거리(m)까지는 중력 무시하고 직선 이동, 이후 낙하 시작
 
     bool _visualHidden;
     MaterialPropertyBlock _mpb;
@@ -35,7 +35,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
     const int DESPAWN_DELAY_TICKS = 10;
 
-    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float duration, int teamIndex, float damage)
+    public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float straightDistance, int teamIndex, float damage, float gravity = 0)
     {
         _data = new InkProjectileData
         {
@@ -45,9 +45,12 @@ public class NetworkInkProjectile : NetworkBehaviour
             IsFinished = false
         };
         _inkColor = inkColor;
-        _straightDuration = duration;
+        _straightDistance = straightDistance;
         _shooterTeam = teamIndex;
         _damage = damage;
+
+        if(gravity != 0)
+            _gravity = gravity;
     }
 
     public override void Spawned()
@@ -206,26 +209,35 @@ public class NetworkInkProjectile : NetworkBehaviour
 
     }
 
+    // 직선 구간 거리(_straightDistance)를 속력으로 환산한, 낙하가 시작되는 시각
+    float GetStraightDuration()
+    {
+        float speed = _data.Velocity.magnitude;
+        return speed > 0f ? _straightDistance / speed : 0f;
+    }
+
     Vector3 GetMovePosition(float tick)
     {
         float time = (tick - _data.FireTick) * Runner.DeltaTime;
         if (time <= 0f) return _data.Position;
 
-        if (time <= _straightDuration)
+        float straightDuration = GetStraightDuration();
+        if (time <= straightDuration)
             return _data.Position + _data.Velocity * time;
 
         // 직선 구간 종료 지점부터 낙하 포물선 시작 (위치/속도 연속)
-        Vector3 straightEndPos = _data.Position + _data.Velocity * _straightDuration;
-        float fallTime = time - _straightDuration;
+        Vector3 straightEndPos = _data.Position + _data.Velocity * straightDuration;
+        float fallTime = time - straightDuration;
         return straightEndPos + _data.Velocity * fallTime + new Vector3(0f, -_gravity, 0f) * (fallTime * fallTime * 0.5f);
     }
 
     Vector3 GetVelocity(float time)
     {
-        if (time <= _straightDuration)
+        float straightDuration = GetStraightDuration();
+        if (time <= straightDuration)
             return _data.Velocity;
 
-        float fallTime = time - _straightDuration;
+        float fallTime = time - straightDuration;
         return _data.Velocity + new Vector3(0f, -_gravity, 0f) * fallTime;
     }
 

@@ -13,9 +13,9 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] InklingRenderController _renderC;
     [SerializeField] CharacterClothChanger _characterClothChanger;
     [SerializeField] WeaponManager _weaponManager;
-    [SerializeField] Weapon _weapon;
     [SerializeField] WallClimb _wallClimb;
     [SerializeField] Health _health;
+    [SerializeField] Hitbox[] _hitboxes;
 
     [Header("Weapon")]
     [SerializeField] float _inktankOffset;
@@ -46,6 +46,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] MultiAimConstraint _multiAC;
     [SerializeField] RigBuilder _rigBuilder;
     [SerializeField] GameObject _mouseTarget;
+    [SerializeField] GameObject _inkRoot;
 
     MaterialPropertyBlock _inklingMPB;
 
@@ -81,6 +82,12 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     GameObject _aimTargetObj;
 
+    void LateUpdate()
+    {
+        if (!HasInputAuthority || Camera.main == null) return;
+        _inkRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
+    }
+
     public override void Spawned()
     {
         _kcc = GetComponent<SimpleKCC>();
@@ -95,10 +102,14 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _kcc.SetGravity(_gravity);
 
+        SetHitBox(true);
+
+        _weaponManager.InitWeapon();
+
         AddAimSource();
         //AddVirtualCamera();
 
-        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100);
+        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _inkRoot.transform);
 
         if (HasInputAuthority)
         {
@@ -156,6 +167,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (_isMorphingSquid && _morphTimer.Expired(Runner))
         {            
             _isMorphingSquid = false;
+            SetHitBox(false);
         }
 
         if (!input._isSquidPressed && !_isMorphingInkling && _isSquid)
@@ -168,6 +180,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (_isMorphingInkling && _morphTimer.Expired(Runner))
         {
             _isMorphingInkling = false;
+            SetHitBox(true);
         }
 
         if (_isSquid && _isSameColor && _isOnPaint) _isSwimming = true;
@@ -322,16 +335,18 @@ public class NetworkInklingMovement : NetworkBehaviour
             // 입력 핸들러에 MouseTarget 등록 → 조준 위치를 NetworkInputData로 전송
             var inputHandler = GetComponent<CharacterInputHandler>();
             if (inputHandler != null)
-                inputHandler.SetMouseTarget(go.GetComponent<MouseTarget>());
+                inputHandler.SetMouseTarget(_aimTargetObj.GetComponent<MouseTarget>());
+
+            _aimTargetObj.GetComponent<MouseTarget>().InitObj(_inkRoot, _weaponManager._distance);
         }
 
         if (!HasInputAuthority)
         {
-            go.GetComponent<MouseTarget>().enabled = false;
-            go.transform.localPosition = Vector3.forward * 10f;
+            _aimTargetObj.GetComponent<MouseTarget>().enabled = false;
+            _aimTargetObj.transform.localPosition = Vector3.forward * 10f;
         }
 
-        var newsource = new WeightedTransform(go.transform, 1);
+        var newsource = new WeightedTransform(_aimTargetObj.transform, 1);
         sourceObj.Add(newsource);
 
         _multiAC.data.sourceObjects = sourceObj;
@@ -474,6 +489,20 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             _isSameColor = false;
             Debug.Log("상대 팀 구역입니다!");
+        }
+    }
+
+    void SetHitBox(bool isInkling)
+    {
+        if (isInkling)
+        {
+            _hitboxes[0].enabled = true;
+            _hitboxes[1].enabled = false;
+        }
+        else
+        {
+            _hitboxes[0].enabled = false;
+            _hitboxes[1].enabled = true;
         }
     }
 }

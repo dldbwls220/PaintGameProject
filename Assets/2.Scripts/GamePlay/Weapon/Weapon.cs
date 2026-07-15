@@ -10,12 +10,18 @@ public class Weapon : NetworkBehaviour
     [SerializeField] float _shootRate = 0.1f;
     [SerializeField] float _shootSpeed = 30f;
     [SerializeField] float _dispersion = 0.5f;
-    [SerializeField] private float _straightDuration = 0.15f;
+    [SerializeField] private float _straightDistance = 4.5f;
     [SerializeField] LayerMask _hitMask;
 
     [Header("Ink Projectile Setup")]
     [SerializeField] NetworkObject _projectilePrefab;
     [SerializeField] float _inkUseRate = 15;
+    [SerializeField] bool _hasOtherInkProjectile = false;
+
+    [Header("Other Ink Projectile Setup")]
+    [SerializeField] float _gravity = 150;
+    [SerializeField] float _minDistance = 1.5f;
+    [SerializeField] float _maxDistance = 1.95f;
 
     [Header("Sound")]
     [SerializeField] AudioSource _shootSound;
@@ -26,6 +32,8 @@ public class Weapon : NetworkBehaviour
     [Networked] private TickTimer _shootTimer { get; set; }
     [Networked] private NetworkBool _prevShootPressed { get; set; }
     [Networked] private int _shotCount { get; set; }
+
+    public float _distance { get { return _straightDistance; } }
 
     public override void Spawned()
     {
@@ -54,6 +62,10 @@ public class Weapon : NetworkBehaviour
         Random.InitState(Runner.Tick * unchecked((int)Object.Id.Raw));
 
         ShootProjectile(inkRoot, shootTarget, color);
+
+        float random = (Random.Range(_minDistance * 10, _maxDistance * 10))/10;
+
+        ShootRandomProjectile(inkRoot, shootTarget, color, _gravity,random);
         _shootTimer = TickTimer.CreateFromSeconds(Runner, _shootRate);
 
         UseInk();
@@ -78,7 +90,32 @@ public class Weapon : NetworkBehaviour
             var team = GetComponentInParent<NetworkInklingMovement>()?._teamIndex ?? 0;
 
             var obj = Runner.Spawn(_projectilePrefab, inkRoot.position, Quaternion.LookRotation(projectileDirection), Object.InputAuthority);
-            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color, _straightDuration, team, _damage);
+            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * _shootSpeed, color, _straightDistance, team, _damage);
+        }
+    }
+
+    public void ShootRandomProjectile(Transform inkRoot, Vector3 shootTarget, Color color, float gravity, float straightDistance)
+    {
+        if (!_hasOtherInkProjectile) return;
+
+        if (_shotCount % 2 != 0) return;
+
+        if (_projectilePrefab != null && inkRoot != null)
+        {
+            Vector3 shootDir = (shootTarget - inkRoot.position).normalized;
+            Vector3 projectileDirection = shootDir;
+            if (_dispersion > 0)
+            {
+                var dispersionRotation = Quaternion.Euler(Random.insideUnitSphere * _dispersion);
+                projectileDirection = dispersionRotation * shootDir;
+            }
+
+            var team = GetComponentInParent<NetworkInklingMovement>()?._teamIndex ?? 0;
+
+            var obj = Runner.Spawn(_projectilePrefab, inkRoot.position, Quaternion.LookRotation(projectileDirection), Object.InputAuthority);
+            obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * (_shootSpeed/2), color, straightDistance, team, 0, gravity);
+
+            Debug.Log("잔여 잉크 발사");
         }
     }
 

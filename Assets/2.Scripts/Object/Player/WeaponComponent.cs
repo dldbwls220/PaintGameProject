@@ -49,7 +49,7 @@ public class WeaponComponent : MonoBehaviour
             if (!_isEmpty && _triggered && Time.time > _lastSootTime + _shootRate)
             {
                 _lastSootTime = Time.time;
-                _projectile.Launch(_inkRoot.transform.position, transform.forward);
+               // _projectile.Launch(_inkRoot.transform.position, transform.forward);
             }
         }
         else

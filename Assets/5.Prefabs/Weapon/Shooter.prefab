@@ -211,12 +211,16 @@ MonoBehaviour:
   _shootRate: 0.1
   _shootSpeed: 30
   _dispersion: 0.7
-  _straightDuration: 0.15
+  _straightDistance: 9
   _hitMask:
     serializedVersion: 2
     m_Bits: 128
   _projectilePrefab: {fileID: -8632199437834742506, guid: 584a0b01541683b44af74ebd8df56ad2, type: 3}
   _inkUseRate: 40
+  _hasOtherInkProjectile: 1
+  _gravity: 350
+  _minDistance: 1
+  _maxDistance: 8.7
   _shootSound: {fileID: 3808967891651108076}
   _emptySound: {fileID: 0}
 --- !u!1 &7535895926553821331

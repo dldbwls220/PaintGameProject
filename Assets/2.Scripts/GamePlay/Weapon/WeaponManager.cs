@@ -7,7 +7,7 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] InkTankController _inkTankC;
 
     [Header("Weapon Setup")]
-    public Transform _inkShootTF;
+    Transform _inkShootTF;
     public Transform _target;
     public ParticleSystem _shootFX;
     public Color _inkColor;
@@ -27,6 +27,8 @@ public class WeaponManager : NetworkBehaviour
 
     [Networked] public float _currentInk { get; set; }
 
+    public float _distance {  get; private set; }
+
     public struct InkTankState
     {
         public bool isSquid;
@@ -35,20 +37,26 @@ public class WeaponManager : NetworkBehaviour
         public bool isSwimming;
     }
 
-    public void Init(Color color, Transform target, float totalInk)
+    public void InitWeapon()
+    {
+        _allWeapons = GetComponentsInChildren<Weapon>();
+        _currentWeapon = _allWeapons[0]; //임시
+        _distance = _currentWeapon._distance;
+    }
+
+    public void Init(Color color, Transform target, float totalInk, Transform root)
     {
         _inkTankC.Init();
         _inkColor = color;
-        _target = target;
+        _target = target.transform;
         _totalInk = totalInk;
         _currentInk = _totalInk;
+        _inkShootTF = root.transform.GetChild(0);
 
         _allWeapons = GetComponentsInChildren<Weapon>();
 
         var main = _shootFX.main;
         main.startColor = _inkColor;
-
-        _currentWeapon = _allWeapons[0]; //임시
     }
 
     public void Shoot(bool isShootPressed)

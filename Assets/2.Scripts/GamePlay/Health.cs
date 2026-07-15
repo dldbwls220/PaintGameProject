@@ -13,7 +13,6 @@ public class Health : NetworkBehaviour
     [Header("Death Splash Setting")]
     [SerializeField] float _radius = 1.5f;
     [SerializeField] float _hardness = 0.9f;
-    [SerializeField] float _strength = 0.9f;
     [SerializeField] float _minPaintRadius = 0.5f;
     [SerializeField] float _maxPaintRadius = 1.5f;
     [SerializeField] int _splashCount = 12;
