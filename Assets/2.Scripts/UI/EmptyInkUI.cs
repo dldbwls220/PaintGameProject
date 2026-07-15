@@ -17,6 +17,11 @@ public class EmptyInkUI : MonoBehaviour
 
 
     // Update is called once per frame
+    private void Start()
+    {
+        InitEmptyInk();
+    }
+
     void Update()
     {
         MoveBar();
@@ -33,6 +38,12 @@ public class EmptyInkUI : MonoBehaviour
         _anim.clip = _blinkClip;
         _anim.Play();
         _isOn = true;
+
+        if (_originPos == null)
+        {
+            _originPos = new Vector2[_barRT.Length];
+        }
+
         for (int i = 0; i < _barRT.Length; i++)
         {
             _originPos[i] = _barRT[i].anchoredPosition;

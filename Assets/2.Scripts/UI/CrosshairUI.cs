@@ -13,6 +13,7 @@ public class CrosshairUI : MonoBehaviour
     [SerializeField] Image _cross;
 
     Transform _targetObj;
+    RaycastHit _hit;
 
     public void OpenCrosshair()
     {
@@ -41,15 +42,15 @@ public class CrosshairUI : MonoBehaviour
             _cross.enabled = false;
     }
 
-    public void FollowTarget()
+    public void FollowTarget(Transform targetObj)
     {
-        if (_targetObj == null || Camera.main == null) return;
+        if (targetObj == null || Camera.main == null || _crosshairObj == null) return;
 
-        Vector3 screenPoint = Camera.main.WorldToScreenPoint(_targetObj.position);
-        if (screenPoint.z < 0) return; // 타겟이 카메라 뒤에 있으면 무시 (반대편에 튀는 버그 방지)
+        Vector3 screenPoint = Camera.main.WorldToScreenPoint(targetObj.position);
+        if (screenPoint.z < 0) return;
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform.parent, screenPoint, null, out Vector2 localPoint);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, screenPoint, null, out Vector2 localPoint);
 
-        ((RectTransform)transform).anchoredPosition = localPoint;
+        ((RectTransform)_crosshairObj.transform).anchoredPosition = localPoint;
     }
 }

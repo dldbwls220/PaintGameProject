@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MouseTarget : MonoBehaviour
@@ -13,6 +14,7 @@ public class MouseTarget : MonoBehaviour
     Vector3 _targetPosition;
     GameObject _targetObject;
     GameObject _aimRootObject;
+    int _teamIdx;
 
     void Start()
     {
@@ -30,11 +32,12 @@ public class MouseTarget : MonoBehaviour
         GetMousePos();
     }
 
-    public void InitObj(GameObject targetObject, float distance)
+    public void InitObj(GameObject targetObject, float distance, int teamIdx)
     {
         _targetObject = targetObject;
         _aimRootObject = _targetObject.transform.GetChild(1).gameObject;
         _maxDistance = distance;
+        _teamIdx = teamIdx;
     }
 
     void GetMousePos()
@@ -61,7 +64,7 @@ public class MouseTarget : MonoBehaviour
 
         // 카메라 시야에서는 장애물을 넘어 보여도, 총구 기준으로는 막혀 있을 수 있으므로
         // 총구 → 조준점 사이를 다시 검사해 더 가까운 충돌이 있으면 그 지점으로 당겨온다.
-        Vector3 muzzlePosition = _targetObject.transform.position;
+        Vector3 muzzlePosition = _aimRootObject.transform.position;
         Vector3 toDesired = desiredPosition - muzzlePosition;
         float distanceToDesired = toDesired.magnitude;
 
@@ -69,7 +72,11 @@ public class MouseTarget : MonoBehaviour
             Physics.Raycast(muzzlePosition, toDesired / distanceToDesired, out RaycastHit muzzleHit, distanceToDesired, _obstacleLayer) &&
             muzzleHit.distance > _muzzleSkinDistance)
         {
-            desiredPosition = muzzleHit.point;
+            var hitOwner = muzzleHit.collider.gameObject.GetComponentInParent<NetworkInklingMovement>();
+            bool isFriendly = hitOwner != null && hitOwner._teamIndex == _teamIdx;
+
+            if (!isFriendly)
+                desiredPosition = muzzleHit.point;
         }
 
         _targetPosition = Vector3.Lerp(_targetPosition, desiredPosition, _smoothSpeed * Time.deltaTime);

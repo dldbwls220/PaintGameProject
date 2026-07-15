@@ -83,14 +83,6 @@ public class Health : NetworkBehaviour
     public void ApplyColorToFX(Color color)
     {
         _inkColor = color;
-
-        ParticleSystem[] ps = _deathSplashFX.GetComponentsInChildren<ParticleSystem>();
-
-        foreach (ParticleSystem p in ps)
-        {
-            var main = p.main;
-            main.startColor = color;
-        }
     }
 
     public void PlayDeadSplashEffect()
@@ -99,6 +91,14 @@ public class Health : NetworkBehaviour
         if (_wasAlive && !_isAlive)
         {
             GameObject fx = Instantiate(_deathSplashFX, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+
+            ParticleSystem[] ps = fx.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem p in ps)
+            {
+                var main = p.main;
+                main.startColor = _inkColor;
+            }
 
             Destroy(fx, 3f);
         }

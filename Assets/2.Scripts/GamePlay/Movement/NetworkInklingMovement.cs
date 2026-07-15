@@ -9,13 +9,25 @@ using Cinemachine;
 [RequireComponent(typeof(SimpleKCC))]
 public class NetworkInklingMovement : NetworkBehaviour
 {
+    [Header("For test")]
+    [SerializeField] CrosshairUI crosshairUI;
+
     [Header("Class Reference")]
     [SerializeField] InklingRenderController _renderC;
     [SerializeField] CharacterClothChanger _characterClothChanger;
     [SerializeField] WeaponManager _weaponManager;
     [SerializeField] WallClimb _wallClimb;
     [SerializeField] Health _health;
-    [SerializeField] Hitbox[] _hitboxes;
+    [SerializeField] Hitbox _hitbox;
+
+    [Header("Hitbox Size (Squid Form)")]
+    [SerializeField] float _squidHitboxRadius = 0.5f;
+    [SerializeField] float _squidHitboxExtents = 0.3f;
+    [SerializeField] Vector3 _squidHitboxOffset = new Vector3(0f, 0.35f, 0f);
+
+    float _inklingHitboxRadius;
+    float _inklingHitboxExtents;
+    Vector3 _inklingHitboxOffset;
 
     [Header("Weapon")]
     [SerializeField] float _inktankOffset;
@@ -86,12 +98,22 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         if (!HasInputAuthority || Camera.main == null) return;
         _inkRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
+
+        if (crosshairUI != null)
+        {
+            crosshairUI.FollowTarget(_aimTargetObj.transform);
+        }
+
     }
 
     public override void Spawned()
     {
         _kcc = GetComponent<SimpleKCC>();
         _characterClothChanger.SetCustomization();
+
+        _inklingHitboxRadius = _hitbox.CapsuleRadius;
+        _inklingHitboxExtents = _hitbox.CapsuleExtents;
+        _inklingHitboxOffset = _hitbox.Offset;
 
         AssignTeamColors();
 
@@ -101,8 +123,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         _health.ApplyColorToFX(_enemyColor);
 
         _kcc.SetGravity(_gravity);
-
-        SetHitBox(true);
 
         _weaponManager.InitWeapon();
 
@@ -121,6 +141,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             _cameraRoot.SetActive(false);
             _audioListnerRoot.SetActive(false);
         }
+
     }
 
     public override void FixedUpdateNetwork()
@@ -165,9 +186,8 @@ public class NetworkInklingMovement : NetworkBehaviour
         }
 
         if (_isMorphingSquid && _morphTimer.Expired(Runner))
-        {            
+        {
             _isMorphingSquid = false;
-            SetHitBox(false);
         }
 
         if (!input._isSquidPressed && !_isMorphingInkling && _isSquid)
@@ -180,7 +200,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (_isMorphingInkling && _morphTimer.Expired(Runner))
         {
             _isMorphingInkling = false;
-            SetHitBox(true);
         }
 
         if (_isSquid && _isSameColor && _isOnPaint) _isSwimming = true;
@@ -263,6 +282,14 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         LogPaintStatusChange();
 
+        // 히트박스를 둘로 나눠 enabled로 토글하면 LagCompensation이 꺼진 히트박스를
+        // 계속 반환하는 문제가 있어, 히트박스 하나를 폼에 맞게 크기만 조절한다.
+        // 권한과 무관하게 매 프레임 실행되는 Render에서 복제된 Networked 값만으로 계산한다.
+        bool isInklingForm = _isMorphingSquid ? true : _isMorphingInkling ? false : !_isSquid;
+        _hitbox.CapsuleRadius = isInklingForm ? _inklingHitboxRadius : _squidHitboxRadius;
+        _hitbox.CapsuleExtents = isInklingForm ? _inklingHitboxExtents : _squidHitboxExtents;
+        _hitbox.Offset = isInklingForm ? _inklingHitboxOffset : _squidHitboxOffset;
+
         var renderstate = new InklingRenderController.RenderState
         {
             isSquid = _isSquid,
@@ -325,7 +352,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         var sourceObj = _multiAC.data.sourceObjects;
 
-        GameObject go = Instantiate(_mouseTarget, transform);
+        GameObject go = Instantiate(_mouseTarget);
 
         go.name = $"MouseTarget{this.name}";
         _aimTargetObj = go;
@@ -337,7 +364,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             if (inputHandler != null)
                 inputHandler.SetMouseTarget(_aimTargetObj.GetComponent<MouseTarget>());
 
-            _aimTargetObj.GetComponent<MouseTarget>().InitObj(_inkRoot, _weaponManager._distance);
+            _aimTargetObj.GetComponent<MouseTarget>().InitObj(_inkRoot, _weaponManager._distance, _teamIndex);
         }
 
         if (!HasInputAuthority)
@@ -427,12 +454,14 @@ public class NetworkInklingMovement : NetworkBehaviour
             _inkColor = _teamColors1[_inkIdx];
             _enemyColor = _teamColors2[_inkIdx];
             gameObject.layer = LayerMask.NameToLayer("Team1");
+            _kcc.SetColliderLayer(gameObject.layer);
         }
         else
         {
             _inkColor = _teamColors2[_inkIdx];
             _enemyColor = _teamColors1[_inkIdx];
             gameObject.layer = LayerMask.NameToLayer("Team2");
+            _kcc.SetColliderLayer(gameObject.layer);
         }
 
         Debug.Log(_inkIdx);
@@ -492,17 +521,4 @@ public class NetworkInklingMovement : NetworkBehaviour
         }
     }
 
-    void SetHitBox(bool isInkling)
-    {
-        if (isInkling)
-        {
-            _hitboxes[0].enabled = true;
-            _hitboxes[1].enabled = false;
-        }
-        else
-        {
-            _hitboxes[0].enabled = false;
-            _hitboxes[1].enabled = true;
-        }
-    }
 }

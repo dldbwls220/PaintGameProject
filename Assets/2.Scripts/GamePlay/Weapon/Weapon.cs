@@ -114,8 +114,6 @@ public class Weapon : NetworkBehaviour
 
             var obj = Runner.Spawn(_projectilePrefab, inkRoot.position, Quaternion.LookRotation(projectileDirection), Object.InputAuthority);
             obj.GetComponent<NetworkInkProjectile>()?.Initialize(inkRoot.position, projectileDirection * (_shootSpeed/2), color, straightDistance, team, 0, gravity);
-
-            Debug.Log("잔여 잉크 발사");
         }
     }
 
