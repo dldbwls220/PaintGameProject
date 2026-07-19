@@ -50,11 +50,11 @@ MonoBehaviour:
     m_Bits: 384
   _obstacleLayer:
     serializedVersion: 2
-    m_Bits: 1920
+    m_Bits: 1600
   _minDistance: 0
   _maxDistance: 0
   _defaultDistance: 20
-  _smoothSpeed: 500
+  _smoothSpeed: 30
   _muzzleSkinDistance: 0.9
 --- !u!1 &6271951231425734876
 GameObject:

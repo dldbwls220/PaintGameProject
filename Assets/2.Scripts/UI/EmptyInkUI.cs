@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EmptyInkUI : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class EmptyInkUI : MonoBehaviour
     [SerializeField] float _moveSpeed = 50f;
     [SerializeField] RectTransform[] _barRT;
 
+    [Header("Set Color")]
+    [SerializeField] Image _frame;
+    [SerializeField] Image _bg;
+    [SerializeField] Image[] _movingBar;
+
     bool _isOn;
     Vector2[] _originPos;
 
@@ -19,7 +25,7 @@ public class EmptyInkUI : MonoBehaviour
     // Update is called once per frame
     private void Start()
     {
-        InitEmptyInk();
+
     }
 
     void Update()
@@ -30,14 +36,16 @@ public class EmptyInkUI : MonoBehaviour
     public void OpenWnd()
     {
         gameObject.SetActive(true);
-        InitEmptyInk();
+        //InitEmptyInk();
     }
 
-    void InitEmptyInk()
+    void InitEmptyInk(Color color)
     {
         _anim.clip = _blinkClip;
         _anim.Play();
         _isOn = true;
+
+        SetWindowColor(color);
 
         if (_originPos == null)
         {
@@ -59,7 +67,7 @@ public class EmptyInkUI : MonoBehaviour
         }
     }
 
-    public void MoveBar()
+    void MoveBar()
     {
         if (!_isOn) return;
 
@@ -76,9 +84,21 @@ public class EmptyInkUI : MonoBehaviour
         }
     }
 
+    void SetWindowColor(Color color)
+    {
+        _frame.color = color;
+        _bg.color = new Color(color.r, color.g, color.b);
+
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+        foreach (var bar in _movingBar)
+        {
+            bar.color = Color.HSVToRGB(h, s, Mathf.Clamp01(v + 0.1f));
+        }
+    }
+
     public void CloseWnd()
     {
-        Release();
+        //Release();
         gameObject.SetActive(false);
     }
 }

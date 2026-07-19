@@ -9,7 +9,7 @@ using Cinemachine;
 [RequireComponent(typeof(SimpleKCC))]
 public class NetworkInklingMovement : NetworkBehaviour
 {
-    [Header("For test")]
+    [Header("Local UI (GameUIManager가 스폰 시 연결)")]
     [SerializeField] CrosshairUI crosshairUI;
 
     [Header("Class Reference")]
@@ -19,6 +19,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] WallClimb _wallClimb;
     [SerializeField] Health _health;
     [SerializeField] Hitbox _hitbox;
+    [SerializeField] CharacterSeperation _characterSeparation;
 
     [Header("Hitbox Size (Squid Form)")]
     [SerializeField] float _squidHitboxRadius = 0.5f;
@@ -30,9 +31,8 @@ public class NetworkInklingMovement : NetworkBehaviour
     Vector3 _inklingHitboxOffset;
 
     [Header("Weapon")]
+    [SerializeField] Transform _shootRoot;
     [SerializeField] float _inktankOffset;
-    [SerializeField] Color[] _teamColors1;
-    [SerializeField] Color[] _teamColors2;
 
     Color _inkColor;
     Color _enemyColor;
@@ -53,6 +53,12 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     SimpleKCC _kcc;
     InklingController _inklingController;
+
+    // MovementInput에서 계산되어 FixedUpdateNetwork에서 사용되는 입력 파생 값 (틱 단위 임시 값, 네트워크 동기화 불필요)
+    Vector3 _moveDirection;
+    float _pendingJumpImpulse;
+    float _climbAxis;
+    float _sideAxis;
 
     [Header("Aim Setting")]
     [SerializeField] MultiAimConstraint _multiAC;
@@ -88,7 +94,6 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public Vector3 _camRight { get; set; }
     [Networked] public Vector3 _aimTargetPosition { get; set; }
     [Networked] public int _teamIndex { get; set; }
-    [Networked] public int _inkIdx { get; private set; }
     [Networked] public float _layerWeight { get; set; }
     [Networked] public float _targetWeight {  get; set; }
 
@@ -101,7 +106,11 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         if (crosshairUI != null)
         {
+            var target = _aimTargetObj.transform.GetComponent<MouseTarget>();
+
             crosshairUI.FollowTarget(_aimTargetObj.transform);
+            crosshairUI.DetectEnemy(target._eHit);
+            crosshairUI.OpenCrosshair(target._hA);
         }
 
     }
@@ -129,12 +138,13 @@ public class NetworkInklingMovement : NetworkBehaviour
         AddAimSource();
         //AddVirtualCamera();
 
-        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _inkRoot.transform);
+        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _shootRoot.transform);
 
         if (HasInputAuthority)
         {
             _cameraRoot.SetActive(true);
             _audioListnerRoot.SetActive(true);
+            GameUIManager._instance.RegisterLocalPlayer(this);
         }
         else
         {
@@ -144,25 +154,24 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     }
 
+    public void SetCrosshairUI(CrosshairUI crosshair)
+    {
+        crosshairUI = crosshair;
+    }
+
     public override void FixedUpdateNetwork()
     {
         if (!GetInput(out NetworkInputData input)) return;
 
         CheckPaintColor();
-        
+
         _inktankOffset = _weaponManager.UpdateInktankOffset();
 
-        // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
-        _aimTargetPosition = input._aimTargetPosition;
+        //캐릭터 느려짐 여부 확인 (MovementInput의 변신 입력 처리보다 먼저 계산되어야 함)
+        if (_isOnPaint && !_isSameColor) _isSlowed = true;
+        else _isSlowed = false;
 
-        // 카메라 방향 기반 이동 방향 계산
-        _camForward = new Vector3(input._cameraForwardRight.x, 0f, input._cameraForwardRight.y).normalized;
-        _camRight = new Vector3(_camForward.z, 0f, -_camForward.x);
-
-        Vector3 dir = _camForward * input._movementInput.z + _camRight * input._movementInput.x;
-        dir.Normalize();
-
-        _isShooting = input._isShootPressed;
+        MovementInput(input);
 
         // 발사체 스폰 (StateAuthority만 실행, 쿨다운/단발-연사 체크는 Weapon 내부에서)
         // 단발 무기의 rising-edge 감지를 위해 버튼을 뗀 상태에서도 매 틱 호출해야 함
@@ -171,9 +180,95 @@ public class NetworkInklingMovement : NetworkBehaviour
             _weaponManager.Shoot(_isShooting);
         }
 
-        //캐릭터 느려짐 여부 확인
-        if (_isOnPaint && !_isSameColor) _isSlowed = true;
-        else _isSlowed = false;
+        if (_isSquid && _isSameColor && _isOnPaint) _isSwimming = true;
+        else _isSwimming = false;
+
+        // 속도 결정 (InklingController 상태 참조)
+        float speed = UpdateSpeed();
+
+        // 회전
+        if (_moveDirection.sqrMagnitude > 0.01f && !_isWallClimb)
+        {
+            Quaternion targetRot = _isShooting && !_isSquid
+                ? Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime)
+                : Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_moveDirection), 15f * Runner.DeltaTime);
+            _kcc.SetLookRotation(targetRot);
+        }
+        else if (_isShooting && _moveDirection.sqrMagnitude == 0)
+        {
+            Quaternion targetRot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime);
+            _kcc.SetLookRotation(targetRot);
+        }
+
+        // 상태별 가속도 선택
+        float accel = _kcc.IsGrounded && !_isSwimming
+            ? _groundAccel
+            : _isSwimming ? _swimAccel : _airAccel;
+
+        Vector3 targetVelocity = _moveDirection * speed;
+
+        if (_isSquid && _wallClimb.CheckWall(_inkColor, _enemyColor))
+        {
+            _isWallClimb = true;
+            _kcc.ResetVelocity();
+            targetVelocity = _wallClimb.ClimbingWall(_climbAxis, _sideAxis); // X/Z까지 완전히 덮어씀
+            _currentMoveVelocity = targetVelocity; // 관성 없이 즉시 반영 → 원본처럼 스냅한 반응
+
+            //_kcc.SetLookRotation(_camForward);
+        }
+        else
+        {
+            _isWallClimb = false;
+            _currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, accel * Runner.DeltaTime);
+
+        }
+
+        if(_isWallClimb) _kcc.SetGravity(0);
+        else _kcc.SetGravity(_gravity);
+
+        // 캐릭터간 밀어내기: _currentMoveVelocity(관성 상태)에는 누적하지 않고, 이번 틱의 실제 이동에만 더함
+        Vector3 separationVelocity = (_characterSeparation != null && !_isWallClimb)
+            ? _characterSeparation.GetPushVelocity(this)
+            : Vector3.zero;
+
+        // KCC 이동 (방향 * 속도, 점프 impulse는 float)
+        _kcc.Move(_currentMoveVelocity + separationVelocity, _pendingJumpImpulse);
+
+        if (_isShooting)
+        {
+            _targetWeight = 1;
+        }
+        else
+        {
+            _targetWeight = 0;
+        }
+
+        _layerWeight = Mathf.MoveTowards(_layerWeight, _targetWeight, 8 * Runner.DeltaTime);
+
+        _isGrounded = _kcc.IsGrounded;
+        _isMoving = _moveDirection.magnitude > 0.01f;
+
+        _weaponManager.AutoRefill(_isShooting);
+        _weaponManager.RefillInk();
+    }
+
+
+    void MovementInput(NetworkInputData input)
+    {
+        // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
+        _aimTargetPosition = input._aimTargetPosition;
+
+        // 카메라 방향 기반 이동 방향 계산
+        _camForward = new Vector3(input._cameraForwardRight.x, 0f, input._cameraForwardRight.y).normalized;
+        _camRight = new Vector3(_camForward.z, 0f, -_camForward.x);
+
+        _moveDirection = _camForward * input._movementInput.z + _camRight * input._movementInput.x;
+        _moveDirection.Normalize();
+
+        _isShooting = input._isShootPressed;
+
+        _climbAxis = input._climbAxis;
+        _sideAxis = input._sideAxis;
 
         if (_isSlowed) input._isSquidPressed = false;
 
@@ -202,80 +297,13 @@ public class NetworkInklingMovement : NetworkBehaviour
             _isMorphingInkling = false;
         }
 
-        if (_isSquid && _isSameColor && _isOnPaint) _isSwimming = true;
-        else _isSwimming = false;
-
-        // 속도 결정 (InklingController 상태 참조)
-        float speed = UpdateSpeed();
-        
-
         // 점프 (float impulse)
-        float jumpImpulse = 0f;
+        _pendingJumpImpulse = 0f;
         if (input._isJumpPressed && _kcc.IsGrounded)
         {
             _switchFoot = !_switchFoot;
-            jumpImpulse = _jumpImpulse;
+            _pendingJumpImpulse = _jumpImpulse;
         }
-
-        // 회전
-        if (dir.sqrMagnitude > 0.01f && !_isWallClimb)
-        {
-            Quaternion targetRot = input._isShootPressed && !_isSquid
-                ? Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime)
-                : Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 15f * Runner.DeltaTime);
-            _kcc.SetLookRotation(targetRot);
-        }
-        else if (_isShooting && dir.sqrMagnitude == 0)
-        {
-            Quaternion targetRot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime);
-            _kcc.SetLookRotation(targetRot);
-        }
-
-        // 상태별 가속도 선택
-        float accel = _kcc.IsGrounded && !_isSwimming
-            ? _groundAccel
-            : _isSwimming ? _swimAccel : _airAccel;
-
-        Vector3 targetVelocity = dir * speed;
-
-        if (_isSquid && _wallClimb.CheckWall(_inkColor, _enemyColor))
-        {
-            _isWallClimb = true;
-            _kcc.ResetVelocity();
-            targetVelocity = _wallClimb.ClimbingWall(input._climbAxis, input._sideAxis); // X/Z까지 완전히 덮어씀
-            _currentMoveVelocity = targetVelocity; // 관성 없이 즉시 반영 → 원본처럼 스냅한 반응
-            
-            //_kcc.SetLookRotation(_camForward);
-        }
-        else
-        {
-            _isWallClimb = false;
-            _currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, accel * Runner.DeltaTime);
-           
-        }
-
-        if(_isWallClimb) _kcc.SetGravity(0);
-        else _kcc.SetGravity(_gravity);
-
-        // KCC 이동 (방향 * 속도, 점프 impulse는 float)
-        _kcc.Move(_currentMoveVelocity, jumpImpulse);
-
-        if (_isShooting)
-        {
-            _targetWeight = 1;
-        }
-        else
-        {
-            _targetWeight = 0;
-        }
-
-        _layerWeight = Mathf.MoveTowards(_layerWeight, _targetWeight, 8 * Runner.DeltaTime);
-
-        _isGrounded = _kcc.IsGrounded;
-        _isMoving = dir.magnitude > 0.01f;
-
-        _weaponManager.AutoRefill(_isShooting);
-        _weaponManager.RefillInk();
     }
 
     public override void Render()
@@ -426,45 +454,22 @@ public class NetworkInklingMovement : NetworkBehaviour
         _prevIsSameColor = sameColor;
     }
 
-    // 게임(세션)당 딱 한 번만 뽑히는 공용 색상 인덱스 — 호스트만 값을 정하고 네트워크로 전파한다
-    static bool s_teamColorIndexAssigned;
-    static int s_teamColorIndex;
-
+    // 팀/잉크 색상은 GameManager가 스폰 시점에 등록해 둔 PlayerData에서 그대로 받아와 적용한다
     void AssignTeamColors()
     {
         var networkPlayer = GetComponent<NetworkPlayer>();
         int index = networkPlayer != null ? networkPlayer.SpawnIndex : 0;
 
-        if (HasStateAuthority)
-        {
-            // SpawnIndex == 1은 매치의 첫 스폰(=새 매치 시작)을 의미하므로 이때는 무조건 다시 뽑는다
-            if (index == 1 || !s_teamColorIndexAssigned)
-            {
-                s_teamColorIndex = Random.Range(0, _teamColors1.Length);
-                s_teamColorIndexAssigned = true;
-            }
-
-            _inkIdx = s_teamColorIndex;
-        }
-
         _teamIndex = index % 2;
-        Debug.Log("Index : " + index);
-        if (_teamIndex == 1)
+
+        if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var playerData))
         {
-            _inkColor = _teamColors1[_inkIdx];
-            _enemyColor = _teamColors2[_inkIdx];
-            gameObject.layer = LayerMask.NameToLayer("Team1");
-            _kcc.SetColliderLayer(gameObject.layer);
-        }
-        else
-        {
-            _inkColor = _teamColors2[_inkIdx];
-            _enemyColor = _teamColors1[_inkIdx];
-            gameObject.layer = LayerMask.NameToLayer("Team2");
-            _kcc.SetColliderLayer(gameObject.layer);
+            _inkColor = playerData._teamColor;
+            _enemyColor = playerData._enemyColor;
         }
 
-        Debug.Log(_inkIdx);
+        gameObject.layer = LayerMask.NameToLayer(_teamIndex == 1 ? "Team1" : "Team2");
+        _kcc.SetColliderLayer(gameObject.layer);
     }
 
     void CheckPaintColor()

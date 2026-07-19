@@ -15,9 +15,22 @@ public class CrosshairUI : MonoBehaviour
     Transform _targetObj;
     RaycastHit _hit;
 
+    bool _isHit;
+
     public void OpenCrosshair()
     {
-        gameObject.SetActive(true);
+        _cornerBracket.enabled = true;
+        _innerCircle.enabled = true;
+        _outerCircle.enabled = true;
+        _cross.enabled = true;
+    }
+
+    public void CloseCrosshair()
+    {
+        _cornerBracket.enabled = false;
+        _innerCircle.enabled = false;
+        _outerCircle.enabled = false;
+        _cross.enabled = false;
     }
 
     public void OpenCrosshair(bool hit)
@@ -26,11 +39,13 @@ public class CrosshairUI : MonoBehaviour
         {
             _outerCircle.enabled = true;
             _innerCircle.enabled = true;
+            _isHit = true;
         }
         else
         {
             _outerCircle.enabled = false;
             _innerCircle.enabled = false;
+            _isHit = false;
         }
     }
 
@@ -46,11 +61,16 @@ public class CrosshairUI : MonoBehaviour
     {
         if (targetObj == null || Camera.main == null || _crosshairObj == null) return;
 
+       
+
         Vector3 screenPoint = Camera.main.WorldToScreenPoint(targetObj.position);
         if (screenPoint.z < 0) return;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)transform, screenPoint, null, out Vector2 localPoint);
 
-        ((RectTransform)_crosshairObj.transform).anchoredPosition = localPoint;
+        if (!_isHit)
+            ((RectTransform)_crosshairObj.transform).anchoredPosition = Vector2.zero;
+        else
+            ((RectTransform)_crosshairObj.transform).anchoredPosition = localPoint;
     }
 }

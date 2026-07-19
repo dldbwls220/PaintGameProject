@@ -1,0 +1,25 @@
+using TMPro;
+using UnityEngine;
+
+public class TimerUI : MonoBehaviour
+{
+    [SerializeField]TextMeshProUGUI _time;
+
+    public void OpenWnd()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void CloseWnd()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void SetTime(float time)
+    {
+        int minutes = (int)(time / 60f);
+        int seconds = (int)(time % 60f);
+
+        _time.text = $"{minutes:0}:{seconds:00}";
+    }
+}

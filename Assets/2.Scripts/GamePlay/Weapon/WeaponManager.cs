@@ -48,7 +48,7 @@ public class WeaponManager : NetworkBehaviour
     {
         _inkTankC.Init();
         _inkColor = color;
-        _target = target.transform;
+        _target = target.GetChild(0);
         _totalInk = totalInk;
         _currentInk = _totalInk;
         _inkShootTF = root.transform.GetChild(0);

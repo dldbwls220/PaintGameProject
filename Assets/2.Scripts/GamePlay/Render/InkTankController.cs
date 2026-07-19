@@ -54,6 +54,8 @@ public class InkTankController : MonoBehaviour
 
     public void UpdateInkTank(float ink)
     {
+        if(_inkSlider == null) return;
+
         _inkSlider.value = ink;
     }
 

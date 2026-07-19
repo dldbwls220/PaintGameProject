@@ -1,3 +1,4 @@
+using Fusion;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
@@ -67,5 +68,20 @@ namespace DefineStructure
             _player.mute = mute;
             _player.loop = loop;
         }
+    }
+
+    public struct PlayerData : INetworkStruct
+    {
+        [Networked, Capacity(24)]
+        public string _nickName { get => default; set { } }
+        public PlayerRef _playerRef;
+        public Color _teamColor;
+        public Color _enemyColor;
+        public int _kills;
+        public int _death;
+        public int _lastKillTick;
+        public int _statisticPostion;
+        public bool _isAlive;
+        public bool _isConnected;
     }
 }

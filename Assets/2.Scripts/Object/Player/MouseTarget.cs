@@ -16,6 +16,12 @@ public class MouseTarget : MonoBehaviour
     GameObject _aimRootObject;
     int _teamIdx;
 
+    bool _enemyHit;
+    bool _hitAnything;
+
+    public bool _eHit { get { return _enemyHit; } }
+    public bool _hA { get { return _hitAnything; } }
+
     void Start()
     {
         _targetPosition = transform.position;
@@ -34,8 +40,7 @@ public class MouseTarget : MonoBehaviour
 
     public void InitObj(GameObject targetObject, float distance, int teamIdx)
     {
-        _targetObject = targetObject;
-        _aimRootObject = _targetObject.transform.GetChild(1).gameObject;
+        _aimRootObject = targetObject.transform.GetChild(0).gameObject;
         _maxDistance = distance;
         _teamIdx = teamIdx;
     }
@@ -44,7 +49,7 @@ public class MouseTarget : MonoBehaviour
     {
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if(_targetObject == null) return;
+        if(_aimRootObject == null) return;
 
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 
@@ -75,11 +80,20 @@ public class MouseTarget : MonoBehaviour
             var hitOwner = muzzleHit.collider.gameObject.GetComponentInParent<NetworkInklingMovement>();
             bool isFriendly = hitOwner != null && hitOwner._teamIndex == _teamIdx;
 
+            _hitAnything = true;
+            _enemyHit = hitOwner != null && !isFriendly;
+
             if (!isFriendly)
                 desiredPosition = muzzleHit.point;
+
+        }
+        else
+        {
+            _hitAnything = false;
+            _enemyHit = false;
         }
 
-        _targetPosition = Vector3.Lerp(_targetPosition, desiredPosition, _smoothSpeed * Time.deltaTime);
+            _targetPosition = Vector3.Lerp(_targetPosition, desiredPosition, _smoothSpeed * Time.deltaTime);
         transform.position = _targetPosition;
     }
 }

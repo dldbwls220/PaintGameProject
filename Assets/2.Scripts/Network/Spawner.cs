@@ -6,30 +6,14 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public NetworkPlayer _networkPlayer;
-
     CharacterInputHandler _inputHandler;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    int _spawnCount = 0;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (runner.IsServer)
         {
-            _spawnCount++;
-            int spawnIndex = _spawnCount;
             Debug.Log("OnPlayerJoined we are server. Spawning Player");
-            runner.Spawn(_networkPlayer, Utils.GetSpawnPoint(), Quaternion.identity, player,
-                onBeforeSpawned: (_, obj) =>
-                {
-                    obj.GetComponent<NetworkPlayer>().SetSpawnIndex(spawnIndex);
-                });
+            GameManager._instance.SpawnPlayer(runner, player);
         }
         else Debug.Log("OnPlayerJoined");
     }
