@@ -141,4 +141,14 @@ namespace DefineEnum
     }
 
     #endregion[¹«±â]
+
+    #region[ÆÀ]
+
+    public enum TeamState
+    {
+        Team1,
+        Team2
+    }
+
+    #endregion[ÆÀ]
 }

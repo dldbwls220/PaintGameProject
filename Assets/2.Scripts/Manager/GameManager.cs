@@ -15,6 +15,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] Color[] _teamColors1;
     [SerializeField] Color[] _teamColors2;
 
+    [SerializeField] SpawnPlatform[] _spawnPlatforms;
+
     int _spawnCount;
     bool _inkIdxAssigned;
     GameUIManager _uiManager;
@@ -80,6 +82,10 @@ public class GameManager : NetworkBehaviour
         {
             _inkIdx = Random.Range(0, _teamColors1.Length);
             _inkIdxAssigned = true;
+            foreach (var platform in _spawnPlatforms)
+            {
+                platform.InitPlatform(_teamColors1[_inkIdx], _teamColors2[_inkIdx]);
+            }
         }
     }
 
