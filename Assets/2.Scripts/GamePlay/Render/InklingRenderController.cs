@@ -24,6 +24,8 @@ public class InklingRenderController : MonoBehaviour
     MeshRenderer[] _inkTankRender;
     MaterialPropertyBlock _mpb;
 
+    bool _endRespawn = true;
+
     public struct RenderState
     {
         public bool isSquid;
@@ -36,6 +38,8 @@ public class InklingRenderController : MonoBehaviour
         public bool isSameColor;
         public bool isSwimming;
         public bool isSlowed;
+        public bool isAlive;
+        public bool isRespawning;
         public float layerWeight;
         public Vector3 localMoveVelocity;
         public Color teamColor;
@@ -121,63 +125,73 @@ public class InklingRenderController : MonoBehaviour
         UpdateFormRender(s);
         UpdateAnimation(s);
         UpdateInkRefillRender(s);
-
         if (s.hasInputAuthority)
             ApplyCameraTransparency(s);
     }
 
     void UpdateFormRender(in RenderState s)
     {
-
-        if (s.isMorphingSquid)
+        if (!s.isAlive)
         {
             SwitchRender(FormState.Inkling, false);
-            SwitchRender(FormState.Half, true);
+            SwitchRender(FormState.Half, false);
             SwitchRender(FormState.Squid, false);
             InkTankRender(false);
+            _endRespawn = false;
+            return;
         }
-        else if (s.isSquid)
+        else
         {
-            if(s.isSwimming)
+            if (s.isMorphingSquid)
             {
-                if (!s.isGrounded)
+                SwitchRender(FormState.Inkling, false);
+                SwitchRender(FormState.Half, true);
+                SwitchRender(FormState.Squid, false);
+                InkTankRender(false);
+            }
+            else if (s.isSquid)
+            {
+                if (s.isSwimming)
+                {
+                    if (!s.isGrounded)
+                    {
+                        SwitchRender(FormState.Inkling, false);
+                        SwitchRender(FormState.Half, false);
+                        SwitchRender(FormState.Squid, true);
+                        InkTankRender(false);
+                    }
+                    else
+                    {
+                        SwitchRender(FormState.Inkling, false);
+                        SwitchRender(FormState.Half, false);
+                        SwitchRender(FormState.Squid, false);
+                        InkTankRender(false);
+                    }
+                }
+                else
                 {
                     SwitchRender(FormState.Inkling, false);
                     SwitchRender(FormState.Half, false);
                     SwitchRender(FormState.Squid, true);
                     InkTankRender(false);
                 }
-                else
-                {
-                    SwitchRender(FormState.Inkling, false);
-                    SwitchRender(FormState.Half, false);
-                    SwitchRender(FormState.Squid, false);
-                    InkTankRender(false);
-                }             
+
+            }
+            else if (s.isMorphingInkling)
+            {
+                SwitchRender(FormState.Inkling, false);
+                SwitchRender(FormState.Half, true);
+                SwitchRender(FormState.Squid, false);
+                InkTankRender(false);
             }
             else
             {
-                SwitchRender(FormState.Inkling, false);
+                SwitchRender(FormState.Inkling, true);
                 SwitchRender(FormState.Half, false);
-                SwitchRender(FormState.Squid, true);
-                InkTankRender(false);
+                SwitchRender(FormState.Squid, false);
+                InkTankRender(true);
             }
-           
-        }
-        else if (s.isMorphingInkling)
-        {
-            SwitchRender(FormState.Inkling, false);
-            SwitchRender(FormState.Half, true);
-            SwitchRender(FormState.Squid, false);
-            InkTankRender(false);
-        }
-        else
-        {
-            SwitchRender(FormState.Inkling, true);
-            SwitchRender(FormState.Half, false);
-            SwitchRender(FormState.Squid, false);
-            InkTankRender(true);
-        }
+        } 
     }
 
     void UpdateAnimation(in RenderState s)
@@ -189,12 +203,14 @@ public class InklingRenderController : MonoBehaviour
         inkAnim.SetBool("isJumping", !s.isGrounded);
         inkAnim.SetBool("FootSwitch", s.switchFoot);
         inkAnim.SetBool("isSlowed", s.isSlowed);
+        inkAnim.SetBool("isRespawning", s.isRespawning);
         inkAnim.SetLayerWeight(1, s.layerWeight);
         _multiAC.weight = s.layerWeight;
 
         var halfAnim = _animator[(int)FormState.Half];
         halfAnim.SetBool("isSquid", s.isSquid);
         halfAnim.SetBool("isSlowed", s.isSlowed);
+        halfAnim.SetBool("isRespawning", s.isRespawning);
 
         var squidAnim = _animator[((int)FormState.Squid)];
         squidAnim.SetBool("isGround", s.isGrounded);

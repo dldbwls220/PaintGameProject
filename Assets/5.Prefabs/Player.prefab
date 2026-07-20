@@ -46,7 +46,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: e2c459040a0a033419d249091f4bf409, type: 3}
   m_Controller: {fileID: 9100000, guid: 7a26bf445d8587b4daab97be76881a88, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -2573,7 +2573,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: d80598af795d4ee428f8705821ed939b, type: 3}
   m_Controller: {fileID: 9100000, guid: a6207860223f97d45a4053836475df62, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
@@ -2871,7 +2871,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: af545ba7f6e2ac44480cf901243da7bb, type: 3}
   m_Controller: {fileID: 22100000, guid: d263d6e79930fb24e9bcb4b2c9b60d97, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
@@ -9992,16 +9992,6 @@ MonoBehaviour:
   _squidHitboxOffset: {x: 0, y: 0.35, z: 0}
   _shootRoot: {fileID: 4267397698361055904}
   _inktankOffset: 0
-  _teamColors1:
-  - {r: 1, g: 0, b: 0.8745098, a: 1}
-  - {r: 0.7607843, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0.23921569, b: 0, a: 1}
-  - {r: 0.7254902, g: 0, b: 1, a: 1}
-  _teamColors2:
-  - {r: 0, g: 1, b: 0.1254902, a: 1}
-  - {r: 0.23921569, g: 0, b: 1, a: 1}
-  - {r: 0, g: 0.7607843, b: 1, a: 1}
-  - {r: 0.27450982, g: 1, b: 0, a: 1}
   _walkSpeed: 5
   _swimSpeed: 8.25
   _slowSpeed: 1
@@ -10010,6 +10000,8 @@ MonoBehaviour:
   _groundAccel: 50
   _airAccel: 4
   _swimAccel: 15
+  _respawningTime: 1
+  _turnDuration: 0.8
   _multiAC: {fileID: 26589746309510797}
   _rigBuilder: {fileID: 1875132854502961994}
   _mouseTarget: {fileID: 4842202179997333524, guid: 71d2575a5b3f4ca449f06b181a20367a, type: 3}
@@ -10041,11 +10033,12 @@ MonoBehaviour:
     _value: 0
   __isWallClimb:
     _value: 0
+  __isAlive:
+    _value: 0
   __camForward: {x: 0, y: 0, z: 0}
   __camRight: {x: 0, y: 0, z: 0}
   __aimTargetPosition: {x: 0, y: 0, z: 0}
   __teamIndex: 0
-  __inkIdx: 0
   __layerWeight: 0
   __targetWeight: 0
 --- !u!114 &2066191090572971395
@@ -10073,9 +10066,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   _deathSplashFX: {fileID: 8781502534069747683, guid: a3159f693dec9204ebc0539a46d50357, type: 3}
-  _isImmortal: 0
   _isHit: 0
   __currentHealth: 0
+  __nowRespawing:
+    _value: 0
 --- !u!114 &2499367210992749879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10682,7 +10676,7 @@ PrefabInstance:
       objectReference: {fileID: 4681274955975690915}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000000059604645
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10830,7 +10824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000000059604645
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10870,7 +10864,7 @@ PrefabInstance:
       objectReference: {fileID: 7865146497519624812}
     - target: {fileID: 7818936436460588382, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000000059604645
       objectReference: {fileID: 0}
     - target: {fileID: 7818936436460588382, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalPosition.y

@@ -68,7 +68,9 @@ public class WeaponManager : NetworkBehaviour
     public void UpdateInkStatus(in InkTankState s)
     {
         CheckInkStatus(s);
-        _inkTankC.OnOffInkTank(s.isSquid);
+
+        if (HasInputAuthority)
+            _inkTankC.OnOffInkTank(s.isSquid);
     }
 
     public void UpdateShootSound()

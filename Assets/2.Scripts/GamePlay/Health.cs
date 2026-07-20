@@ -24,7 +24,6 @@ public class Health : NetworkBehaviour
 
     public bool _isAlive => _currentHealth > 0;
     public bool _isFull => _currentHealth >= _maxHealth;
-    public bool _isImmortal;
     public bool _isHit;
     bool _wasAlive = true;
     Color _inkColor = Color.white;
@@ -32,6 +31,9 @@ public class Health : NetworkBehaviour
     [Networked] public float _currentHealth { get; private set; }
     [Networked] public TickTimer _hitTimer { get; set; }
     [Networked] TickTimer _healthTimer { get; set; }
+    [Networked] TickTimer _respawningTimer { get; set; }
+
+    [Networked] public NetworkBool _nowRespawing { get; set; } = false;
 
     const int DESPAWN_DELAY_TICKS = 10;
 
@@ -47,8 +49,19 @@ public class Health : NetworkBehaviour
 
         if (_healthTimer.Expired(Runner) && !_isAlive)
         {
+            if(GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
+                data._isAlive = true;
+
+            _respawningTimer = TickTimer.CreateFromSeconds(Runner, 1);
+
+            _nowRespawing = true;
 
             _currentHealth = _maxHealth;
+        }
+
+        if (_respawningTimer.Expired(Runner))
+        {
+            _nowRespawing = false;
         }
 
         if (HasStateAuthority)
@@ -61,8 +74,6 @@ public class Health : NetworkBehaviour
 
         if(_currentHealth <= 0) return false;
 
-        if(_isImmortal) return false;
-
         _currentHealth -= damage;
 
         _isHit = true;
@@ -72,8 +83,12 @@ public class Health : NetworkBehaviour
         if (_currentHealth <= 0f)
         {
             _currentHealth = 0f;
+
+            if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
+                data._isAlive = false;
+
             ExplodePaint();
-            Resawn();
+            Respawn();
             //킬로그 추가
         }
 
@@ -114,7 +129,7 @@ public class Health : NetworkBehaviour
         _wasAlive = _isAlive;
     }
 
-    void Resawn()
+    void Respawn()
     {
         float time = 0;
 

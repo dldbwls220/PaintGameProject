@@ -79,7 +79,10 @@ public class GameManager : NetworkBehaviour
         };
 
         this.PlayerData.Set(player, playerData);
-        Vector3 spawnPos = GetSpawnPoint(teamIndex, spawnIndex).position;
+        //Vector3 spawnPos = GetSpawnPoint(teamIndex, spawnIndex).position;
+
+        Vector3 spawnPos = Utils.GetSpawnPoint();
+
         Quaternion spawnRot = teamIndex == 1 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
 
         runner.Spawn(_playerPrefab, spawnPos, spawnRot, player,

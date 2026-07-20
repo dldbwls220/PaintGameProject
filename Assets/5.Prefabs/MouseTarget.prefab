@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MouseTarget
   _playerLayer:
     serializedVersion: 2
-    m_Bits: 384
+    m_Bits: 448
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 1600

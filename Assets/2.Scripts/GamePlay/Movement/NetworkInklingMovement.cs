@@ -49,6 +49,10 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] float _airAccel = 4f;       // 공중 가속도 (낮을수록 관성 강함)
     [SerializeField] float _swimAccel = 8f;      // 수영 가속도
 
+    [Header("Respawning Time")]
+    [SerializeField] float _respawningTime = 1f;
+    [SerializeField] float _turnDuration = 0.4f; // 반바퀴 회전에 걸리는 시간 (_respawningTime보다 짧게)
+
     [Networked] private Vector3 _currentMoveVelocity { get; set; }
 
     SimpleKCC _kcc;
@@ -85,11 +89,15 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _isSwimming {  get; set; }
     [Networked] public NetworkBool _isSlowed { get; set; }
     [Networked] public NetworkBool _isWallClimb { get; set; }
+    [Networked] public NetworkBool _isAlive { get; set; }
 
     // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
     bool _prevIsOnPaint;
     bool _prevIsSameColor;
     [Networked] public TickTimer _morphTimer { get; set; }
+    [Networked] public TickTimer _respawningTimer { get; set; }
+    [Networked] Quaternion _respawnStartRot { get; set; }
+    [Networked] NetworkBool _wasRespawning { get; set; }
     [Networked] public Vector3 _camForward { get; set; }
     [Networked] public Vector3 _camRight { get; set; }
     [Networked] public Vector3 _aimTargetPosition { get; set; }
@@ -163,6 +171,8 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         if (!GetInput(out NetworkInputData input)) return;
 
+        _isAlive = _health._isAlive;
+
         CheckPaintColor();
 
         _inktankOffset = _weaponManager.UpdateInktankOffset();
@@ -187,7 +197,20 @@ public class NetworkInklingMovement : NetworkBehaviour
         float speed = UpdateSpeed();
 
         // 회전
-        if (_moveDirection.sqrMagnitude > 0.01f && !_isWallClimb)
+        if (_health._nowRespawing)
+        {
+            if (!_wasRespawning)
+            {
+                _respawningTimer = TickTimer.CreateFromSeconds(Runner, _respawningTime);
+                _respawnStartRot = transform.rotation;
+            }
+
+            float elapsed = _respawningTime - (_respawningTimer.RemainingTime(Runner) ?? 0f);
+            float t = Mathf.Clamp01(elapsed / _turnDuration);
+            Quaternion targetRot = Quaternion.Slerp(_respawnStartRot * Quaternion.Euler(0f, 180f, 0f), _respawnStartRot, t);
+            _kcc.SetLookRotation(targetRot);
+        }
+        else if (_moveDirection.sqrMagnitude > 0.01f && !_isWallClimb)
         {
             Quaternion targetRot = _isShooting && !_isSquid
                 ? Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime)
@@ -199,6 +222,8 @@ public class NetworkInklingMovement : NetworkBehaviour
             Quaternion targetRot = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_camForward), 20f * Runner.DeltaTime);
             _kcc.SetLookRotation(targetRot);
         }
+
+        _wasRespawning = _health._nowRespawing;
 
         // 상태별 가속도 선택
         float accel = _kcc.IsGrounded && !_isSwimming
@@ -255,7 +280,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     void MovementInput(NetworkInputData input)
     {
-        if (!_health._isAlive) return;
+        if (!_health._isAlive || _health._nowRespawing) return;
 
         // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
         _aimTargetPosition = input._aimTargetPosition;
@@ -333,6 +358,8 @@ public class NetworkInklingMovement : NetworkBehaviour
             layerWeight = _layerWeight,
             isSwimming = _isSwimming,
             isSlowed = _isSlowed,
+            isAlive = _isAlive,
+            isRespawning = _health._nowRespawing,
             localMoveVelocity = GetAnimationMoveVelocity(),
             cameraAngleX = GetCameraAngle(),
             teamColor = _inkColor,
