@@ -31,6 +31,7 @@ public class Health : NetworkBehaviour
 
     [Networked] public float _currentHealth { get; private set; }
     [Networked] public TickTimer _hitTimer { get; set; }
+    [Networked] TickTimer _healthTimer { get; set; }
 
     const int DESPAWN_DELAY_TICKS = 10;
 
@@ -43,6 +44,12 @@ public class Health : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if(_hitTimer.Expired(Runner)) _isHit = false;
+
+        if (_healthTimer.Expired(Runner) && !_isAlive)
+        {
+
+            _currentHealth = _maxHealth;
+        }
 
         if (HasStateAuthority)
             AutoHealthRegen();
@@ -66,6 +73,7 @@ public class Health : NetworkBehaviour
         {
             _currentHealth = 0f;
             ExplodePaint();
+            Resawn();
             //킬로그 추가
         }
 
@@ -104,6 +112,18 @@ public class Health : NetworkBehaviour
         }
 
         _wasAlive = _isAlive;
+    }
+
+    void Resawn()
+    {
+        float time = 0;
+
+        if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
+            time = data._myRespawnTime;
+
+        _healthTimer = TickTimer.CreateFromSeconds(Runner, time);
+
+        
     }
 
     void ExplodePaint()

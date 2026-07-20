@@ -81,6 +81,7 @@ namespace DefineStructure
         public int _death;
         public int _lastKillTick;
         public int _statisticPostion;
+        public float _myRespawnTime;
         public bool _isAlive;
         public bool _isConnected;
     }

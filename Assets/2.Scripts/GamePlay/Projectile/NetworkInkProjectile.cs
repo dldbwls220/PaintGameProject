@@ -1,6 +1,6 @@
 using Fusion;
 using UnityEngine;
-
+using DefineEnum;
 public class NetworkInkProjectile : NetworkBehaviour
 {
     [Header("Physics")]
@@ -91,25 +91,26 @@ public class NetworkInkProjectile : NetworkBehaviour
         {
             if (HasStateAuthority)
             {
-                if (lHit.Hitbox != null)
-                {
-                    var hitOwner = lHit.GameObject.GetComponentInParent<NetworkInklingMovement>();
+                // lHit.Hitbox는 IncludePhysX 옵션 때문에 같은 캐릭터를 맞혀도 PhysX 경로로 판정되면 null이 될 수 있어
+                // (Fusion 문서: "Hitbox is null in case the hit was on PhysX"), Hitbox 유무 대신 GameObject로 대상을 판별한다.
+                var hitOwner = lHit.GameObject != null ? lHit.GameObject.GetComponentInParent<NetworkInklingMovement>() : null;
 
-                    if (hitOwner != null && hitOwner._teamIndex == _shooterTeam)
+                if (hitOwner != null)
+                {
+                    if (hitOwner._teamIndex == _shooterTeam)
                     {
-                        Debug.Log("아군입니다");
+                        Debug.Log($"[InkProjectile] 아군입니다 (target={lHit.GameObject.name}, teamIndex={hitOwner._teamIndex}, shooterTeam={_shooterTeam})");
 
                         return; // 아군이면 이번 틱은 무시 (필요하면 관통 처리)
                     }
-                    else
-                    {
-                        OnHit(lHit.Point, lHit.Normal, true);
-                        ApplyDamage(lHit.Hitbox);
-                    }
-                        
+
+                    OnHit(lHit.Point, lHit.Normal, true);
+                    ApplyDamage(hitOwner);
                 }
                 else
+                {
                     OnHit(lHit.Point, lHit.Normal, false);
+                }
             }
         }
 
@@ -150,12 +151,12 @@ public class NetworkInkProjectile : NetworkBehaviour
         _trailRenderer.enabled = false;
     }
 
-    void ApplyDamage(Hitbox enemy)
+    void ApplyDamage(NetworkInklingMovement enemy)
     {
-        Health enemyHealth = enemy.Root.GetComponent<Health>();
+        Health enemyHealth = enemy.GetComponent<Health>();
         if (enemyHealth == null || !enemyHealth._isAlive) return;
 
-        if (enemyHealth.ApplyDamage(Object.InputAuthority, _damage, DefineEnum.MainWeaponState.Shooter) == false) return;
+        if (enemyHealth.ApplyDamage(Object.InputAuthority, _damage, MainWeaponState.Shooter) == false) return;
     }
 
     void OnHit(Vector3 point, Vector3 normal, bool isEnemyHit)

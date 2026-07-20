@@ -255,6 +255,8 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     void MovementInput(NetworkInputData input)
     {
+        if (!_health._isAlive) return;
+
         // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
         _aimTargetPosition = input._aimTargetPosition;
 
