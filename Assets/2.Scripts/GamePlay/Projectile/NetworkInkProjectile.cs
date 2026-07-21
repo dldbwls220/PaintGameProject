@@ -1,6 +1,8 @@
-using Fusion;
-using UnityEngine;
 using DefineEnum;
+using Fusion;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
 public class NetworkInkProjectile : NetworkBehaviour
 {
     [Header("Physics")]
@@ -13,6 +15,11 @@ public class NetworkInkProjectile : NetworkBehaviour
     [SerializeField] float _hardness = 1f;
     [SerializeField] float _strength = 1f;
 
+    [Header("Detect Player")]
+    [SerializeField] Vector3 _passBoxExtents = new Vector3(0.5f, 0.5f, 0.5f); // 로컬 x/y/z 절반 크기, z가 진행 방향
+    [SerializeField] float _passBoxOffset = 0.5f; // 현재 위치에서 진행 반대 방향으로 박스 중심까지의 거리
+    [SerializeField] LayerMask _passMask;
+
     [Header("FX")]
     [SerializeField] ParticleSystem _shootFX;
     [SerializeField] GameObject _splashFXPrefab;
@@ -21,6 +28,10 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Header("SFX")]
     [SerializeField] AudioSource _sfx;
     [SerializeField] AudioClip _hitSFX;
+
+    [Header("SFX3D")]
+    [SerializeField] AudioSource _sfx3D;
+    [SerializeField] AudioClip _passbySFX;
 
     [Networked] InkProjectileData _data { get; set; }
     [Networked] Color _inkColor { get; set; }
@@ -35,6 +46,8 @@ public class NetworkInkProjectile : NetworkBehaviour
     MeshRenderer _mesh;
     TrailRenderer _trailRenderer;
     ParticleSystem[] _splashParticle;
+    readonly HashSet<PlayerRef> _passByNotified = new HashSet<PlayerRef>();
+    readonly List<LagCompensatedHit> _passHits = new List<LagCompensatedHit>();
 
     // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
     const int DESPAWN_DELAY_TICKS = 10;
@@ -125,6 +138,9 @@ public class NetworkInkProjectile : NetworkBehaviour
             _data = data;
             _finishedTick = Runner.Tick;
         }
+
+        if (!_data.IsFinished)
+            CheckPlayerAround(nextPos, dir);
     }
 
     public override void Render()
@@ -178,6 +194,30 @@ public class NetworkInkProjectile : NetworkBehaviour
             RPC_OnEnemyHit(point, normal, _inkColor, data.PaintRadius);
     }
 
+    void CheckPlayerAround(Vector3 position, Vector3 dir)
+    {
+        if (!HasStateAuthority) return;
+
+        // 진행 방향 뒤쪽에 박스를 둔다
+        Vector3 boxCenter = position - dir * _passBoxOffset;
+        Quaternion boxRotation = Quaternion.LookRotation(dir);
+
+        // 플레이어는 Fusion Hitbox로 판정되므로 일반 Physics.OverlapBox로는 감지되지 않는다
+        Runner.LagCompensation.OverlapBox(boxCenter, _passBoxExtents, boxRotation, Object.InputAuthority, _passHits, _passMask, HitOptions.IncludePhysX);
+
+        foreach (var hit in _passHits)
+        {
+            NetworkInklingMovement other = hit.GameObject != null ? hit.GameObject.GetComponentInParent<NetworkInklingMovement>() : null;
+
+            if (other == null || other._teamIndex == _shooterTeam) continue;
+
+            PlayerRef target = other.Object.InputAuthority;
+            if (!_passByNotified.Add(target)) continue; // 같은 상대에게는 한 번만 알림
+
+            RPC_OnEnemyPassBy(target);
+        }
+    }
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
@@ -213,6 +253,14 @@ public class NetworkInkProjectile : NetworkBehaviour
             Destroy(fx, 3f);
         }
 
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_OnEnemyPassBy(PlayerRef target)
+    {
+        if (Runner.LocalPlayer != target) return; // 옆을 스쳐 지나간 그 플레이어에게만 재생
+
+        _sfx3D.PlayOneShot(_passbySFX);
     }
 
     // 직선 구간 거리(_straightDistance)를 속력으로 환산한, 낙하가 시작되는 시각
@@ -267,5 +315,15 @@ public class NetworkInkProjectile : NetworkBehaviour
         _trailMpb.SetColor("_BaseColor", _inkColor);
         _trailMpb.SetColor("_EmissionColor", _inkColor);
         _trailRenderer.SetPropertyBlock(_trailMpb);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 dir = transform.forward;
+        Vector3 boxCenter = transform.position - dir * _passBoxOffset;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.matrix = Matrix4x4.TRS(boxCenter, Quaternion.LookRotation(dir), Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, _passBoxExtents * 2f);
     }
 }
