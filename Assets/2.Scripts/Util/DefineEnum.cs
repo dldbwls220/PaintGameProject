@@ -61,6 +61,42 @@ namespace DefineEnum
         Count
     }
 
+    public enum PlayerAudioSourceState
+    {
+        SFX3D,
+        SFX
+    }
+
+    public enum PlayerSFX3DName
+    {
+        Voice_SquidGirl_Dead_00,
+        Voice_SquidGirl_Dead_01,
+        Voice_SquidGirl_Dead_02,
+        Voice_SquidGirl_Dead_03,
+        Voice_SquidGirl_Dead_04,
+        Voice_SquidGirl_Dead_05,
+        Voice_SquidGirl_Dead_06,
+
+        Count
+    }
+
+    public enum PlayerSFXName
+    {
+        Voice_SquidGirl_Damage_00,
+        Voice_SquidGirl_Damage_01,
+        Voice_SquidGirl_Damage_02,
+        Voice_SquidGirl_Damage_03,
+        Voice_SquidGirl_Damage_04,
+        Voice_SquidGirl_Damage_05,
+        Voice_SquidGirl_Damage_06,
+        Voice_SquidGirl_Damage_07,
+
+        Voice_SquidGirl_Soul_00,
+        Voice_SquidGirl_Soul_01,
+
+        Count
+    }
+
     #endregion[소리]
 
     #region[커스터마이징]

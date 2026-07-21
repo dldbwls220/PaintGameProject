@@ -40,6 +40,7 @@ public class InklingRenderController : MonoBehaviour
         public bool isSlowed;
         public bool isAlive;
         public bool isRespawning;
+        public bool isWallClimb;
         public float layerWeight;
         public Vector3 localMoveVelocity;
         public Color teamColor;
@@ -167,6 +168,13 @@ public class InklingRenderController : MonoBehaviour
                         SwitchRender(FormState.Squid, false);
                         InkTankRender(false);
                     }
+                }
+                else if(s.isWallClimb)
+                {
+                    SwitchRender(FormState.Inkling, false);
+                    SwitchRender(FormState.Half, false);
+                    SwitchRender(FormState.Squid, false);
+                    InkTankRender(false);
                 }
                 else
                 {

@@ -5,6 +5,7 @@ public class WeaponManager : NetworkBehaviour
 {
     [Header ("Class Reference")]
     [SerializeField] InkTankController _inkTankC;
+    PlayerSoundManager _soundManger;
 
     [Header("Weapon Setup")]
     Transform _inkShootTF;
@@ -44,7 +45,7 @@ public class WeaponManager : NetworkBehaviour
         _distance = _currentWeapon._distance;
     }
 
-    public void Init(Color color, Transform target, float totalInk, Transform root)
+    public void Init(Color color, Transform target, float totalInk, Transform root , PlayerSoundManager sound)
     {
         _inkTankC.Init();
         _inkColor = color;
@@ -52,6 +53,7 @@ public class WeaponManager : NetworkBehaviour
         _totalInk = totalInk;
         _currentInk = _totalInk;
         _inkShootTF = root.transform.GetChild(0);
+        _soundManger = sound;
 
         _allWeapons = GetComponentsInChildren<Weapon>();
 

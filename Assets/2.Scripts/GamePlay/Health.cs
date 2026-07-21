@@ -26,7 +26,9 @@ public class Health : NetworkBehaviour
     public bool _isFull => _currentHealth >= _maxHealth;
     public bool _isHit;
     bool _wasAlive = true;
+    float _prevHealth;
     Color _inkColor = Color.white;
+    PlayerSoundManager _soundManager;
 
     [Networked] public float _currentHealth { get; private set; }
     [Networked] public TickTimer _hitTimer { get; set; }
@@ -66,6 +68,11 @@ public class Health : NetworkBehaviour
 
         if (HasStateAuthority)
             AutoHealthRegen();
+    }
+
+    public void GetSoundManager(PlayerSoundManager soundManager)
+    {
+        _soundManager = soundManager;
     }
 
     public bool ApplyDamage(PlayerRef player, float damage, MainWeaponState mw)
@@ -123,10 +130,23 @@ public class Health : NetworkBehaviour
                 main.startColor = _inkColor;
             }
 
+            PlayDeadSound();
+
             Destroy(fx, 3f);
         }
 
         _wasAlive = _isAlive;
+    }
+
+    public void PlayHitSound()
+    {
+        if (_prevHealth > _currentHealth && _isAlive && HasInputAuthority)
+        {
+            int Rand = Random.Range((int)PlayerSFXName.Voice_SquidGirl_Damage_00, (int)PlayerSFXName.Voice_SquidGirl_Damage_07 + 1);
+            _soundManager.PlayerSFX((PlayerSFXName)Rand);
+        }
+
+        _prevHealth = _currentHealth;
     }
 
     void Respawn()
@@ -136,9 +156,7 @@ public class Health : NetworkBehaviour
         if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
             time = data._myRespawnTime;
 
-        _healthTimer = TickTimer.CreateFromSeconds(Runner, time);
-
-        
+        _healthTimer = TickTimer.CreateFromSeconds(Runner, time);        
     }
 
     void ExplodePaint()
@@ -157,6 +175,12 @@ public class Health : NetworkBehaviour
                 RPC_OnDeathPaint(hit.point, hit.normal, _inkColor, paintRadius);
             }
         }
+    }
+
+    void PlayDeadSound()
+    {
+        int Rand = Random.Range((int)PlayerSFX3DName.Voice_SquidGirl_Dead_00, (int)PlayerSFX3DName.Voice_SquidGirl_Dead_04 + 1);
+        _soundManager.PlayerSFX3D((PlayerSFX3DName)Rand);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

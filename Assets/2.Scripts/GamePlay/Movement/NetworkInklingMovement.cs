@@ -20,6 +20,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] Health _health;
     [SerializeField] Hitbox _hitbox;
     [SerializeField] CharacterSeperation _characterSeparation;
+    [SerializeField] PlayerSoundManager _soundManager;
 
     [Header("Hitbox Size (Squid Form)")]
     [SerializeField] float _squidHitboxRadius = 0.5f;
@@ -132,12 +133,15 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingHitboxExtents = _hitbox.CapsuleExtents;
         _inklingHitboxOffset = _hitbox.Offset;
 
+        _soundManager.LoadAllSound();
+
         AssignTeamColors();
 
         _renderC.Init();
         _renderC.SetTeamColor(_inkColor);
 
         _health.ApplyColorToFX(_enemyColor);
+        _health.GetSoundManager(_soundManager);
 
         _kcc.SetGravity(_gravity);
 
@@ -146,7 +150,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         AddAimSource();
         //AddVirtualCamera();
 
-        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _shootRoot.transform);
+        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _shootRoot.transform , _soundManager);
 
         if (HasInputAuthority)
         {
@@ -380,6 +384,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _weaponManager.UpdateInkStatus(inkstate);
         _weaponManager.UpdateShootSound();
         _health.PlayDeadSplashEffect();
+        _health.PlayHitSound();
 
         // 원격 플레이어의 조준 타겟을 동기화된 위치로 이동
         if (!HasInputAuthority && _aimTargetObj != null)

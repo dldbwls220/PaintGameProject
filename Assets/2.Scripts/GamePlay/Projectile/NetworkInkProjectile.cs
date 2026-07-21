@@ -18,6 +18,10 @@ public class NetworkInkProjectile : NetworkBehaviour
     [SerializeField] GameObject _splashFXPrefab;
     [SerializeField] GameObject _hitFXPrefab;
 
+    [Header("SFX")]
+    [SerializeField] AudioSource _sfx;
+    [SerializeField] AudioClip _hitSFX;
+
     [Networked] InkProjectileData _data { get; set; }
     [Networked] Color _inkColor { get; set; }
     [Networked] int _finishedTick { get; set; }
@@ -205,6 +209,7 @@ public class NetworkInkProjectile : NetworkBehaviour
 
             var fx = Instantiate(fxPrefab, spawnPos, Quaternion.identity);
             ApplyColorToFX(fx);
+            _sfx.PlayOneShot(_hitSFX);
             Destroy(fx, 3f);
         }
 
