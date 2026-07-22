@@ -9,6 +9,8 @@ public class Health : NetworkBehaviour
     [SerializeField] float _maxHealth = 100;
     [SerializeField] float _hitDuration = 2f;
     [SerializeField] float _healthRegenSpeed = 10f;
+    [SerializeField] float _preRespawnDelay = 0.5f; // 리스폰 소리가 먼저 재생되는 대기 시간
+    [SerializeField] float _respawnTime = 1f;       // 대기 이후 이어지는 기존 리스폰 연출 시간
 
     [Header("Death Splash Setting")]
     [SerializeField] float _radius = 1.5f;
@@ -36,8 +38,10 @@ public class Health : NetworkBehaviour
     [Networked] public float _currentHealth { get; private set; }
     [Networked] public TickTimer _hitTimer { get; set; }
     [Networked] TickTimer _healthTimer { get; set; }
+    [Networked] TickTimer _preRespawnTimer { get; set; }
     [Networked] TickTimer _respawningTimer { get; set; }
 
+    [Networked] public NetworkBool _pendingRespawn { get; set; } = false;
     [Networked] public NetworkBool _nowRespawing { get; set; } = false;
 
     const int DESPAWN_DELAY_TICKS = 10;
@@ -52,12 +56,21 @@ public class Health : NetworkBehaviour
     {
         if(_hitTimer.Expired(Runner)) _isHit = false;
 
-        if (_healthTimer.Expired(Runner) && !_isAlive)
+        if (_healthTimer.Expired(Runner) && !_isAlive && !_pendingRespawn)
         {
+            _pendingRespawn = true;
+
+            _preRespawnTimer = TickTimer.CreateFromSeconds(Runner, _preRespawnDelay);
+        }
+
+        if (_pendingRespawn && _preRespawnTimer.Expired(Runner))
+        {
+            _pendingRespawn = false;
+
             if(GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
                 data._isAlive = true;
 
-            _respawningTimer = TickTimer.CreateFromSeconds(Runner, 1);
+            _respawningTimer = TickTimer.CreateFromSeconds(Runner, _respawnTime);
 
             _nowRespawing = true;
 
@@ -140,10 +153,10 @@ public class Health : NetworkBehaviour
     {
         if (_prevHealth > _currentHealth && _isAlive && HasInputAuthority)
         {
-            int Rand = Random.Range((int)PlayerSFXName.Voice_SquidGirl_Damage_00, (int)PlayerSFXName.Voice_SquidGirl_Damage_07 + 1);
+            int Rand = Random.Range((int)PlayerVoiceSFXName.Voice_SquidGirl_Damage_00, (int)PlayerVoiceSFXName.Voice_SquidGirl_Damage_07 + 1);
 
-            GameSoundManager.instance.PlayerSFX((PlayerSFXName)Rand);
-            GameSoundManager.instance.OtherSFX(PlayerSFXName.Damage00);
+            GameSoundManager.instance.PlayerVoiceSFX((PlayerVoiceSFXName)Rand);
+            GameSoundManager.instance.PlayerSFX(PlayerSFXName.Damage00);
         }
 
         _prevHealth = _currentHealth;
@@ -179,11 +192,11 @@ public class Health : NetworkBehaviour
 
     void PlayDeadSound()
     {
-        int Rand = Random.Range((int)PlayerSFX3DName.Voice_SquidGirl_Dead_00, (int)PlayerSFX3DName.Voice_SquidGirl_Dead_04 + 1);
-        GameSoundManager.instance.PlayerSFX3D((PlayerSFX3DName)Rand, _voiceSFX3D);
+        int Rand = Random.Range((int)PlayerVoiceSFX3DName.Voice_SquidGirl_Dead_00, (int)PlayerVoiceSFX3DName.Voice_SquidGirl_Dead_04 + 1);
+        GameSoundManager.instance.PlayerVoiceSFX3D((PlayerVoiceSFX3DName)Rand, _voiceSFX3D);
 
         _otherSFX3D.volume = 0.7f;
-        GameSoundManager.instance.OtherSFX3D(PlayerSFX3DName.DeadSplash00, _otherSFX3D);
+        GameSoundManager.instance.PlayerSFX3D(PlayerSFX3DName.DeadSplash00, _otherSFX3D);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

@@ -94,6 +94,9 @@ public class NetworkInklingMovement : NetworkBehaviour
     // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
     bool _prevIsOnPaint;
     bool _prevIsSameColor;
+
+    bool _prevMorphingSquid, _prevMorphingInkling, _prevRespawing, _prevPendingRespawn;
+
     [Networked] public TickTimer _morphTimer { get; set; }
     [Networked] public TickTimer _respawningTimer { get; set; }
     [Networked] Quaternion _respawnStartRot { get; set; }
@@ -310,7 +313,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         if (_isMorphingSquid && _morphTimer.Expired(Runner))
         {
-            _isMorphingSquid = false;
+            _isMorphingSquid = false;           
         }
 
         if (!input._isSquidPressed && !_isMorphingInkling && _isSquid)
@@ -360,6 +363,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             isSwimming = _isSwimming,
             isSlowed = _isSlowed,
             isAlive = _isAlive,
+            isWallClimb = _isWallClimb,
             isRespawning = _health._nowRespawing,
             localMoveVelocity = GetAnimationMoveVelocity(),
             cameraAngleX = GetCameraAngle(),
@@ -367,6 +371,8 @@ public class NetworkInklingMovement : NetworkBehaviour
             inktankOffset = _inktankOffset,
             hasInputAuthority = HasInputAuthority,
         };
+
+        PlayinklingSFX();
 
         _renderC.UpdateRender(renderstate);
 
@@ -555,6 +561,25 @@ public class NetworkInklingMovement : NetworkBehaviour
             _isSameColor = false;
             Debug.Log("상대 팀 구역입니다!");
         }
+    }
+
+    void PlayinklingSFX()
+    {
+        if (HasInputAuthority)
+        {
+            if (_prevMorphingSquid && !_isMorphingSquid)
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.ToSquidMix00, volume: 0.4f);
+            if (_prevMorphingInkling && !_isMorphingInkling)
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.ToHumanMix00, volume: 0.4f);
+            if (!_prevPendingRespawn && _health._pendingRespawn)
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.RespawnStart00, volume: 0.4f);
+            if(_prevRespawing && !_health._nowRespawing)
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.RespawnEnd00, volume: 0.4f);
+        }
+        _prevMorphingSquid = _isMorphingSquid;
+        _prevMorphingInkling = _isMorphingInkling;
+        _prevRespawing = _health._nowRespawing;
+        _prevPendingRespawn = _health._pendingRespawn;
     }
 
 }

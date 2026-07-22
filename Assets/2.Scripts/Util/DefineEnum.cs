@@ -61,7 +61,7 @@ namespace DefineEnum
         Count
     }
 
-    public enum PlayerSFX3DName
+    public enum PlayerVoiceSFX3DName
     {
         Voice_SquidGirl_Dead_00,
         Voice_SquidGirl_Dead_01,
@@ -71,12 +71,17 @@ namespace DefineEnum
         Voice_SquidGirl_Dead_05,
         Voice_SquidGirl_Dead_06,
 
+        Count
+    }
+
+    public enum PlayerSFX3DName
+    {
         DeadSplash00,
 
         Count
     }
 
-    public enum PlayerSFXName
+    public enum PlayerVoiceSFXName
     {
         Voice_SquidGirl_Damage_00,
         Voice_SquidGirl_Damage_01,
@@ -90,7 +95,18 @@ namespace DefineEnum
         Voice_SquidGirl_Soul_00,
         Voice_SquidGirl_Soul_01,
 
+        Count
+    }
+
+    public enum PlayerSFXName
+    {
         Damage00,
+        damageIncLoop00,
+        RespawnStart00,
+        RespawnEnd00,
+        SurprisedMix00,
+        ToHumanMix00,
+        ToSquidMix00,
 
         Count
     }

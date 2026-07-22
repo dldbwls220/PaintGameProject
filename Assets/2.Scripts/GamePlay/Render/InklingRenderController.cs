@@ -152,7 +152,14 @@ public class InklingRenderController : MonoBehaviour
             }
             else if (s.isSquid)
             {
-                if (s.isSwimming)
+                if (s.isWallClimb)
+                {
+                    SwitchRender(FormState.Inkling, false);
+                    SwitchRender(FormState.Half, false);
+                    SwitchRender(FormState.Squid, false);
+                    InkTankRender(false);
+                }
+                else if (s.isSwimming)
                 {
                     if (!s.isGrounded)
                     {
@@ -168,13 +175,6 @@ public class InklingRenderController : MonoBehaviour
                         SwitchRender(FormState.Squid, false);
                         InkTankRender(false);
                     }
-                }
-                else if(s.isWallClimb)
-                {
-                    SwitchRender(FormState.Inkling, false);
-                    SwitchRender(FormState.Half, false);
-                    SwitchRender(FormState.Squid, false);
-                    InkTankRender(false);
                 }
                 else
                 {

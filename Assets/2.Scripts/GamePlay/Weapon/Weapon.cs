@@ -145,6 +145,6 @@ public class Weapon : NetworkBehaviour
 
         _manager.PlayShootFX();
 
-        GameSoundManager.instance.WeaponSFX3D(DefineEnum.WeaponSFX3DName.MachineGun00, _shootSound);
+        GameSoundManager.instance.WeaponSFX3D(DefineEnum.WeaponSFX3DName.MachineGun00, _shootSound, 0.8f);
     }
 }

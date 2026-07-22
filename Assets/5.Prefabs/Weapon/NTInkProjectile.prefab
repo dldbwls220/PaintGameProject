@@ -372,7 +372,7 @@ MonoBehaviour:
   _hitFXPrefab: {fileID: 294876349431089311, guid: 7d5df22c7ad279c4f8fa3bf2ede3ae18, type: 3}
   _sfx: {fileID: 2799303493638759392}
   _hitVolume: 1
-  _splashVolume: 0.4
+  _splashVolume: 0.1
   _sfx3D: {fileID: 2508147563772553319}
 --- !u!114 &-8632199437834742506
 MonoBehaviour:
