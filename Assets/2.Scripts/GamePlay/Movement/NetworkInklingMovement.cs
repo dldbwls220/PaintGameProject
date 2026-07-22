@@ -112,6 +112,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         if (!HasInputAuthority || Camera.main == null) return;
         _inkRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
+        _audioListnerRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
 
         if (crosshairUI != null)
         {
@@ -150,7 +151,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         AddAimSource();
         //AddVirtualCamera();
 
-        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _shootRoot.transform , _soundManager);
+        _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _shootRoot.transform);
 
         if (HasInputAuthority)
         {

@@ -144,6 +144,7 @@ public class Health : NetworkBehaviour
         {
             int Rand = Random.Range((int)PlayerSFXName.Voice_SquidGirl_Damage_00, (int)PlayerSFXName.Voice_SquidGirl_Damage_07 + 1);
             _soundManager.PlayerSFX((PlayerSFXName)Rand);
+            _soundManager.OtherSFX(PlayerSFXName.Damage00);
         }
 
         _prevHealth = _currentHealth;
@@ -181,6 +182,9 @@ public class Health : NetworkBehaviour
     {
         int Rand = Random.Range((int)PlayerSFX3DName.Voice_SquidGirl_Dead_00, (int)PlayerSFX3DName.Voice_SquidGirl_Dead_04 + 1);
         _soundManager.PlayerSFX3D((PlayerSFX3DName)Rand);
+
+        _soundManager.SetVolume(PlayerAudioSourceState.otherSFX3D, 0.7f);
+        _soundManager.OtherSFX3D(PlayerSFX3DName.DeadSplash00);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

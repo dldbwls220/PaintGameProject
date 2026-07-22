@@ -64,7 +64,9 @@ namespace DefineEnum
     public enum PlayerAudioSourceState
     {
         SFX3D,
-        SFX
+        SFX,
+        otherSFX3D,
+        otherSFX
     }
 
     public enum PlayerSFX3DName
@@ -76,6 +78,8 @@ namespace DefineEnum
         Voice_SquidGirl_Dead_04,
         Voice_SquidGirl_Dead_05,
         Voice_SquidGirl_Dead_06,
+
+        DeadSplash00,
 
         Count
     }
@@ -93,6 +97,34 @@ namespace DefineEnum
 
         Voice_SquidGirl_Soul_00,
         Voice_SquidGirl_Soul_01,
+
+        Damage00,
+
+        Count
+    }
+
+    public enum ProjectileSFX3DName
+    {
+        Swish00,
+        Swish01,
+        Swish02,
+        Swish03,
+
+        inkHit00,
+        inkHit01,
+        inkHit02,
+        inkHit03,
+        inkHit04,
+        inkHit05,
+        inkHit06,
+        inkHit07,
+
+        Count
+    }
+
+    public enum ProjectileSFXName
+    {
+        HitEffectiveCommon02,       
 
         Count
     }

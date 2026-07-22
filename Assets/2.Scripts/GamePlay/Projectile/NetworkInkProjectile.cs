@@ -79,7 +79,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         _splashParticle = GetComponentsInChildren<ParticleSystem>();
 
         _mesh.material.EnableKeyword("_EMISSION");
-       
+
 
         if (_shootFX != null)
             _shootFX.Play();

@@ -12,6 +12,7 @@ public class Weapon : NetworkBehaviour
     [SerializeField] float _dispersion = 0.5f;
     [SerializeField] private float _straightDistance = 4.5f;
     [SerializeField] LayerMask _hitMask;
+    ProjectileSoundManager _soundManager;
 
     [Header("Ink Projectile Setup")]
     [SerializeField] NetworkObject _projectilePrefab;
