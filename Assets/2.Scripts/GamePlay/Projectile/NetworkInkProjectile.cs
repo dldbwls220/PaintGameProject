@@ -2,7 +2,6 @@ using DefineEnum;
 using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 public class NetworkInkProjectile : NetworkBehaviour
 {
     [Header("Physics")]
@@ -27,11 +26,11 @@ public class NetworkInkProjectile : NetworkBehaviour
 
     [Header("SFX")]
     [SerializeField] AudioSource _sfx;
-    [SerializeField] AudioClip _hitSFX;
+    [SerializeField] float _hitVolume = 1f;
+    [SerializeField] float _splashVolume = 0.5f;
 
     [Header("SFX3D")]
     [SerializeField] AudioSource _sfx3D;
-    [SerializeField] AudioClip _passbySFX;
 
     [Networked] InkProjectileData _data { get; set; }
     [Networked] Color _inkColor { get; set; }
@@ -121,12 +120,12 @@ public class NetworkInkProjectile : NetworkBehaviour
                         return; // 아군이면 이번 틱은 무시 (필요하면 관통 처리)
                     }
 
-                    OnHit(lHit.Point, lHit.Normal, true);
+                    OnHit(lHit.Point, lHit.Normal, true, lHit.GameObject.layer);
                     ApplyDamage(hitOwner);
                 }
                 else
                 {
-                    OnHit(lHit.Point, lHit.Normal, false);
+                    OnHit(lHit.Point, lHit.Normal, false, lHit.GameObject.layer);
                 }
             }
         }
@@ -179,7 +178,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         if (enemyHealth.ApplyDamage(Object.InputAuthority, _damage, MainWeaponState.Shooter) == false) return;
     }
 
-    void OnHit(Vector3 point, Vector3 normal, bool isEnemyHit)
+    void OnHit(Vector3 point, Vector3 normal, bool isEnemyHit, int layer)
     {
         var data = _data;
         data.IsFinished = true;
@@ -189,7 +188,10 @@ public class NetworkInkProjectile : NetworkBehaviour
         _data = data;
         _finishedTick = Runner.Tick;
         if (!isEnemyHit)
+        {
+            RPC_PlayInkSplashSound(layer);
             RPC_OnHit(point, normal, _inkColor, data.PaintRadius);
+        }
         else
             RPC_OnEnemyHit(point, normal, _inkColor, data.PaintRadius);
     }
@@ -229,6 +231,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         {
             var fx = Instantiate(fxPrefab, point, Quaternion.LookRotation(normal));
             ApplyColorToFX(fx);
+
             Destroy(fx, 3f);
         }
 
@@ -249,7 +252,9 @@ public class NetworkInkProjectile : NetworkBehaviour
 
             var fx = Instantiate(fxPrefab, spawnPos, Quaternion.identity);
             ApplyColorToFX(fx);
-            _sfx.PlayOneShot(_hitSFX);
+
+            GameSoundManager.instance.ProjectileSFX(ProjectileSFXName.HitEffectiveCommon02, _sfx, _hitVolume);
+
             Destroy(fx, 3f);
         }
 
@@ -260,7 +265,25 @@ public class NetworkInkProjectile : NetworkBehaviour
     {
         if (Runner.LocalPlayer != target) return; // 옆을 스쳐 지나간 그 플레이어에게만 재생
 
-        _sfx3D.PlayOneShot(_passbySFX);
+        int rnd = Random.Range((int)ProjectileSFX3DName.Swish00, (int)ProjectileSFX3DName.Swish03 + 1);
+        GameSoundManager.instance.ProjectileSFX3D((ProjectileSFX3DName)rnd, _sfx3D);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    void RPC_PlayInkSplashSound(int layer)
+    {
+        if (layer == LayerMask.NameToLayer("Paintable"))
+        {
+            int rnd = Random.Range((int)ProjectileSFXName.inkHit00, (int)ProjectileSFXName.inkHit07 + 1);
+
+            GameSoundManager.instance.ProjectileSFX((ProjectileSFXName)rnd, volume: _splashVolume);
+        }
+        else if (layer == LayerMask.NameToLayer("Obstacle"))
+        {
+            int rnd = Random.Range((int)ProjectileSFXName.inkHitSplash00, (int)ProjectileSFXName.inkHitSplash03 + 1);
+
+            GameSoundManager.instance.ProjectileSFX((ProjectileSFXName)rnd, volume: _splashVolume);
+        }
     }
 
     // 직선 구간 거리(_straightDistance)를 속력으로 환산한, 낙하가 시작되는 시각

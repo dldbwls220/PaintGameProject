@@ -22,13 +22,16 @@ public class Health : NetworkBehaviour
     [Header("Game Object")]
     [SerializeField] GameObject _deathSplashFX;
 
+    [Header("Sound")]
+    [SerializeField] AudioSource _voiceSFX3D;
+    [SerializeField] AudioSource _otherSFX3D;
+
     public bool _isAlive => _currentHealth > 0;
     public bool _isFull => _currentHealth >= _maxHealth;
     public bool _isHit;
     bool _wasAlive = true;
     float _prevHealth;
     Color _inkColor = Color.white;
-    PlayerSoundManager _soundManager;
 
     [Networked] public float _currentHealth { get; private set; }
     [Networked] public TickTimer _hitTimer { get; set; }
@@ -68,11 +71,6 @@ public class Health : NetworkBehaviour
 
         if (HasStateAuthority)
             AutoHealthRegen();
-    }
-
-    public void GetSoundManager(PlayerSoundManager soundManager)
-    {
-        _soundManager = soundManager;
     }
 
     public bool ApplyDamage(PlayerRef player, float damage, MainWeaponState mw)
@@ -143,8 +141,9 @@ public class Health : NetworkBehaviour
         if (_prevHealth > _currentHealth && _isAlive && HasInputAuthority)
         {
             int Rand = Random.Range((int)PlayerSFXName.Voice_SquidGirl_Damage_00, (int)PlayerSFXName.Voice_SquidGirl_Damage_07 + 1);
-            _soundManager.PlayerSFX((PlayerSFXName)Rand);
-            _soundManager.OtherSFX(PlayerSFXName.Damage00);
+
+            GameSoundManager.instance.PlayerSFX((PlayerSFXName)Rand);
+            GameSoundManager.instance.OtherSFX(PlayerSFXName.Damage00);
         }
 
         _prevHealth = _currentHealth;
@@ -181,10 +180,10 @@ public class Health : NetworkBehaviour
     void PlayDeadSound()
     {
         int Rand = Random.Range((int)PlayerSFX3DName.Voice_SquidGirl_Dead_00, (int)PlayerSFX3DName.Voice_SquidGirl_Dead_04 + 1);
-        _soundManager.PlayerSFX3D((PlayerSFX3DName)Rand);
+        GameSoundManager.instance.PlayerSFX3D((PlayerSFX3DName)Rand, _voiceSFX3D);
 
-        _soundManager.SetVolume(PlayerAudioSourceState.otherSFX3D, 0.7f);
-        _soundManager.OtherSFX3D(PlayerSFX3DName.DeadSplash00);
+        _otherSFX3D.volume = 0.7f;
+        GameSoundManager.instance.OtherSFX3D(PlayerSFX3DName.DeadSplash00, _otherSFX3D);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

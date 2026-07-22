@@ -12,7 +12,6 @@ public class Weapon : NetworkBehaviour
     [SerializeField] float _dispersion = 0.5f;
     [SerializeField] private float _straightDistance = 4.5f;
     [SerializeField] LayerMask _hitMask;
-    ProjectileSoundManager _soundManager;
 
     [Header("Ink Projectile Setup")]
     [SerializeField] NetworkObject _projectilePrefab;
@@ -146,9 +145,6 @@ public class Weapon : NetworkBehaviour
 
         _manager.PlayShootFX();
 
-        if (_shootSound != null)
-        {
-            _shootSound.Play();
-        }
+        GameSoundManager.instance.WeaponSFX3D(DefineEnum.WeaponSFX3DName.MachineGun00, _shootSound);
     }
 }

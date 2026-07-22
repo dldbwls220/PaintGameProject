@@ -20,7 +20,6 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] Health _health;
     [SerializeField] Hitbox _hitbox;
     [SerializeField] CharacterSeperation _characterSeparation;
-    [SerializeField] PlayerSoundManager _soundManager;
 
     [Header("Hitbox Size (Squid Form)")]
     [SerializeField] float _squidHitboxRadius = 0.5f;
@@ -134,15 +133,12 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingHitboxExtents = _hitbox.CapsuleExtents;
         _inklingHitboxOffset = _hitbox.Offset;
 
-        _soundManager.LoadAllSound();
-
         AssignTeamColors();
 
         _renderC.Init();
         _renderC.SetTeamColor(_inkColor);
 
         _health.ApplyColorToFX(_enemyColor);
-        _health.GetSoundManager(_soundManager);
 
         _kcc.SetGravity(_gravity);
 

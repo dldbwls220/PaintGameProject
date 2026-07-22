@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DefineEnum
 {
-    #region[Ä³¸¯ÅÍ]
+    #region[ì‰í´ë§]
 
     public enum AniState
     {
@@ -39,9 +39,9 @@ namespace DefineEnum
         Bottom
     }
 
-    #endregion[Ä³¸¯ÅÍ]
+    #endregion[ì‰í´ë§]
 
-    #region[¼Ò¸®]
+    #region[ì†Œë¦¬]
 
     public enum LoopName
     {
@@ -59,14 +59,6 @@ namespace DefineEnum
         Hit_Inkling_00,
 
         Count
-    }
-
-    public enum PlayerAudioSourceState
-    {
-        SFX3D,
-        SFX,
-        otherSFX3D,
-        otherSFX
     }
 
     public enum PlayerSFX3DName
@@ -110,6 +102,13 @@ namespace DefineEnum
         Swish02,
         Swish03,
 
+        Count
+    }
+
+    public enum ProjectileSFXName
+    {
+        HitEffectiveCommon02,
+
         inkHit00,
         inkHit01,
         inkHit02,
@@ -119,19 +118,29 @@ namespace DefineEnum
         inkHit06,
         inkHit07,
 
+        inkHitSplash00,
+        inkHitSplash01,
+        inkHitSplash02,
+        inkHitSplash03,
+
         Count
     }
 
-    public enum ProjectileSFXName
+    public enum WeaponSFX3DName
     {
-        HitEffectiveCommon02,       
+        MachineGun00,
 
         Count
     }
 
-    #endregion[¼Ò¸®]
+    public enum WeaponSFXName
+    {
+        Count
+    }
 
-    #region[Ä¿½ºÅÍ¸¶ÀÌÂ¡]
+    #endregion[ì†Œë¦¬]
+
+    #region[ì»¤ìŠ¤í„°ë§ˆì´ì§•]
 
     public enum HairState
     {
@@ -181,9 +190,9 @@ namespace DefineEnum
         Skipjack_Work_Boots
     }
 
-    #endregion[Ä¿½ºÅÍ¸¶ÀÌÂ¡]
+    #endregion[ì»¤ìŠ¤í„°ë§ˆì´ì§•]
 
-    #region[Ç®¸µ]
+    #region[ì‰í¬]
 
     public enum InkProjectileState
     {
@@ -192,9 +201,9 @@ namespace DefineEnum
         InkHit
     }
 
-    #endregion[Ç®¸µ]
+    #endregion[ì‰í¬]
 
-    #region[¹«±â]
+    #region[ë¬´ê¸°]
 
     public enum MainWeaponState
     {
@@ -208,9 +217,9 @@ namespace DefineEnum
 
     }
 
-    #endregion[¹«±â]
+    #endregion[ë¬´ê¸°]
 
-    #region[ÆÀ]
+    #region[íŒ€]
 
     public enum TeamState
     {
@@ -218,5 +227,5 @@ namespace DefineEnum
         Team2
     }
 
-    #endregion[ÆÀ]
+    #endregion[íŒ€]
 }
