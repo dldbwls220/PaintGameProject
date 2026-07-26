@@ -190,7 +190,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         if (!isEnemyHit)
         {
             RPC_PlayInkSplashSound(layer);
-            RPC_OnHit(point, normal, _inkColor, data.PaintRadius);
+            RPC_OnHit(point, normal, _inkColor, data.PaintRadius, layer);
         }
         else
             RPC_OnEnemyHit(point, normal, _inkColor, data.PaintRadius);
@@ -221,10 +221,14 @@ public class NetworkInkProjectile : NetworkBehaviour
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
+    void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius, int layer)
     {
         // 페인팅: RenderTexture는 로컬이므로 모든 클라이언트에서 직접 호출 필요
-        WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+        // Paintable 레이어에 맞았을 때만 칠한다. Obstacle(유리 등)은 hit.point 주변에
+        // Paintable 콜라이더가 인접해 있을 수 있어(PaintAuto의 OverlapSphere 폴백),
+        // 여기서 걸러내지 않으면 엉뚱한 인접 벽이 대신 칠해진다.
+        if (layer == LayerMask.NameToLayer("Paintable"))
+            WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
 
         GameObject fxPrefab = _splashFXPrefab;
         if (fxPrefab != null)

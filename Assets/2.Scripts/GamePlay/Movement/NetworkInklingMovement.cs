@@ -77,6 +77,17 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] GameObject _audioListnerRoot;
     [SerializeField] GameObject _vCamera;
 
+    [Header("Swim Wake FX")]
+    [SerializeField] GameObject _swimWakeFX;
+    [SerializeField] float _swimWakeInterval = 0.15f;
+    [SerializeField] float _swimWakeFXLifetime = 1f;
+    float _swimWakeTimer;
+
+    [Header("Morph Ink FX")]
+    [SerializeField] GameObject _morphFX;
+    [SerializeField] Vector3 _morphFXOffset;
+    [SerializeField] float _morphFXLifeTime = 1f;
+
     [Networked] public NetworkBool _isSquid { get; set; }
     [Networked] public NetworkBool _isShooting { get; set; }
     [Networked] public NetworkBool _isGrounded { get; set; }
@@ -372,7 +383,13 @@ public class NetworkInklingMovement : NetworkBehaviour
             hasInputAuthority = HasInputAuthority,
         };
 
+        if (_prevMorphingInkling && !_isMorphingInkling)
+        {
+            PlayMorphSplashEffect();
+        }
+
         PlayinklingSFX();
+        PlaySwimWakeEffect();
 
         _renderC.UpdateRender(renderstate);
 
@@ -561,6 +578,54 @@ public class NetworkInklingMovement : NetworkBehaviour
             _isSameColor = false;
             Debug.Log("상대 팀 구역입니다!");
         }
+    }
+
+    // 잠수 수영 중(모델이 꺼진 채 잉크 속을 이동하는 동안) 발밑에 잉크가 살짝 솟는 웨이크 이펙트를 주기적으로 스폰
+    void PlaySwimWakeEffect()
+    {
+        bool submerged = _isAlive && _isSquid && _moveDirection.sqrMagnitude > 0.01f && (_isWallClimb || (_isSwimming && _isGrounded));
+
+        if (!submerged)
+        {
+            _swimWakeTimer = 0f;
+            return;
+        }
+
+        _swimWakeTimer -= Time.deltaTime;
+        if (_swimWakeTimer > 0f) return;
+
+        _swimWakeTimer = _swimWakeInterval;
+
+        if (_swimWakeFX == null) return;
+
+        GameObject fx = Instantiate(_swimWakeFX, transform.position, Quaternion.identity);
+
+        ParticleSystem[] ps = fx.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem p in ps)
+        {
+            var main = p.main;
+            main.startColor = _inkColor;
+        }
+
+        Destroy(fx, _swimWakeFXLifetime);
+    }
+
+    void PlayMorphSplashEffect()
+    {
+        if (!_isAlive) return;
+
+        if(_morphFX == null) return;
+
+        GameObject fx = Instantiate(_morphFX, transform.position + _morphFXOffset, Quaternion.identity);
+
+        ParticleSystem[] ps = fx.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem p in ps)
+        {
+            var main = p.main;
+            main.startColor = _inkColor;
+        }
+
+        Destroy(fx, _morphFXLifeTime);
     }
 
     void PlayinklingSFX()
