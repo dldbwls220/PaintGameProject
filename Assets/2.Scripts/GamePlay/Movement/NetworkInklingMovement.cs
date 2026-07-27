@@ -583,7 +583,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     // 잠수 수영 중(모델이 꺼진 채 잉크 속을 이동하는 동안) 발밑에 잉크가 살짝 솟는 웨이크 이펙트를 주기적으로 스폰
     void PlaySwimWakeEffect()
     {
-        bool submerged = _isAlive && _isSquid && _moveDirection.sqrMagnitude > 0.01f && (_isWallClimb || (_isSwimming && _isGrounded));
+        bool submerged = _isAlive && _isSquid && _isMoving && (_isWallClimb || (_isSwimming && _isGrounded));
 
         if (!submerged)
         {
@@ -591,7 +591,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             return;
         }
 
-        _swimWakeTimer -= Time.deltaTime;
+        _swimWakeTimer -= Runner.DeltaTime;
         if (_swimWakeTimer > 0f) return;
 
         _swimWakeTimer = _swimWakeInterval;

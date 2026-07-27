@@ -244,4 +244,15 @@ namespace DefineEnum
     }
 
     #endregion[팀]
+
+    #region[씬]
+
+    public enum SceneState
+    {
+        StartScene,
+        LobbyScene,
+        Port_Mackerel
+    }
+
+    #endregion[씬]
 }

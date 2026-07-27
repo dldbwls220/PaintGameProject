@@ -8,9 +8,17 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     CharacterInputHandler _inputHandler;
 
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        if (!runner.IsServer || LobbyManager._instance == null) return;
+        LobbyManager._instance.OnPlayerJoined(runner, player);
+    }
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        if (!runner.IsServer || LobbyManager._instance == null) return;
+        LobbyManager._instance.OnPlayerLeft(player);
+    }
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         if (_inputHandler == null && NetworkPlayer._instance != null)
