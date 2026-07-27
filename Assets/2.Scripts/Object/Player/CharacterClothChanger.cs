@@ -144,6 +144,7 @@ public class CharacterClothChanger : MonoBehaviour
         Transform clothingArmature = clothObj.transform.Find("Armature");
         if (clothingArmature != null)
         {
+            clothingArmature.SetParent(null);
             Destroy(clothingArmature.gameObject);
         }
     }

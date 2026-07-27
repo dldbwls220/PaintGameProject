@@ -8,15 +8,7 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     CharacterInputHandler _inputHandler;
 
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
-    {
-        if (runner.IsServer)
-        {
-            Debug.Log("OnPlayerJoined we are server. Spawning Player");
-            GameManager._instance.SpawnPlayer(runner, player);
-        }
-        else Debug.Log("OnPlayerJoined");
-    }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -41,7 +33,16 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
-    public void OnSceneLoadDone(NetworkRunner runner) { }
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+        // GameManager는 게임 플레이 씬에만 존재. 로비 씬 로드 시에는 null이라 스폰을 건너뜀.
+        if (!runner.IsServer || GameManager._instance == null) return;
+
+        foreach (var player in runner.ActivePlayers)
+        {
+            GameManager._instance.SpawnPlayer(runner, player);
+        }
+    }
     public void OnSceneLoadStart(NetworkRunner runner) { }
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
