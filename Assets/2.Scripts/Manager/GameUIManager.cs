@@ -37,6 +37,18 @@ public class GameUIManager : MonoBehaviour
         _countDown.SetActive(false);
     }
 
+    public void CloseStartUI()
+    {
+        _startUI.CloseWnd();
+    }
+
+    public void OpenAllGamePlayUI()
+    {
+        _teamStatusUI.OpenWnd();
+        _crosshairUI.OpenCrosshair();
+        _timerUI.OpenWnd();
+    }
+
     // 로컬 플레이어(HasInputAuthority)가 스폰됐을 때 화면 전용(로컬) UI를 그 플레이어에 연결한다
     public void RegisterLocalPlayer(NetworkInklingMovement player)
     {

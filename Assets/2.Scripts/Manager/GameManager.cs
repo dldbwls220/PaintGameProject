@@ -2,6 +2,7 @@ using DefineStructure;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class GameManager : NetworkBehaviour
 {
@@ -19,6 +20,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] SpawnPlatform[] _spawnPlatforms;
     [SerializeField] GameObject _spawnRoot1;
     [SerializeField] GameObject _spawnRoot2;
+    [Header("Timeline")]
+    [SerializeField] PlayableDirector _playableDirector;
 
     int _spawnCount;
     bool _inkIdxAssigned;
@@ -34,6 +37,9 @@ public class GameManager : NetworkBehaviour
     public TickTimer RemainingTime { get; set; }
 
     [Networked, HideInInspector] public int _inkIdx { get; private set; }
+    [Networked] public NetworkBool _introFinished { get; set; }
+    [Networked] public NetworkBool _isReady { get; set; }
+    [Networked] public NetworkBool _gameStarted { get; set; }
 
     public static GameManager _instance => _uniqueinstance;
 
@@ -47,6 +53,8 @@ public class GameManager : NetworkBehaviour
         GameObject ui = Instantiate(_gameUIManager);
         _uiManager = ui.GetComponentInChildren<GameUIManager>();
         _uiManager.InitUI();
+
+        _playableDirector.stopped += OnIntroFinished;
     }
 
     public override void Render()
@@ -118,6 +126,23 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    void OnIntroFinished(PlayableDirector director) 
+    {
+        _uiManager.OpenAllGamePlayUI();
+        if(HasStateAuthority)
+            _introFinished = true;
+    }
+
     Color GetTeamColor(int teamIndex) => teamIndex == 1 ? _teamColors1[_inkIdx] : _teamColors2[_inkIdx];
     Color GetEnemyColor(int teamIndex) => teamIndex == 1 ? _teamColors2[_inkIdx] : _teamColors1[_inkIdx];
+
+    public void CloseStartUI()
+    {
+        _uiManager.CloseStartUI();
+    }
+
+    private void OnDestroy()
+    {
+        _playableDirector.stopped -= OnIntroFinished;
+    }
 }
