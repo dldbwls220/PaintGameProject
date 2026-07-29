@@ -13,6 +13,7 @@ public class LobbyUI : MonoBehaviour
     [Header("Start Timer")]
     [SerializeField] TextMeshProUGUI _timer;
 
+
     public int SlotCount => _players.Length;
 
     private void Start()
