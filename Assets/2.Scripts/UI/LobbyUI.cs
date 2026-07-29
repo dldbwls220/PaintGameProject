@@ -1,9 +1,17 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviour
 {
+    [Header("Connected Players")]
     [SerializeField] LobbyPlayerUI[] _players;
+
+    [Header("Start Button")]
+    [SerializeField] GameStartBtnUI _btn;
+
+    [Header("Start Timer")]
+    [SerializeField] TextMeshProUGUI _timer;
 
     public int SlotCount => _players.Length;
 
@@ -23,5 +31,25 @@ public class LobbyUI : MonoBehaviour
     public void LeaveUser(int idx)
     {
         _players[idx].PlayerExit();
+    }
+
+    public bool PressStart(bool nowPress)
+    {
+        return _btn.PressFillSlide(nowPress);
+    }
+
+    public void CloseStartBtn()
+    {
+        _btn.CloseWnd();
+    }
+
+    public void SetTimer(float time)
+    {
+        //int seconds = Mathf.CeilToInt(time);
+        //_timer.text = $"{seconds / 60:00}:{seconds % 60:00}";
+
+        int sec = (int)time;
+
+        _timer.text = sec.ToString();
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -40,5 +41,12 @@ public class GameUIManager : MonoBehaviour
     public void RegisterLocalPlayer(NetworkInklingMovement player)
     {
         player.SetCrosshairUI(_crosshairUI);
+    }
+
+    public void UpdateInkTank(float value)
+    {
+        Slider slider = _inkTank.GetComponent<Slider>();
+
+        slider.value = value;
     }
 }

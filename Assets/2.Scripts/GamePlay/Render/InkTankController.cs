@@ -54,9 +54,13 @@ public class InkTankController : MonoBehaviour
 
     public void UpdateInkTank(float ink)
     {
-        if(_inkSlider == null) return;
+        //if(_inkSlider == null) return;
 
-        _inkSlider.value = ink;
+        //_inkSlider.value = ink;
+
+        if(GameUIManager._instance == null) return;
+
+        GameUIManager._instance.UpdateInkTank(ink);
     }
 
     public float UpdateInktankOffset()

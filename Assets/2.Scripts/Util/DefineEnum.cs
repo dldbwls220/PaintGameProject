@@ -251,7 +251,7 @@ namespace DefineEnum
     {
         StartScene,
         LobbyScene,
-        Port_Mackerel
+        Port_Mackerel_GameScene
     }
 
     #endregion[씬]

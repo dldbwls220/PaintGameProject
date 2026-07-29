@@ -7,15 +7,16 @@ public class LobbyManager : NetworkBehaviour
 {
     static LobbyManager _uniqueinstance;
 
-    // TODO: 임시 테스트용. 실제 강제시작 버튼 UI가 생기면 이 Update의 스페이스바 체크는 제거하고
-    // 버튼 OnClick에서 ForceStart()를 직접 호출하도록 바꿀 것.
     [SerializeField] SceneState _gameSceneState = SceneState.LobbyScene;
-    [SerializeField] LobbyUI _lobbyUI;
-
-    NetworkRunner _runner;
+    [SerializeField] LobbyUI _UI;
+    [SerializeField] float _startDelay = 60f;
+    [SerializeField] float _fullLobbyStartDelay = 30f;
 
     [Networked, Capacity(8)]
     public NetworkDictionary<PlayerRef, int> PlayerSlots => default;
+
+    [Networked] TickTimer StartTimer { get; set; }
+    [Networked] NetworkBool _isFull { get; set; }
 
     readonly Dictionary<PlayerRef, int> _shownSlots = new();
 
@@ -33,7 +34,7 @@ public class LobbyManager : NetworkBehaviour
         {
             if (!PlayerSlots.ContainsKey(kv.Key))
             {
-                _lobbyUI.LeaveUser(kv.Value);
+                _UI.LeaveUser(kv.Value);
                 (left ??= new List<PlayerRef>()).Add(kv.Key);
             }
         }
@@ -46,46 +47,56 @@ public class LobbyManager : NetworkBehaviour
         {
             if (!_shownSlots.ContainsKey(kv.Key))
             {
-                _lobbyUI.JoinUser(kv.Value, "testname", kv.Key == Runner.LocalPlayer);
+                _UI.JoinUser(kv.Value, "testname", kv.Key == Runner.LocalPlayer);
                 _shownSlots[kv.Key] = kv.Value;
             }
         }
+
+        if (!HasStateAuthority)
+        {
+            _UI.CloseStartBtn();
+        }
+
+        _UI.SetTimer(StartTimer.RemainingTime(Runner) ?? 0f);
     }
 
-    void Update()
+    public override void FixedUpdateNetwork()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (HasStateAuthority)
         {
-            ForceStart();
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (_UI.PressStart(true))
+                {
+                    ForceStart();
+                }
+            }
+            else
+                _UI.PressStart(false);
+
+            if (StartTimer.Expired(Runner))
+            {
+                StartTimer = TickTimer.None;
+                ForceStart();
+            }
         }
     }
 
     public void ForceStart()
     {
-        if (_runner == null)
-        {
-            _runner = FindFirstObjectByType<NetworkRunner>();
-        }
+        RPC_StartWipeTransition(_gameSceneState);
+    }
 
-        if (_runner == null || !_runner.IsRunning)
-        {
-            Debug.LogWarning("ForceStart: NetworkRunner를 찾지 못했거나 아직 실행 중이 아닙니다.");
-            return;
-        }
-
-        if (!_runner.IsServer)
-        {
-            Debug.Log("ForceStart: 호스트만 게임을 시작할 수 있습니다.");
-            return;
-        }
-
-        _runner.SessionInfo.IsOpen = false;
-        _runner.SessionInfo.IsVisible = false;
-        _runner.LoadScene(SceneRef.FromIndex((int)_gameSceneState));
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_StartWipeTransition(SceneState state)
+    {
+        WipeTransitionManager.instance.LoadScene(state);
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        if (!HasStateAuthority) return;
+
         int idx = GetNextFreeIndex();
         if (idx < 0)
         {
@@ -94,18 +105,33 @@ public class LobbyManager : NetworkBehaviour
         }
 
         PlayerSlots.Set(player, idx);
+
+        if (_UI.SlotCount == PlayerSlots.Count)
+        {
+            _isFull = true;
+            StartTimer = TickTimer.CreateFromSeconds(Runner, _fullLobbyStartDelay);
+        }
+        else
+            StartTimer = TickTimer.CreateFromSeconds(Runner, _startDelay);
     }
 
     public void OnPlayerLeft(PlayerRef player)
     {
+        if (!HasStateAuthority) return;
         if (!PlayerSlots.ContainsKey(player)) return;
 
         PlayerSlots.Remove(player);
+
+        if (_isFull)
+        {
+            StartTimer = TickTimer.CreateFromSeconds(Runner, _startDelay);
+            _isFull = false;
+        }
     }
 
     int GetNextFreeIndex()
     {
-        int slotCount = _lobbyUI.SlotCount;
+        int slotCount = _UI.SlotCount;
         for (int i = 0; i < slotCount; i++)
         {
             bool used = false;

@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/1.Scenes/LobbyScene.unity
     guid: 4cc7902407c0fdc4aa74102138a16f5b
   - enabled: 1
-    path: Assets/1.Scenes/Port_Mackerel _GameScene.unity
+    path: Assets/1.Scenes/Port_Mackerel_GameScene.unity
     guid: 6b2a2649437b11c4ea4b9669c9c01a80
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
