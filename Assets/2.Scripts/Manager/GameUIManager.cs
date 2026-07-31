@@ -47,6 +47,8 @@ public class GameUIManager : MonoBehaviour
         _teamStatusUI.OpenWnd();
         _crosshairUI.OpenCrosshair();
         _timerUI.OpenWnd();
+        _teamStatusUI.DangerSign(true, false);
+        _teamStatusUI.DangerSign(false, false);
     }
 
     // 로컬 플레이어(HasInputAuthority)가 스폰됐을 때 화면 전용(로컬) UI를 그 플레이어에 연결한다

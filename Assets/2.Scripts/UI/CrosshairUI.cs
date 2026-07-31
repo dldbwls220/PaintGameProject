@@ -19,18 +19,20 @@ public class CrosshairUI : MonoBehaviour
 
     public void OpenCrosshair()
     {
-        _cornerBracket.enabled = true;
-        _innerCircle.enabled = true;
-        _outerCircle.enabled = true;
-        _cross.enabled = true;
+        //_cornerBracket.enabled = true;
+        //_innerCircle.enabled = true;
+        //_outerCircle.enabled = true;
+        //_cross.enabled = true;
+        gameObject.SetActive(true);
     }
 
     public void CloseCrosshair()
     {
-        _cornerBracket.enabled = false;
-        _innerCircle.enabled = false;
-        _outerCircle.enabled = false;
-        _cross.enabled = false;
+        //_cornerBracket.enabled = false;
+        //_innerCircle.enabled = false;
+        //_outerCircle.enabled = false;
+        //_cross.enabled = false;
+        gameObject.SetActive(false);
     }
 
     public void OpenCrosshair(bool hit)

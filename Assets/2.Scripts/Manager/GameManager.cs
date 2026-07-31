@@ -38,8 +38,7 @@ public class GameManager : NetworkBehaviour
 
     [Networked, HideInInspector] public int _inkIdx { get; private set; }
     [Networked] public NetworkBool _introFinished { get; set; }
-    [Networked] public NetworkBool _isReady { get; set; }
-    [Networked] public NetworkBool _gameStarted { get; set; }
+    [Networked] public NetworkBool _gameStart { get; set; }
 
     public static GameManager _instance => _uniqueinstance;
 

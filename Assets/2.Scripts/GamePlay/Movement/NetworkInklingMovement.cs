@@ -127,7 +127,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inkRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
         _audioListnerRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
 
-        if (crosshairUI != null)
+        if (crosshairUI != null || GameManager._instance._introFinished)
         {
             var target = _aimTargetObj.transform.GetComponent<MouseTarget>();
 
@@ -295,7 +295,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     void MovementInput(NetworkInputData input)
     {
-        if (!_health._isAlive || _health._nowRespawing) return;
+        if (!_health._isAlive || _health._nowRespawing || !GameManager._instance._gameStart) return;
 
         // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
         _aimTargetPosition = input._aimTargetPosition;

@@ -4,8 +4,8 @@ using UnityEngine.UI;
 public class TeamStatusUI : MonoBehaviour
 {
     [Header("Danger Mark")]
-    [SerializeField] Image _dangerMyTeam;
-    [SerializeField] Image _dangerEnemyTeam;
+    [SerializeField] GameObject _dangerMyTeam;
+    [SerializeField] GameObject _dangerEnemyTeam;
     [Header("Team Setting")]
     [SerializeField] GameObject _myTeamBox;
     [SerializeField] GameObject _enemyTeamBox;
@@ -28,5 +28,32 @@ public class TeamStatusUI : MonoBehaviour
     public void CloseWnd()
     {
         gameObject.SetActive(false);
+    }
+
+    public void DangerSign(bool myteam, bool isDanger)
+    {
+        if (isDanger)
+        {
+            if (myteam)
+            {
+                _dangerMyTeam.SetActive(true);
+            }
+            else
+            {
+                _dangerEnemyTeam.SetActive(true);
+            }
+        }
+        else
+        {
+            if (myteam)
+            {
+                _dangerMyTeam.SetActive(false);
+            }
+            else
+            {
+                _dangerEnemyTeam.SetActive(false);
+            }
+        }
+       
     }
 }
