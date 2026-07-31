@@ -46,7 +46,7 @@ public class GameSoundManager : Singleton<GameSoundManager>
 
     private void Start()
     {
-        LoadAllSound(); // 테스트용
+        //LoadAllSound(); // 테스트용
     }
 
     public void LoadAllSound()

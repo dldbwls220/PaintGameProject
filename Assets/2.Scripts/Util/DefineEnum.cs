@@ -255,4 +255,16 @@ namespace DefineEnum
     }
 
     #endregion[씬]
+
+    #region[UI]
+
+    public enum MenuSelectionState
+    {
+        StartGame,
+        Customization,
+        Setting,
+        Exit
+    }
+
+    #endregion[UI]
 }

@@ -104,7 +104,10 @@ public class NetworkRunnerHandler : MonoBehaviour
             yield return new WaitForSeconds(_closeConnectionClip.length);
         }
 
-        _connectionWnd.SetActive(false);
+        if (_connectionWnd != null)
+        {
+            _connectionWnd.SetActive(false);
+        }
     }
 
     protected virtual async Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address, SceneRef scene, Action<NetworkRunner> initialized)

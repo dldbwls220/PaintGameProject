@@ -67,7 +67,8 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
 
         if (_networkrunner == null || !_networkrunner.IsRunning)
         {
-            Debug.LogWarning("ForceStart: NetworkRunner를 찾지 못했거나 아직 실행 중이 아닙니다.");
+            // 아직 네트워크 세션이 시작되지 않은 상태 (예: StartScene -> LobbyScene) - 로컬 씬 로드로 대체
+            SceneManager.LoadSceneAsync((int)_gameSceneState);
             return;
         }
 
