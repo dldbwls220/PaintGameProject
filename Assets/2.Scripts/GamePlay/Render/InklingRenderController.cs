@@ -51,10 +51,7 @@ public class InklingRenderController : MonoBehaviour
 
     public void Init()
     {
-        _inklingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
-        _halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
-        _squidRender = _modelObj[(int)FormState.Squid].GetComponentsInChildren<SkinnedMeshRenderer>();
-        _inkTankRender = _inkTankObj.GetComponentsInChildren<MeshRenderer>();
+        RefreshClothRenderers();
         _mpb = new MaterialPropertyBlock();
 
         SwitchRender(FormState.Inkling, true);
@@ -63,10 +60,22 @@ public class InklingRenderController : MonoBehaviour
         InkTankRender(false);
     }
 
+    // 커스터마이징 값이 바뀌어 CharacterClothChanger가 옷을 다시 장착(기존 오브젝트 Destroy 후 재생성)할 때마다
+    // 호출해서 렌더러 캐시를 갱신해야 한다. 그러지 않으면 파괴된 오브젝트를 계속 참조해 MissingReferenceException이 발생한다.
+    public void RefreshClothRenderers()
+    {
+        _inklingRender = _modelObj[(int)FormState.Inkling].GetComponentsInChildren<SkinnedMeshRenderer>();
+        _halfRender = _modelObj[(int)FormState.Half].GetComponentsInChildren<SkinnedMeshRenderer>();
+        _squidRender = _modelObj[(int)FormState.Squid].GetComponentsInChildren<SkinnedMeshRenderer>();
+        _inkTankRender = _inkTankObj.GetComponentsInChildren<MeshRenderer>();
+    }
+
     public void SetTeamColor(Color teamColor)
     {
         foreach (SkinnedMeshRenderer ren in _inklingRender)
         {
+            if (ren == null) continue;
+
             if (ren.name.Contains("_TeamC"))
             {
                 ren.GetPropertyBlock(_mpb);
@@ -84,6 +93,8 @@ public class InklingRenderController : MonoBehaviour
 
         foreach (SkinnedMeshRenderer ren in _halfRender)
         {
+            if (ren == null) continue;
+
             if (ren.name.Contains("_TeamC"))
             {
                 ren.GetPropertyBlock(_mpb);
@@ -100,6 +111,8 @@ public class InklingRenderController : MonoBehaviour
 
         foreach (SkinnedMeshRenderer ren in _squidRender)
         {
+            if (ren == null) continue;
+
             if (ren.name.Contains("_TeamC"))
             {
                 ren.GetPropertyBlock(_mpb);
@@ -111,6 +124,8 @@ public class InklingRenderController : MonoBehaviour
 
         foreach (MeshRenderer ren in _inkTankRender)
         {
+            if (ren == null) continue;
+
             if (ren.name.Contains("M_Ink"))
             {
                 ren.GetPropertyBlock(_mpb);
@@ -288,6 +303,8 @@ public class InklingRenderController : MonoBehaviour
 
         foreach (var ren in _inklingRender)
         {
+            if (ren == null) continue;
+
             ren.GetPropertyBlock(_mpb);
             Color baseColor = ren.name.Contains("_TeamC")
                 ? s.teamColor
@@ -298,6 +315,8 @@ public class InklingRenderController : MonoBehaviour
 
         foreach (MeshRenderer ren in _inkTankRender)
         {
+            if (ren == null) continue;
+
             if (ren.name.Contains("M_BombLine") || ren.name.Contains("M_Glass") || ren.name.Contains("M_Ink"))
             {
                 ren.GetPropertyBlock(_mpb);
@@ -313,12 +332,14 @@ public class InklingRenderController : MonoBehaviour
         }
     }
 
-    
+
 
     void UpdateInkRefillRender(in RenderState s)
     {
         foreach (MeshRenderer ren in _inkTankRender)
         {
+            if (ren == null) continue;
+
             if (ren.name.Contains("M_BombLine") || ren.name.Contains("M_Glass") || ren.name.Contains("M_Ink"))
             {
                 if (ren.name.Contains("M_Ink"))
@@ -343,11 +364,19 @@ public class InklingRenderController : MonoBehaviour
         };
 
         if (targets == null) return;
-        foreach(var r in targets) r.enabled = isOn;
+        foreach (var r in targets)
+        {
+            if (r == null) continue;
+            r.enabled = isOn;
+        }
     }
 
     void InkTankRender(bool isOn)
     {
-        foreach (var r in _inkTankRender) r.enabled = isOn;
+        foreach (var r in _inkTankRender)
+        {
+            if (r == null) continue;
+            r.enabled = isOn;
+        }
     }
 }

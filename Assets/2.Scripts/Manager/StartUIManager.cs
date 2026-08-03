@@ -1,6 +1,8 @@
 using DefineEnum;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StartUIManager : MonoBehaviour
 {
@@ -14,6 +16,13 @@ public class StartUIManager : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseCustomization();
+        }
+    }
 
     #region[OpenNClose]
     public void OpenSelectedStartWnd()
@@ -55,6 +64,18 @@ public class StartUIManager : MonoBehaviour
     public void MoveToLobby()
     {
         WipeTransitionManager.instance.LoadScene(SceneState.LobbyScene);
+    }
+
+    public void MoveToCustomization()
+    {
+        WipeTransitionManager.instance.OpenCustomizationScene();
+    }
+
+   
+
+    public void CloseCustomization()
+    {
+        WipeTransitionManager.instance.CloseCustomizationScene();
     }
 
     public void EndGame()

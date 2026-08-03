@@ -18,8 +18,12 @@ public class CustomizationUI : MonoBehaviour
     [Header("Resource")]
     [SerializeField] GameObject _itemSlotObj;
 
+    public static CustomizationUI _instance;
+
     private void Awake()
     {
+        _instance = this;
+
         ResourcePoolManager.instance.AllLoadResources();
         InitCustomizationUI();
     }

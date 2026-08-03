@@ -20,6 +20,8 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
 
     NetworkRunner _networkrunner;
     bool _startRequested;
+    bool _isCustomizeSceneLoaded;
+    bool _isCustomizeSceneLoading;
 
     public override void Awake()
     {
@@ -34,6 +36,32 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
 
         _gameSceneState = state;
         StartCoroutine(LoadingScene());
+    }
+
+    public void OpenCustomizationScene()
+    {
+        if (_startRequested) return;
+
+        //// 이미 로드되어 있으면 다시 로드하지 않고 껐다 켜기만 한다
+        //if (_isCustomizeSceneLoaded)
+        //{
+        //    CustomizationUI._instance.transform.parent.gameObject.SetActive(true);
+        //    return;
+        //}
+
+        if (_isCustomizeSceneLoading) return;
+
+        StartCoroutine(LoadCustomizationScene());
+    }
+
+    public void CloseCustomizationScene()
+    {
+        //if (_isCustomizeSceneLoaded && CustomizationUI._instance != null)
+        //{
+        //    CustomizationUI._instance.transform.parent.gameObject.SetActive(false);
+        //}
+
+        StartCoroutine(CloseCustomizationWipeAnim());
     }
 
     void StartWipeAnim()
@@ -115,5 +143,59 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         EndWipeAnim();
 
         _startRequested = false;
+        _isCustomizeSceneLoaded = false;
+    }
+
+    IEnumerator LoadCustomizationScene()
+    {
+        _isCustomizeSceneLoading = true;
+
+        if (!_isCustomizeSceneLoaded)
+        {
+            StartWipeAnim();
+            yield return new WaitForSeconds(_anim.clip.length);
+            OpendLodingWnd();
+            AsyncOperation op = SceneManager.LoadSceneAsync(SceneState.CustomizationScene.ToString(), LoadSceneMode.Additive);
+            yield return op;
+            _isCustomizeSceneLoading = false;
+            _isCustomizeSceneLoaded = true;
+            if (CustomizationUI._instance != null)
+            {
+                CustomizationUI._instance.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.LogError("CustomizationScene을 로드했지만 CustomizationUI 인스턴스를 찾지 못했습니다.");
+            }
+
+            CloseLoadingWnd();
+            EndWipeAnim();
+        }
+        else
+        {
+            StartWipeAnim();
+            yield return new WaitForSeconds(_anim.clip.length);
+            _isCustomizeSceneLoading = false;
+            CustomizationUI._instance.transform.parent.gameObject.SetActive(true);
+
+            EndWipeAnim();
+        }
+    }
+
+    IEnumerator CloseCustomizationWipeAnim()
+    {
+        _isCustomizeSceneLoading = true;
+
+        StartWipeAnim();
+        yield return new WaitForSeconds(_anim.clip.length);
+
+        _isCustomizeSceneLoading = false;
+
+        if (_isCustomizeSceneLoaded && CustomizationUI._instance != null)
+        {
+            CustomizationUI._instance.transform.parent.gameObject.SetActive(false);
+        }
+
+        EndWipeAnim();
     }
 }

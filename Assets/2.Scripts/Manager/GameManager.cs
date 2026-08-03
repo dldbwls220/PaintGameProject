@@ -99,6 +99,15 @@ public class GameManager : NetworkBehaviour
             });
     }
 
+    // 각 클라이언트가 RPC로 보낸 커스터마이징 값을 해당 플레이어의 PlayerData에 반영한다 (StateAuthority에서만 호출됨)
+    public void SetPlayerCustomization(PlayerRef player, PlayerCustomization custom)
+    {
+        if (!PlayerData.TryGet(player, out var data)) return;
+
+        data._custom = custom;
+        PlayerData.Set(player, data);
+    }
+
     Transform GetSpawnPoint(int teamIdx, int spawnIdx , bool isRespawn = false)
     {
         Transform spawnPoint = default;

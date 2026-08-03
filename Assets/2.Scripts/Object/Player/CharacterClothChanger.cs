@@ -1,6 +1,7 @@
 using UnityEngine;
 using DefineEnum;
 using System.Collections.Generic;
+using DefineStructure;
 
 public class CharacterClothChanger : MonoBehaviour
 {
@@ -14,78 +15,97 @@ public class CharacterClothChanger : MonoBehaviour
     [SerializeField] BottomState _bottomState;
     [SerializeField] ShoeState _shoeState;
 
-    Dictionary<CustomizeState, string> CustomDic = new Dictionary<CustomizeState, string>();
+    readonly List<GameObject> _equippedObjects = new List<GameObject>();
 
-    public void SetCustomization()
+    public void SetCustomization(PlayerCustomization custom)
     {
-        CustomDic.Add(CustomizeState.Head, _headState.ToString());
-        CustomDic.Add(CustomizeState.Shirts, _bodyState.ToString());
-        CustomDic.Add(CustomizeState.Shoes, _shoeState.ToString());
-        CustomDic.Add(CustomizeState.Hair, _hairState.ToString());
-        CustomDic.Add(CustomizeState.Eyebrows, _eyebrowsState.ToString());
-        CustomDic.Add(CustomizeState.Bottom, _bottomState.ToString());
+        _headState = custom._head;
+        _bodyState = custom._cloth;
+        _shoeState = custom._shoes;
+        _hairState = custom._hair;
+        _eyebrowsState = custom._eyebrows;
+        _bottomState = custom._bottom;
 
-        foreach (KeyValuePair<CustomizeState, string> pair in CustomDic)
+        // 이 함수는 스폰 직후(기본값)와 RPC로 실제 값이 도착했을 때(OnCustomizationChanged) 두 번 이상 호출되므로,
+        // 매번 새 Dictionary로 만들고 이전에 장착했던 오브젝트를 지운 뒤 다시 장착해야 한다.
+        var customDic = new Dictionary<CustomizeState, string>
+        {
+            { CustomizeState.Head, _headState.ToString() },
+            { CustomizeState.Shirts, _bodyState.ToString() },
+            { CustomizeState.Shoes, _shoeState.ToString() },
+            { CustomizeState.Hair, _hairState.ToString() },
+            { CustomizeState.Eyebrows, _eyebrowsState.ToString() },
+            { CustomizeState.Bottom, _bottomState.ToString() },
+        };
+
+        ClearEquipped();
+
+        foreach (KeyValuePair<CustomizeState, string> pair in customDic)
         {
             if (pair.Value == "Count") continue;
 
-            GameObject go = Resources.Load<GameObject>("Object/Customizing/" +  pair.Key.ToString() +"/" + pair.Value);
-
-            EquipClothing(go, pair.Key);
-
-            Debug.Log(go.name);
+            Equip(pair.Key, pair.Value);
 
             if (pair.Key == CustomizeState.Shoes)
             {
-                go = Resources.Load<GameObject>("Object/Customizing/" + pair.Key.ToString() + "/" + pair.Value + "_R");
-
-                EquipClothing(go, pair.Key);
+                Equip(pair.Key, pair.Value + "_R");
             }
         }
     }
 
-    public void EquipClothing(GameObject clothPrefab, CustomizeState state)
+    void ClearEquipped()
     {
+        foreach (GameObject go in _equippedObjects)
+        {
+            if (go != null) Destroy(go);
+        }
+        _equippedObjects.Clear();
+    }
 
+    void Equip(CustomizeState state, string itemName)
+    {
+        GameObject prefab = Resources.Load<GameObject>("Object/Customizing/" + state.ToString() + "/" + itemName);
+
+        if (prefab == null)
+        {
+            Debug.LogWarning($"커스터마이징 리소스를 찾을 수 없습니다: Object/Customizing/{state}/{itemName}");
+            return;
+        }
+
+        GameObject equipped = EquipClothing(prefab, state);
+
+        if (equipped != null) _equippedObjects.Add(equipped);
+    }
+
+    public GameObject EquipClothing(GameObject clothPrefab, CustomizeState state)
+    {
         switch (state)
         {
             case CustomizeState.Hair:
-                SetHair(clothPrefab);
-                break;
-            case CustomizeState.Eyebrows:
-                SetClothes(clothPrefab);
-                break;
             case CustomizeState.Head:
-                SetHair(clothPrefab);
-                break;
+                return SetHair(clothPrefab);
+            case CustomizeState.Eyebrows:
             case CustomizeState.Shirts:
-                SetClothes(clothPrefab);
-                break;
             case CustomizeState.Shoes:
-                SetClothes(clothPrefab);
-                break;
             case CustomizeState.Bottom:
-                SetClothes(clothPrefab);
-                break;
+                return SetClothes(clothPrefab);
+            default:
+                return null;
         }
-
-
     }
 
-    void SetHair(GameObject clothPrefab)
+    GameObject SetHair(GameObject clothPrefab)
     {
         if (_characterHeadRoot == null)
         {
             Debug.LogError("머리카락을 장착하려 하지만 _characterHeadRoot(Head 본)가 지정되지 않았습니다.");
-            return;
+            return null;
         }
 
-        GameObject hairObj = Instantiate(clothPrefab, _characterHeadRoot);
-
-        return;
+        return Instantiate(clothPrefab, _characterHeadRoot);
     }
 
-    void SetClothes(GameObject clothPrefab)
+    GameObject SetClothes(GameObject clothPrefab)
     {
         GameObject clothObj = Instantiate(clothPrefab, _characterRootBone.parent.parent);
 
@@ -94,7 +114,7 @@ public class CharacterClothChanger : MonoBehaviour
         clothObj.transform.localScale = Vector3.one;
 
         SkinnedMeshRenderer[] clothRender = clothObj.GetComponentsInChildren<SkinnedMeshRenderer>();
-        if (clothRender == null) return;
+        if (clothRender == null) return clothObj;
 
         Dictionary<string, Transform> boneMap = new Dictionary<string, Transform>();
         foreach (Transform bone in _characterRootBone.GetComponentsInChildren<Transform>())
@@ -143,8 +163,6 @@ public class CharacterClothChanger : MonoBehaviour
                 // 기존 옷에 루트본이 없었다면 캐릭터의 최상위 루트본을 기본값으로 지정해 줍니다.
                 renderer.rootBone = _characterRootBone;
             }
-
-
         }
 
         Transform clothingArmature = clothObj.transform.Find("Armature");
@@ -153,5 +171,7 @@ public class CharacterClothChanger : MonoBehaviour
             clothingArmature.SetParent(null);
             Destroy(clothingArmature.gameObject);
         }
+
+        return clothObj;
     }
 }

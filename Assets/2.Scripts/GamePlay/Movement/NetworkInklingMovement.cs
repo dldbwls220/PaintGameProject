@@ -4,6 +4,7 @@ using Fusion.Addons.SimpleKCC;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using Cinemachine;
+using DefineStructure;
 
 // InklingController를 건드리지 않고 Simple KCC 기반으로 Fusion 2 네트워크 이동을 처리하는 래퍼
 [RequireComponent(typeof(SimpleKCC))]
@@ -88,6 +89,9 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] Vector3 _morphFXOffset;
     [SerializeField] float _morphFXLifeTime = 1f;
 
+    [Networked, OnChangedRender(nameof(OnCustomizationChanged))]
+    PlayerCustomization _custom { get; set; }
+
     [Networked] public NetworkBool _isSquid { get; set; }
     [Networked] public NetworkBool _isShooting { get; set; }
     [Networked] public NetworkBool _isGrounded { get; set; }
@@ -141,7 +145,18 @@ public class NetworkInklingMovement : NetworkBehaviour
     public override void Spawned()
     {
         _kcc = GetComponent<SimpleKCC>();
-        _characterClothChanger.SetCustomization();
+
+        if (HasInputAuthority)
+        {
+            // 본인 캐릭터는 네트워크 왕복을 기다릴 필요 없이 로컬에 있는 실제 선택값을 바로 입힌다
+            PlayerCustomization myCustom = PlayerCustomizeManager.instance.Customization;
+            _characterClothChanger.SetCustomization(myCustom);
+            RPC_SubmitCustomization(myCustom);
+        }
+        else
+        {
+            _characterClothChanger.SetCustomization(_custom);
+        }
 
         _inklingHitboxRadius = _hitbox.CapsuleRadius;
         _inklingHitboxExtents = _hitbox.CapsuleExtents;
@@ -295,7 +310,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     void MovementInput(NetworkInputData input)
     {
-        if (!_health._isAlive || _health._nowRespawing || !GameManager._instance._gameStart) return;
+        if (!_health._isAlive || _health._nowRespawing /*|| !GameManager._instance._gameStart*/) return;
 
         // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
         _aimTargetPosition = input._aimTargetPosition;
@@ -506,6 +521,25 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _prevIsOnPaint   = onPaint;
         _prevIsSameColor = sameColor;
+    }
+
+    // 로컬 클라이언트가 CustomizationScene에서 고른 값을 StateAuthority(호스트)에 전달 → PlayerCustomization._custom에 반영되어 모두에게 동기화된다
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    void RPC_SubmitCustomization(PlayerCustomization custom)
+    {
+        _custom = custom;
+        GameManager._instance.SetPlayerCustomization(Object.InputAuthority, custom);
+    }
+
+    // _custom이 동기화되어 값이 바뀔 때 호출된다.
+    void OnCustomizationChanged()
+    {
+        if (HasInputAuthority) return;
+
+        _characterClothChanger.SetCustomization(_custom);
+
+        _renderC.RefreshClothRenderers();
+        _renderC.SetTeamColor(_inkColor);
     }
 
     // 팀/잉크 색상은 GameManager가 스폰 시점에 등록해 둔 PlayerData에서 그대로 받아와 적용한다
