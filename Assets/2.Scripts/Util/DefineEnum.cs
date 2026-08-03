@@ -180,16 +180,27 @@ namespace DefineEnum
         Howdy_Hat,
         Retro_BluFocals,
         Skull_Bandana,
-        Stay_Crusty_Cap
+        Stay_Crusty_Cap,
+        Bream_Brim_Cap,
+        Dust_Blocker_2000,
+        Glam_Clam_Specs,
+
+        Count
     }
 
     public enum BodyState
     {
+        Tri_Shred_Tee,
         Annaki_Choker_Tee,
+        Annaki_Anchored_Coat,
         Cream_Tundra_Fleece,
         Gray_Hoodie,
         Orca_Bolero,
-        Takoroka_Nylon_Vintage
+        Takoroka_Nylon_Vintage,
+        Black_Inky_Rider,
+        Kensa_Coat,
+
+        Count
     }
 
     public enum BottomState
@@ -203,7 +214,9 @@ namespace DefineEnum
 
     public enum ShoeState
     {
-        Skipjack_Work_Boots
+        Skipjack_Work_Boots,
+
+        Count
     }
 
     #endregion[커스터마이징]
@@ -267,4 +280,11 @@ namespace DefineEnum
     }
 
     #endregion[UI]
+
+    public enum PoolDataType
+    {
+        HEADGEARIMG,
+        CLOTHGEARIMG,
+        SHOESGEARIMG
+    }
 }

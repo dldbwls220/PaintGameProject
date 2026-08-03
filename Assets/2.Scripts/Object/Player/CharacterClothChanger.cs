@@ -27,6 +27,8 @@ public class CharacterClothChanger : MonoBehaviour
 
         foreach (KeyValuePair<CustomizeState, string> pair in CustomDic)
         {
+            if (pair.Value == "Count") continue;
+
             GameObject go = Resources.Load<GameObject>("Object/Customizing/" +  pair.Key.ToString() +"/" + pair.Value);
 
             EquipClothing(go, pair.Key);
@@ -86,6 +88,10 @@ public class CharacterClothChanger : MonoBehaviour
     void SetClothes(GameObject clothPrefab)
     {
         GameObject clothObj = Instantiate(clothPrefab, _characterRootBone.parent.parent);
+
+        clothObj.transform.localPosition = Vector3.zero;
+        clothObj.transform.localRotation = Quaternion.identity;
+        clothObj.transform.localScale = Vector3.one;
 
         SkinnedMeshRenderer[] clothRender = clothObj.GetComponentsInChildren<SkinnedMeshRenderer>();
         if (clothRender == null) return;

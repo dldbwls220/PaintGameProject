@@ -1,3 +1,4 @@
+using DefineEnum;
 using Fusion;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -84,5 +85,26 @@ namespace DefineStructure
         public float _myRespawnTime;
         public bool _isAlive;
         public bool _isConnected;
+        public PlayerCustomization _custom;
+    }
+
+    public struct PlayerCustomization : INetworkStruct
+    {
+        public BodyState _cloth;
+        public HeadState _head;
+        public ShoeState _shoes;
+        public HairState _hair;
+        public EyebrowsState _eyebrows;
+        public BottomState _bottom;
+
+        public static PlayerCustomization Default => new PlayerCustomization
+        {
+            _cloth = BodyState.Tri_Shred_Tee,
+            _head = HeadState.Headlamp_Helmet,
+            _shoes = ShoeState.Skipjack_Work_Boots,
+            _hair = HairState.Har_SQD000_F_TeamE,
+            _eyebrows = EyebrowsState.Eyb_SQD000_F_TeamC,
+            _bottom = BottomState.Btm_000_F
+        };
     }
 }

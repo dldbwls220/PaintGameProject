@@ -6,7 +6,8 @@ public class StartManager : MonoBehaviour
     void Start()
     {
         GameSoundManager.instance.LoadAllSound();
-
+        ResourcePoolManager.instance.AllLoadResources();
+        PlayerCustomizeManager.instance.initDefaultcustom();
     }
 
     // Update is called once per frame

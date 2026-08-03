@@ -10591,10 +10591,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterClothChanger
   _characterRootBone: {fileID: 6923581628829922647}
   _characterHeadRoot: {fileID: 3046374387772269368}
-  _hairState: 2
-  _eyebrowsState: 0
-  _headState: 0
-  _bodyState: 0
+  _hairState: 1
+  _eyebrowsState: 2
+  _headState: 1
+  _bodyState: 5
   _bottomState: 0
   _shoeState: 0
 --- !u!114 &3311113069015686545
