@@ -1,3 +1,5 @@
+using DefineStructure;
+using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +20,7 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] GameObject _inkTank;
     [SerializeField] GameObject _wipeOut;
     [SerializeField] GameObject _countDown;
+    [SerializeField] GameObject _readyGo;
 
     void Awake()
     {
@@ -26,12 +29,15 @@ public class GameUIManager : MonoBehaviour
 
     public void InitUI()
     {
+        _teamStatusUI.SpawnPlayerStatusUI();
+
         _emptyinkUI.CloseWnd();
         _teamStatusUI.CloseWnd();
         _crosshairUI.CloseCrosshair();
         _teamStatusUI.CloseWnd();
         _timerUI.CloseWnd();
         _beatenInfoUI.CloseWnd();
+        _readyGo.SetActive(false);
         _inkTank.SetActive(false);
         _wipeOut.SetActive(false);
         _countDown.SetActive(false);
@@ -40,6 +46,11 @@ public class GameUIManager : MonoBehaviour
     public void CloseStartUI()
     {
         _startUI.CloseWnd();
+    }
+
+    public void AssignPlayerStatus(NetworkDictionary<PlayerRef, PlayerData> playerData, PlayerRef localPlayer)
+    {
+        _teamStatusUI.AssignPlayerStatus(playerData, localPlayer);
     }
 
     public void OpenAllGamePlayUI()
@@ -62,5 +73,15 @@ public class GameUIManager : MonoBehaviour
         Slider slider = _inkTank.GetComponent<Slider>();
 
         slider.value = value;
+    }
+
+    public void StartReadyUI()
+    {
+        _readyGo.SetActive(true);
+    }
+
+    public void SetTime(float time)
+    {
+        _timerUI.SetTime(time);
     }
 }

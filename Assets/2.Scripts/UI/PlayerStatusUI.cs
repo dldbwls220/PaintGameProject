@@ -14,17 +14,29 @@ public class PlayerStatusUI : MonoBehaviour
 
     Color _color;
 
-    public void InitPlayerInfo(Sprite weapon, bool isPlayerConnected, Color TeamColor)
+    void Awake()
     {
         _weaponIconDefaultMaterial = _weaponIcon.material;
-        _weaponIcon.sprite = weapon;
-        _cross.enabled = !isPlayerConnected;
-        _color = TeamColor;
-        _bg.color = _color;
+    }
+
+    public void InitPlayerInfo(Sprite weapon, bool isPlayerConnected, Color TeamColor)
+    {
+        if (isPlayerConnected)
+        {
+            if (weapon != null)
+                _weaponIcon.sprite = weapon;
+
+            _cross.enabled = !isPlayerConnected;
+            _color = TeamColor;
+            _bg.color = _color;
+        }
+        else
+            PlayerDisconnected();
     }
 
     public void PlayerDead()
     {
+        _weaponIcon.enabled = true;
         _weaponIcon.material = _grayscaleMaterial;
         _cross.enabled = true;
         _bg.color = Color.black;
@@ -32,8 +44,16 @@ public class PlayerStatusUI : MonoBehaviour
 
     public void PlayerRespawn()
     {
+        _weaponIcon.enabled = true;
         _weaponIcon.material = _weaponIconDefaultMaterial;
         _cross.enabled = false;
         _bg.color = _color;
+    }
+
+    public void PlayerDisconnected()
+    {
+        _weaponIcon.enabled = false;
+        _cross.enabled = true;
+        _bg.color = Color.black;
     }
 }

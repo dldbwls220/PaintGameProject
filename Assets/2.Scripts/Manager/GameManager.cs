@@ -26,19 +26,27 @@ public class GameManager : NetworkBehaviour
     int _spawnCount;
     bool _inkIdxAssigned;
     GameUIManager _uiManager;
+    bool _introPlaying;
+    bool _readyUiShown;
 
     [Networked]
-    [Capacity(32)]
+    [Capacity(8)]
     [HideInInspector]
     public NetworkDictionary<PlayerRef, PlayerData> PlayerData { get; }
 
     [Networked]
     [HideInInspector]
-    public TickTimer RemainingTime { get; set; }
+    public TickTimer GameTime { get; set; }
+
+    [Networked]
+    [HideInInspector]
+    public TickTimer ReadyTimer { get; set; }
 
     [Networked, HideInInspector] public int _inkIdx { get; private set; }
     [Networked] public NetworkBool _introFinished { get; set; }
     [Networked] public NetworkBool _gameStart { get; set; }
+    [Networked] NetworkBool _introStarted { get; set; }
+    [Networked] float _introStartTime { get; set; }
 
     public static GameManager _instance => _uniqueinstance;
 
@@ -56,12 +64,88 @@ public class GameManager : NetworkBehaviour
         _playableDirector.stopped += OnIntroFinished;
     }
 
+    private void OnDestroy()
+    {
+        _playableDirector.stopped -= OnIntroFinished;
+    }
+
+    public override void Spawned()
+    {
+        // 인트로 시작 시점을 네트워크 동기 시간으로 한 번만 기록 (StateAuthority만 기록, 나머지는 복제받음)
+        if (HasStateAuthority && !_introStarted)
+        {
+            _introStartTime = Runner.SimulationTime;
+            _introStarted = true;
+        }
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (!HasStateAuthority) return;
+
+        if (_introFinished && !ReadyTimer.IsRunning)
+        {
+            ReadyTimer = TickTimer.CreateFromSeconds(Runner, 1.5f);
+        }
+
+        if (ReadyTimer.Expired(Runner) && !_gameStart)
+        {
+            _gameStart = true;
+            GameTime = TickTimer.CreateFromSeconds(Runner, _gameDuration);
+        }
+    }
+
     public override void Render()
     {
         foreach (var platform in _spawnPlatforms)
         {
             platform.InitPlatform(_teamColors1[_inkIdx], _teamColors2[_inkIdx]);
         }
+
+        StartIntroIfNeeded();
+
+        try
+        {
+            _uiManager.AssignPlayerStatus(PlayerData, Runner.LocalPlayer);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+        }
+
+        if (_introFinished && !_readyUiShown)
+        {
+            _readyUiShown = true;
+            _uiManager.StartReadyUI();
+        }
+
+        if (_gameStart)
+        {          
+            _uiManager.SetTime(GameTime.RemainingTime(Runner) ?? 0);
+        }
+    }
+
+    // 호스트/클라이언트가 각자 로컬 시점(Awake)에 재생을 시작하는 대신,
+    // 네트워크 동기 시간(Runner.SimulationTime) 기준 경과 위치로 딱 한 번만 seek한 뒤 Play()한다.
+    // 이후 재생은 Unity Timeline의 정상 자동 재생 흐름을 타므로 Signal Emitter 등이 원래대로 발동한다.
+    void StartIntroIfNeeded()
+    {
+        if (_introPlaying || !_introStarted) return;
+
+        double elapsed = Runner.SimulationTime - _introStartTime;
+        if (elapsed < 0) elapsed = 0;
+
+        _introPlaying = true;
+
+        if (elapsed >= _playableDirector.duration)
+        {
+            // 인트로가 이미 끝난 시점에 뒤늦게 합류한 경우 재생 없이 바로 종료 처리
+            OnIntroFinished(_playableDirector);
+            return;
+        }
+
+        _playableDirector.time = elapsed;
+        _playableDirector.Play();
     }
 
     // 서버(Spawner.OnPlayerJoined)에서만 호출됨: 해당 플레이어의 PlayerData를 먼저 등록한 뒤 캐릭터를 스폰한다
@@ -76,19 +160,17 @@ public class GameManager : NetworkBehaviour
 
         var playerData = new PlayerData
         {
-            _playerRef = player,
             _teamColor = GetTeamColor(teamIndex),
             _enemyColor = GetEnemyColor(teamIndex),
             _statisticPostion = int.MaxValue,
             _myRespawnTime = _respawnTime,
             _isAlive = true,
             _isConnected = true,
+            _teamIndex = teamIndex,
         };
 
         this.PlayerData.Set(player, playerData);
         Vector3 spawnPos = GetSpawnPoint(teamIndex, spawnIndex).position;
-
-        //Vector3 spawnPos = Utils.GetSpawnPoint();
 
         Quaternion spawnRot = teamIndex == 1 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
 
@@ -108,7 +190,7 @@ public class GameManager : NetworkBehaviour
         PlayerData.Set(player, data);
     }
 
-    Transform GetSpawnPoint(int teamIdx, int spawnIdx , bool isRespawn = false)
+    public Transform GetSpawnPoint(int teamIdx, int spawnIdx , bool isRespawn = false)
     {
         Transform spawnPoint = default;
 
@@ -134,10 +216,10 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void OnIntroFinished(PlayableDirector director) 
+    void OnIntroFinished(PlayableDirector director)
     {
         _uiManager.OpenAllGamePlayUI();
-        if(HasStateAuthority)
+        if (HasStateAuthority)
             _introFinished = true;
     }
 
@@ -149,8 +231,4 @@ public class GameManager : NetworkBehaviour
         _uiManager.CloseStartUI();
     }
 
-    private void OnDestroy()
-    {
-        _playableDirector.stopped -= OnIntroFinished;
-    }
 }

@@ -231,6 +231,10 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             if (!_wasRespawning)
             {
+                _kcc.SetPosition(GameManager._instance.GetSpawnPoint(_teamIndex, 0, true).position, teleport: true);
+
+                _kcc.SetLookRotation(_teamIndex == 1 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity);
+
                 _respawningTimer = TickTimer.CreateFromSeconds(Runner, _respawningTime);
                 _respawnStartRot = transform.rotation;
             }
@@ -310,7 +314,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     void MovementInput(NetworkInputData input)
     {
-        if (!_health._isAlive || _health._nowRespawing /*|| !GameManager._instance._gameStart*/) return;
+        if (!_health._isAlive || _health._nowRespawing || !GameManager._instance._gameStart) return;
 
         // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
         _aimTargetPosition = input._aimTargetPosition;

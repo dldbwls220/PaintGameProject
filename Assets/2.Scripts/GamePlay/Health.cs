@@ -67,8 +67,11 @@ public class Health : NetworkBehaviour
         {
             _pendingRespawn = false;
 
-            if(GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
+            if (HasStateAuthority && GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
+            {
                 data._isAlive = true;
+                GameManager._instance.PlayerData.Set(Object.InputAuthority, data);
+            }
 
             _respawningTimer = TickTimer.CreateFromSeconds(Runner, _respawnTime);
 
@@ -103,7 +106,10 @@ public class Health : NetworkBehaviour
             _currentHealth = 0f;
 
             if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
+            {
                 data._isAlive = false;
+                GameManager._instance.PlayerData.Set(Object.InputAuthority, data);
+            }
 
             ExplodePaint();
             Respawn();

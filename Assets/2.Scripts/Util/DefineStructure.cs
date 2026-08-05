@@ -75,9 +75,9 @@ namespace DefineStructure
     {
         [Networked, Capacity(24)]
         public string _nickName { get => default; set { } }
-        public PlayerRef _playerRef;
         public Color _teamColor;
         public Color _enemyColor;
+        public int _teamIndex;
         public int _kills;
         public int _death;
         public int _lastKillTick;
