@@ -286,6 +286,8 @@ namespace DefineEnum
     {
         HEADGEARIMG,
         CLOTHGEARIMG,
-        SHOESGEARIMG
+        SHOESGEARIMG,
+        HAIRICONIMG,
+        EYEBROWSICONIMG
     }
 }

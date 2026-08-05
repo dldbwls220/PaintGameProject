@@ -39,4 +39,18 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
         c._shoes = shoe;
         _customization = c;
     }
+
+    public void SetHair(HairState hair)
+    {
+        PlayerCustomization c = _customization;
+        c._hair = hair;
+        _customization = c;
+    }
+
+    public void SetEyebrowa(EyebrowsState eyebrowa)
+    {
+        PlayerCustomization c = _customization;
+        c._eyebrows = eyebrowa;
+        _customization = c;
+    }
 }

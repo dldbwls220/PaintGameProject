@@ -12,6 +12,8 @@ public class ResourcePoolManager : Singleton<ResourcePoolManager>
         LoadClothGear();
         LoadHeadGear();
         LoadShoesGear();
+        LoadHairIcon();
+        LoadEyebrowsIcon();
     }
 
     void LoadHeadGear()
@@ -42,6 +44,26 @@ public class ResourcePoolManager : Singleton<ResourcePoolManager>
             shoesGear.Add(imgs[i].name, imgs[i]);
 
         _allPoolDatas.Add(PoolDataType.SHOESGEARIMG, shoesGear);
+    }
+
+    void LoadHairIcon()
+    {
+        Dictionary<string, object> hairIcon = new Dictionary<string, object>();
+        Sprite[] imgs = Resources.LoadAll<Sprite>("Sprite/Item/HairIcons");
+        for (int i = 0; i < imgs.Length; i++)
+            hairIcon.Add(imgs[i].name, imgs[i]);
+
+        _allPoolDatas.Add(PoolDataType.HAIRICONIMG, hairIcon);
+    }
+
+    void LoadEyebrowsIcon()
+    {
+        Dictionary<string, object> eyebrowsIcon = new Dictionary<string, object>();
+        Sprite[] imgs = Resources.LoadAll<Sprite>("Sprite/Item/EyebrowsIcons");
+        for (int i = 0; i < imgs.Length; i++)
+            eyebrowsIcon.Add(imgs[i].name, imgs[i]);
+
+        _allPoolDatas.Add(PoolDataType.EYEBROWSICONIMG, eyebrowsIcon);
     }
 
     public T Get<T>(PoolDataType type, string index)

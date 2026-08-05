@@ -155,7 +155,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 202.49, y: 200}
+  m_SizeDelta: {x: 202.49, y: 223.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2622356554451247860
 CanvasRenderer:
@@ -205,6 +205,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2191600837815837966}
   - component: {fileID: 74292906710342206}
+  - component: {fileID: 1090450230700023466}
   m_Layer: 5
   m_Name: ItemUI
   m_TagString: Untagged
@@ -246,9 +247,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSlotUI
   _itemImg: {fileID: 7839015034508519797}
+  _backGround: {fileID: 5076783516795004400}
+  _animation: {fileID: 1090450230700023466}
   _bodyState: 0
   _headState: 0
   _shoeState: 0
+--- !u!111 &1090450230700023466
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6218487987354585574}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: 4e43b50e6513017469b0062d6ed7f13b, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 4e43b50e6513017469b0062d6ed7f13b, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &8045430923000426382
 GameObject:
   m_ObjectHideFlags: 0

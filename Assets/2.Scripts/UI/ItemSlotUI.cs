@@ -5,11 +5,32 @@ using DefineEnum;
 public class ItemSlotUI : MonoBehaviour
 {
     [SerializeField] Image _itemImg;
+    [SerializeField] Image _backGround;
+    [SerializeField] Animation _animation;
+    AnimationState _state;
 
     [Header("For Debuging")]
     [SerializeField] BodyState _bodyState;
     [SerializeField] HeadState _headState;
     [SerializeField] ShoeState _shoeState;
+
+    bool _isSelected;
+    bool _wasSelected;
+
+    private void Update()
+    {
+        _isSelected = IsCurrentlySelected();
+
+        if (_isSelected && !_wasSelected)
+        {
+            PlayAnimation();
+        }
+        else if (!_isSelected && _wasSelected)
+        {
+            ReverseAnimation();
+        }
+            _wasSelected = _isSelected;
+    }
 
     public void InitWnd(BodyState body = BodyState.Count, HeadState head = HeadState.Count, ShoeState shoe = ShoeState.Count)
     {
@@ -31,6 +52,32 @@ public class ItemSlotUI : MonoBehaviour
         _bodyState = body; _headState = head; _shoeState = shoe;
 
         _itemImg.sprite = icon;
+
+        _state = _animation[_animation.clip.name];
+
+        _isSelected = IsCurrentlySelected();
+        _wasSelected = _isSelected;
+
+        if (_isSelected)
+        {
+            SnapToSelectedState();
+        }
+    }
+
+    bool IsCurrentlySelected()
+    {
+        return PlayerCustomizeManager.instance.Customization._head == _headState
+            || PlayerCustomizeManager.instance.Customization._cloth == _bodyState
+            || PlayerCustomizeManager.instance.Customization._shoes == _shoeState;
+    }
+
+    void SnapToSelectedState()
+    {
+        _state.speed = 1;
+        _state.time = _state.length;
+        _animation.Play();
+        _animation.Sample();
+        _animation.Stop();
     }
 
     public void SetItem()
@@ -47,5 +94,19 @@ public class ItemSlotUI : MonoBehaviour
         {
             PlayerCustomizeManager.instance.SetShoe(_shoeState);
         }
+    }
+
+    public void PlayAnimation()
+    {
+        _state.speed = 1;
+        _state.time = 0;
+        _animation.Play();
+    }
+
+    public void ReverseAnimation()
+    {
+        _state.speed = -1;
+        _state.time = _state.length;
+        _animation.Play();
     }
 }

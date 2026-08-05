@@ -9,9 +9,41 @@ public class PartSelectUI : MonoBehaviour
     [SerializeField] Image _clothImg;
     [SerializeField] Image _shoesImg;
 
+    [Header("Wnd Anim")]
+    [SerializeField] Animation _headAnim;
+    [SerializeField] Animation _clothAnim;
+    [SerializeField] Animation _shoesAnim;
+    [SerializeField] Animation _styleAnim;
+    AnimationState _headState;
+    AnimationState _clothState;
+    AnimationState _shoesState;
+    AnimationState _styleState;
+
+    bool _isHeadOpen;
+    bool _isShoesOpen;
+    bool _isStyleOpen;
+    bool _isClothOpen;
+
+    bool _wasHeadOpen;
+    bool _wasShoesOpen;
+    bool _wasStyleOpen;
+    bool _wasClothOpen;
+
+    private void Start()
+    {
+        _headState = _headAnim[_headAnim.clip.name];
+        _clothState = _clothAnim[_clothAnim.clip.name];
+        _shoesState = _shoesAnim[_shoesAnim.clip.name];
+        _styleState = _styleAnim[_styleAnim.clip.name];
+
+        OpenHeadGearWnd();
+    }
+
     private void Update()
     {
         CheckItemImage();
+
+        playAnimation();
     }
 
     void CheckItemImage()
@@ -27,5 +59,140 @@ public class PartSelectUI : MonoBehaviour
         name = PlayerCustomizeManager.instance.Customization._shoes.ToString();
 
         _shoesImg.sprite = ResourcePoolManager.instance.Get<Sprite>(PoolDataType.SHOESGEARIMG, name);
+    }
+
+    #region[WndAnim]
+
+    void PlayHeadGearAnim()
+    {
+        _headState.speed = 1;
+        _headState.time = 0;
+        _headAnim.Play();
+    }
+
+    void PlayClothGearAnim()
+    {
+        _clothState.speed = 1;
+        _clothState.time = 0;
+        _clothAnim.Play();
+    }
+
+    void PlayShoesGearAnim()
+    {
+        _shoesState.speed = 1;
+        _shoesState.time = 0;
+        _shoesAnim.Play();
+    }
+
+    void PlayStyleAnim()
+    {
+        _styleState.speed = 1;
+        _styleState.time = 0;
+        _styleAnim.Play();
+    }
+
+    void ReverseHeadGearAnim()
+    {
+        _headState.speed = -1;
+        _headState.time = _headState.length;
+        _headAnim.Play();
+    }
+
+    void ReverseClothGearAnim()
+    {
+        _clothState.speed = -1;
+        _clothState.time = _clothState.length;
+        _clothAnim.Play();
+    }
+
+    void ReverseShoesGearAnim()
+    {
+        _shoesState.speed = -1;
+        _shoesState.time = _shoesState.length;
+        _shoesAnim.Play();
+    }
+    void ReverseStyleAnim()
+    {
+        _styleState.speed = -1;
+        _styleState.time = _styleState.length;
+        _styleAnim.Play();
+    }
+    #endregion[WndAnim]
+
+    public void OpenHeadGearWnd()
+    {
+        _isShoesOpen = false;
+        _isClothOpen = false;
+        _isStyleOpen = false;
+        _isHeadOpen = true;
+    }
+
+    public void OpenClothGearWnd()
+    {
+        _isShoesOpen = false;
+        _isClothOpen = true;
+        _isStyleOpen = false;
+        _isHeadOpen = false;
+    }
+
+    public void OpenShoesGearWnd()
+    {
+        _isShoesOpen = true;
+        _isClothOpen = false;
+        _isStyleOpen = false;
+        _isHeadOpen = false;
+    }
+
+    public void OpenStyleWnd()
+    {
+        _isShoesOpen = false;
+        _isClothOpen = false;
+        _isStyleOpen = true;
+        _isHeadOpen = false;
+    }
+
+    void playAnimation()
+    {
+        if (_wasClothOpen && !_isClothOpen)
+        {
+            ReverseClothGearAnim();
+        }
+        else if (!_wasClothOpen && _isClothOpen)
+        {
+            PlayClothGearAnim();
+        }
+
+        if (_wasHeadOpen && !_isHeadOpen)
+        {
+            ReverseHeadGearAnim();
+        }
+        else if (!_wasHeadOpen && _isHeadOpen)
+        {
+            PlayHeadGearAnim();
+        }
+
+        if (_wasShoesOpen && !_isShoesOpen)
+        {
+            ReverseShoesGearAnim();
+        }
+        else if (!_wasShoesOpen && _isShoesOpen)
+        {
+            PlayShoesGearAnim();
+        }
+
+        if (_wasStyleOpen && !_isStyleOpen)
+        {
+            ReverseStyleAnim();
+        }
+        else if (!_wasStyleOpen && _isStyleOpen)
+        {
+            PlayStyleAnim();
+        }
+
+        _wasHeadOpen = _isHeadOpen;
+        _wasClothOpen = _isClothOpen;
+        _wasShoesOpen = _isShoesOpen;
+        _wasStyleOpen = _isStyleOpen;
+
     }
 }
