@@ -29,6 +29,11 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         CloseLoadingWnd();
     }
 
+    public void StartScene()
+    {
+        StartCoroutine(StartSceneAnim());
+    }
+
     public void LoadScene(SceneState state)
     {
         if (_startRequested) return;
@@ -197,5 +202,13 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         }
 
         EndWipeAnim();
+    }
+
+    IEnumerator StartSceneAnim()
+    {
+        OpendLodingWnd();
+        yield return new WaitForSeconds(2f);
+        CloseLoadingWnd();
+        EndWipeAnim() ;
     }
 }

@@ -71,7 +71,10 @@ public class StartUIManager : MonoBehaviour
         WipeTransitionManager.instance.OpenCustomizationScene();
     }
 
-   
+   public void PlayClickSound()
+    {
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00);
+    }
 
     public void CloseCustomization()
     {

@@ -20,6 +20,8 @@ public class GameSoundManager : Singleton<GameSoundManager>
     AudioSource _bgmPlayer;
     public AudioPlayerDESC _lastMinBGMDESC;
     AudioSource _lastminbgmPlayer;
+    public AudioPlayerDESC _swimDESC;
+    AudioSource _swimPlayer;
 
     public override void Awake()
     {
@@ -38,15 +40,12 @@ public class GameSoundManager : Singleton<GameSoundManager>
         _sfxPlayer = gameObject.AddComponent<AudioSource>();
         _bgmPlayer = gameObject.AddComponent<AudioSource>(); ;
         _lastminbgmPlayer = gameObject.AddComponent<AudioSource>();
+        _swimPlayer = gameObject.AddComponent<AudioSource>();
 
         _SFXDESC = new AudioPlayerDESC(_sfxPlayer, 1, false, false);
         _BGMDESC = new AudioPlayerDESC(_bgmPlayer, 1, false, false);
         _lastMinBGMDESC = new AudioPlayerDESC(_lastminbgmPlayer, 1, false, false);
-    }
-
-    private void Start()
-    {
-        //LoadAllSound(); // 테스트용
+        _swimDESC = new AudioPlayerDESC(_swimPlayer, 0.5f, false, true);
     }
 
     public void LoadAllSound()
@@ -81,6 +80,7 @@ public class GameSoundManager : Singleton<GameSoundManager>
             _playerVoiceSFX3DDoc.Add(name, clip);
         }
 
+        count = (int)PlayerSFX3DName.Count;
         for (int i = 0; i < count; i++)
         {
             PlayerSFX3DName name = (PlayerSFX3DName)i;
@@ -96,6 +96,7 @@ public class GameSoundManager : Singleton<GameSoundManager>
             _playerVoiceSFXDoc.Add(name, clip);
         }
 
+        count = (int)PlayerSFXName.Count;
         for (int i = 0; i < count; i++)
         {
             PlayerSFXName name = (PlayerSFXName)i;
@@ -187,5 +188,22 @@ public class GameSoundManager : Singleton<GameSoundManager>
             return;
         }
         source.PlayOneShot(_weaponSFX3DDoc[name], volume);
+    }
+
+    public void PlayerSFXLoop(PlayerSFXName name, AudioSource source = null, float volume = 0.2f)
+    {
+        if (!_playerSFXDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        if (source == null) source = _swimPlayer;
+
+        source.volume = volume;
+
+        if (source.isPlaying && source.clip == _playerSFXDoc[name]) return;
+
+        source.clip = _playerSFXDoc[name];
+        source.Play();
     }
 }

@@ -6,100 +6,33 @@ using UnityEngine.Rendering;
 
 public class PlayerSoundManager : MonoBehaviour
 {
-    Dictionary<PlayerSFX3DName, AudioClip> _playerSFX3DDoc;
-    Dictionary<PlayerSFXName, AudioClip> _playerSFXDoc;
-    Dictionary<PlayerSFX3DName, AudioClip> _otherSFX3DDoc;
-    Dictionary<PlayerSFXName, AudioClip> _otherSFXDoc;
+    [Header("SwimSoundSetting")]
+    [SerializeField] float _swimVolumeSpeed;
+    [SerializeField] float _maxSwimVolue;
 
-    [SerializeField] AudioSource _voiceSFX3D;
-    [SerializeField] AudioSource _voiceSFX;
-    [SerializeField] AudioSource _otherSFX3D;
-    [SerializeField] AudioSource _otherSFX;
-
-    private void Awake()
+    public struct SoundState 
     {
-        _playerSFX3DDoc = new Dictionary<PlayerSFX3DName, AudioClip>();
-        _otherSFX3DDoc = new Dictionary<PlayerSFX3DName, AudioClip>();
-        _playerSFXDoc = new Dictionary<PlayerSFXName, AudioClip>();
-        _otherSFXDoc = new Dictionary<PlayerSFXName, AudioClip>();
+        public bool isSquid;
+        public bool isMorphingSquid;
+        public bool isMorphingInkling;
+        public bool isGrounded;
+        public bool isShooting;
+        public bool isMoving;
+        public bool isSwimming;
+        public bool isSlowed;
+        public bool isAlive;
+        public bool isRespawning;
+        public bool isWallClimb;
     }
 
-    public void LoadAllSound()
+    public void PlaySwimSFX()
     {
-        if (_playerSFX3DDoc.Count > 1) return;
-
-        string path = "Sound/SFX/";
-
-        int count = (int)PlayerSFX3DName.Count;
-        for (int i = 0; i < count; i++)
-        {
-            PlayerSFX3DName name = (PlayerSFX3DName)i;
-            AudioClip clip = Resources.Load<AudioClip>(path + "Voice/InklingGirl/" + name);
-            _playerSFX3DDoc.Add(name, clip);
-        }
-
-        for (int i = 0; i < count; i++)
-        {
-            PlayerSFX3DName name = (PlayerSFX3DName)i;
-            AudioClip clip = Resources.Load<AudioClip>(path + "Other/" + name);
-            _otherSFX3DDoc.Add(name, clip);
-        }
-
-        count = (int)PlayerSFXName.Count;
-        for (int i = 0; i < count; i++)
-        {
-            PlayerSFXName name = (PlayerSFXName)i;
-            AudioClip clip = Resources.Load<AudioClip>(path + "Voice/InklingGirl/" + name);
-            _playerSFXDoc.Add(name, clip);
-        }
-
-        for (int i = 0; i < count; i++)
-        {
-            PlayerSFXName name = (PlayerSFXName)i;
-            AudioClip clip = Resources.Load<AudioClip>(path + "Other/" + name);
-            _otherSFXDoc.Add(name, clip);
-        }
+        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXName.SwimmingInInk_loopable, volume: 0);
+        GameSoundManager.instance._swimDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._swimDESC._volum, _maxSwimVolue, _swimVolumeSpeed * Time.deltaTime);
     }
 
-    public void PlayerSFX(PlayerSFXName name)
+    public void OffLoopSFX()
     {
-        if (!_playerSFXDoc.ContainsKey(name))
-        {
-            Debug.LogFormat("{0} AudioClip은 없습니다", name);
-            return;
-        }
-        _voiceSFX.PlayOneShot(_playerSFXDoc[name]);
+        GameSoundManager.instance._swimDESC._volum = 0;
     }
-
-    public void PlayerSFX3D(PlayerSFX3DName name)
-    {
-        if (!_playerSFX3DDoc.ContainsKey(name))
-        {
-            Debug.LogFormat("{0} AudioClip은 없습니다", name);
-            return;
-        }
-        _voiceSFX3D.PlayOneShot(_playerSFX3DDoc[name]);
-    }
-
-    public void OtherSFX(PlayerSFXName name)
-    {
-        if (!_otherSFXDoc.ContainsKey(name))
-        {
-            Debug.LogFormat("{0} AudioClip은 없습니다", name);
-            return;
-        }
-        _otherSFX.PlayOneShot(_otherSFXDoc[name]);
-    }
-
-    public void OtherSFX3D(PlayerSFX3DName name)
-    {
-        if (!_otherSFX3DDoc.ContainsKey(name))
-        {
-            Debug.LogFormat("{0} AudioClip은 없습니다", name);
-            return;
-        }
-        _otherSFX3D.PlayOneShot(_otherSFX3DDoc[name]);
-    }
-
-    
 }

@@ -20,6 +20,11 @@ public class TimerUI : MonoBehaviour
         int minutes = (int)(time / 60f);
         int seconds = (int)(time % 60f);
 
+        if (time <= 60)
+            _time.color = Color.yellow;
+        else
+            _time.color = Color.white;
+
         _time.text = $"{minutes:0}:{seconds:00}";
     }
 }

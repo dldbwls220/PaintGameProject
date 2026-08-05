@@ -18,6 +18,9 @@ public class LobbyManager : NetworkBehaviour
     [Networked] TickTimer StartTimer { get; set; }
     [Networked] NetworkBool _isFull { get; set; }
 
+    [Networked] NetworkBool _isWaiting { get; set; }
+    [Networked] NetworkBool _wasWaiting { get; set; }
+
     readonly Dictionary<PlayerRef, int> _shownSlots = new();
 
     public static LobbyManager _instance => _uniqueinstance;
@@ -25,6 +28,11 @@ public class LobbyManager : NetworkBehaviour
     private void Awake()
     {
         _uniqueinstance = this;
+    }
+
+    public override void Spawned()
+    {
+        _isWaiting = true;
     }
 
     public override void Render()
@@ -58,10 +66,17 @@ public class LobbyManager : NetworkBehaviour
         }
 
         _UI.SetTimer(StartTimer.RemainingTime(Runner) ?? 0f);
+
+        if (!_isWaiting && _wasWaiting)
+        {
+            GameSoundManager.instance.PlayerSFX(PlayerSFXName.BattleStartBell, volume: 0.2f);
+        }
     }
 
     public override void FixedUpdateNetwork()
     {
+        _wasWaiting = _isWaiting;
+
         if (HasStateAuthority)
         {
             if (Input.GetKey(KeyCode.Space))
@@ -79,6 +94,11 @@ public class LobbyManager : NetworkBehaviour
                 StartTimer = TickTimer.None;
                 ForceStart();
             }
+        }
+
+        if (StartTimer.RemainingTime(Runner) <= 1)
+        {
+            _isWaiting = false;
         }
     }
 

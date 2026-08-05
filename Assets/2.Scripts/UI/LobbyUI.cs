@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DefineEnum;
 
 public class LobbyUI : MonoBehaviour
 {
@@ -51,6 +52,11 @@ public class LobbyUI : MonoBehaviour
 
         int sec = (int)time;
 
-        _timer.text = sec.ToString();
+        if (time <= 1)
+        {
+            _timer.text = "START";
+        }
+        else
+            _timer.text = sec.ToString();
     }
 }

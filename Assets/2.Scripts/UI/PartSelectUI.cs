@@ -195,4 +195,9 @@ public class PartSelectUI : MonoBehaviour
         _wasStyleOpen = _isStyleOpen;
 
     }
+
+    public void PlayPartSelect()
+    {
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.CustomizeUI_Decide, volume: 0.6f);
+    }
 }

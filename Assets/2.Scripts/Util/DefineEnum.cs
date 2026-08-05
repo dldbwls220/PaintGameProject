@@ -101,12 +101,24 @@ namespace DefineEnum
     public enum PlayerSFXName
     {
         Damage00,
-        damageIncLoop00,
+        Slowed_loopable,
         RespawnStart00,
         RespawnEnd00,
         SurprisedMix00,
         ToHumanMix00,
         ToSquidMix00,
+        SwimmingInInk_loopable,
+
+        BattleStartBell,
+        UI_Back00,
+        UI_PressAMedium00,
+        UI_Decide00,
+        CustomizeUI_Decide,
+
+        Count03,
+        Count02,
+        Count01,
+        whistleCmp00,
 
         Count
     }

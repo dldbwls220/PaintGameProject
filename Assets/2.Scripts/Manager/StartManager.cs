@@ -8,6 +8,8 @@ public class StartManager : MonoBehaviour
         GameSoundManager.instance.LoadAllSound();
         ResourcePoolManager.instance.AllLoadResources();
         PlayerCustomizeManager.instance.initDefaultcustom();
+
+        WipeTransitionManager.instance.StartScene();
     }
 
     // Update is called once per frame

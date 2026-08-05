@@ -109,4 +109,10 @@ public class ItemSlotUI : MonoBehaviour
         _state.time = _state.length;
         _animation.Play();
     }
+
+    public void PlayGesrSelect()
+    {
+        if (_isSelected) return;
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00, volume: 0.6f);
+    }
 }

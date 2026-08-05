@@ -10411,6 +10411,7 @@ MonoBehaviour:
   _health: {fileID: 2066191090572971395}
   _hitbox: {fileID: 6161846713622275408}
   _characterSeparation: {fileID: 9216481044901981345}
+  _playerSoundManager: {fileID: 8554473167015916915}
   _squidHitboxRadius: 0.5
   _squidHitboxExtents: 0.3
   _squidHitboxOffset: {x: 0, y: 0.35, z: 0}
@@ -10743,10 +10744,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cde51117b70d3a24da8acf3950b53e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSoundManager
-  _voiceSFX3D: {fileID: 8732085913511773130}
-  _voiceSFX: {fileID: 6761645501425031307}
-  _otherSFX3D: {fileID: 3750296599770101385}
-  _otherSFX: {fileID: 795303407429642487}
+  _swimVolumeSpeed: 2
+  _maxSwimVolue: 0.1
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0

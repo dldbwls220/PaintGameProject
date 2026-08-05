@@ -21,6 +21,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] Health _health;
     [SerializeField] Hitbox _hitbox;
     [SerializeField] CharacterSeperation _characterSeparation;
+    [SerializeField] PlayerSoundManager _playerSoundManager;
 
     [Header("Hitbox Size (Squid Form)")]
     [SerializeField] float _squidHitboxRadius = 0.5f;
@@ -683,6 +684,15 @@ public class NetworkInklingMovement : NetworkBehaviour
         _prevMorphingInkling = _isMorphingInkling;
         _prevRespawing = _health._nowRespawing;
         _prevPendingRespawn = _health._pendingRespawn;
+
+        if(_isAlive && _isSquid && _isMoving && (_isWallClimb || (_isSwimming && _isGrounded)))
+        {
+            _playerSoundManager.PlaySwimSFX();
+        }
+        else
+        {
+            _playerSoundManager.OffLoopSFX();
+        }
     }
 
 }
