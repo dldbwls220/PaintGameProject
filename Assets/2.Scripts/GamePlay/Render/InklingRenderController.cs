@@ -135,7 +135,6 @@ public class InklingRenderController : MonoBehaviour
         }
     }
 
-    // NetworkInklingMovement.Render() ���� ȣ��
     public void UpdateRender(in RenderState s)
     {
         UpdateFormRender(s);

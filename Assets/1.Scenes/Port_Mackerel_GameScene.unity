@@ -328969,6 +328969,8 @@ PlayableDirector:
     value: {fileID: 536168002}
   - key: {fileID: -1269532831308702649, guid: 5259ab1a5cd782148b54670e2edefa96, type: 2}
     value: {fileID: 2067567332}
+  - key: {fileID: -2179241717706965268, guid: 5259ab1a5cd782148b54670e2edefa96, type: 2}
+    value: {fileID: 2067567332}
   m_ExposedReferences:
     m_References:
     - ab3642f2dec139f4287413535c491b18: {fileID: 158397621}
@@ -424031,6 +424033,8 @@ MonoBehaviour:
   _spawnRoot1: {fileID: 625655059}
   _spawnRoot2: {fileID: 578200790}
   _playableDirector: {fileID: 1339369573}
+  _introFadeSpeed: 0.3
+  _gameBGMFadeSpeed: 0.8
   _PlayerData:
     _items: []
   __inkIdx: 0
@@ -424072,12 +424076,27 @@ MonoBehaviour:
   m_Events:
     m_Signals:
     - {fileID: 11400000, guid: 3e7e2a79727a00340abb7be65837a1c5, type: 2}
+    - {fileID: 11400000, guid: d6990a05654e003468ebd3cf44d75c67, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2067567330}
           m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
           m_MethodName: CloseStartUI
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2067567330}
+          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+          m_MethodName: IntroBGMEnd
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

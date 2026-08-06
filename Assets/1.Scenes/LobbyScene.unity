@@ -3331,7 +3331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LobbyManager
   _gameSceneState: 2
   _UI: {fileID: 1904419588}
-  _startDelay: 10
+  _startDelay: 30
   _fullLobbyStartDelay: 30
   _PlayerSlots:
     _items: []

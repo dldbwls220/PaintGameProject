@@ -18,6 +18,9 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
     [SerializeField] GameObject _loadingObj;
     [SerializeField] float _minLoadingDuration = 1.5f;
 
+    [Header("Fade Sound")]
+    [SerializeField] float _fadeSpeed = 2f;
+
     NetworkRunner _networkrunner;
     bool _startRequested;
     bool _isCustomizeSceneLoaded;
@@ -116,8 +119,36 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         _networkrunner.LoadScene(SceneRef.FromIndex((int)_gameSceneState));
     }
 
+    void FadeSound(bool isFadeIn)
+    {
+        StartCoroutine(FadeSoundRoutine(isFadeIn));
+    }
+
+    IEnumerator FadeSoundRoutine(bool isFadeIn)
+    {
+        if (!isFadeIn)
+        {
+            while (GameSoundManager.instance._UiBGMDESC._volum > 0)
+            {
+                GameSoundManager.instance._UiBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._UiBGMDESC._volum, 0, _fadeSpeed * Time.deltaTime);
+                yield return null;
+            }
+        }
+        else
+        {
+            while (GameSoundManager.instance._UiBGMDESC._volum < 1)
+            {
+                GameSoundManager.instance._UiBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._UiBGMDESC._volum, 1, _fadeSpeed * Time.deltaTime);
+                yield return null;
+            }
+        }
+      
+    }
+
     IEnumerator LoadingScene()
     {
+        FadeSound(false);
+
         StartWipeAnim();
         yield return new WaitForSeconds(_anim.clip.length);
 
@@ -149,11 +180,23 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
 
         _startRequested = false;
         _isCustomizeSceneLoaded = false;
+
+        if (_gameSceneState == SceneState.LobbyScene)
+        {
+            GameSoundManager.instance.UIBGM(UIBGMName.Dubble_Bath);
+            FadeSound(true);
+        }
+        else if (_gameSceneState == SceneState.Port_Mackerel_GameScene)
+        {
+            FadeSound(true);
+        }
     }
 
     IEnumerator LoadCustomizationScene()
     {
         _isCustomizeSceneLoading = true;
+
+        FadeSound(false);
 
         if (!_isCustomizeSceneLoaded)
         {
@@ -185,11 +228,16 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
 
             EndWipeAnim();
         }
+
+        GameSoundManager.instance.UIBGM(UIBGMName.Dripping_with_Style);
+        FadeSound(true);
     }
 
     IEnumerator CloseCustomizationWipeAnim()
     {
         _isCustomizeSceneLoading = true;
+
+        FadeSound(false);
 
         StartWipeAnim();
         yield return new WaitForSeconds(_anim.clip.length);
@@ -202,6 +250,9 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         }
 
         EndWipeAnim();
+
+        FadeSound(true);
+        GameSoundManager.instance.UIBGM(UIBGMName.C_Side_Splattack);
     }
 
     IEnumerator StartSceneAnim()
@@ -210,5 +261,7 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         yield return new WaitForSeconds(2f);
         CloseLoadingWnd();
         EndWipeAnim() ;
+        GameSoundManager.instance.UIBGM(UIBGMName.C_Side_Splattack);
+        GameSoundManager.instance._UiBGMDESC._loop = true;
     }
 }

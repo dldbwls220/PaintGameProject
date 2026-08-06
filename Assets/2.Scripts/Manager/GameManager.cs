@@ -1,6 +1,6 @@
 using DefineStructure;
 using Fusion;
-using Fusion.Addons.SimpleKCC;
+using DefineEnum;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -22,12 +22,19 @@ public class GameManager : NetworkBehaviour
     [SerializeField] GameObject _spawnRoot2;
     [Header("Timeline")]
     [SerializeField] PlayableDirector _playableDirector;
+    [Header("GameSoundSetting")]
+    [SerializeField] float _introFadeSpeed = 0.3f;
+    [SerializeField] float _gameBGMFadeSpeed = 0.5f;
+    OpeningBGMName _openingName;
 
     int _spawnCount;
     bool _inkIdxAssigned;
     GameUIManager _uiManager;
     bool _introPlaying;
     bool _readyUiShown;
+    bool _isIntroBGMEnd;
+    bool _introFadeOutComplete;
+    bool _wasGameStart;
 
     [Networked]
     [Capacity(8)]
@@ -77,6 +84,9 @@ public class GameManager : NetworkBehaviour
             _introStartTime = Runner.SimulationTime;
             _introStarted = true;
         }
+
+        SetGameBGM();
+      
     }
 
     public override void FixedUpdateNetwork()
@@ -103,6 +113,7 @@ public class GameManager : NetworkBehaviour
         }
 
         StartIntroIfNeeded();
+        FadeOutBGM();
 
         try
         {
@@ -122,6 +133,18 @@ public class GameManager : NetworkBehaviour
         if (_gameStart)
         {          
             _uiManager.SetTime(GameTime.RemainingTime(Runner) ?? 0);
+            if (!_wasGameStart)
+            {
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.Count01);
+                GameSoundManager.instance._GameBGMDESC._unpause();
+                _wasGameStart = true;
+            }       
+        }
+
+        if (GameTime.RemainingTime(Runner) <= 61)
+        {
+            GameSoundManager.instance._GameBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._GameBGMDESC._volum, 0, _gameBGMFadeSpeed * Time.deltaTime);
+            GameSoundManager.instance._NowOrNeverDESC._unpause();
         }
     }
 
@@ -131,6 +154,8 @@ public class GameManager : NetworkBehaviour
     void StartIntroIfNeeded()
     {
         if (_introPlaying || !_introStarted) return;
+
+        GameSoundManager.instance.OpeningBGM(_openingName);
 
         double elapsed = Runner.SimulationTime - _introStartTime;
         if (elapsed < 0) elapsed = 0;
@@ -223,12 +248,69 @@ public class GameManager : NetworkBehaviour
             _introFinished = true;
     }
 
+    void FadeOutBGM()
+    {
+        if (_isIntroBGMEnd && !_introFadeOutComplete)
+        {
+            GameSoundManager.instance._UiBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._UiBGMDESC._volum, 0, _introFadeSpeed * Time.deltaTime);
+
+            if (GameSoundManager.instance._UiBGMDESC._volum <= 0)
+                _introFadeOutComplete = true;
+        }
+    }
+
+    void SetGameBGM()
+    {
+        MusicType type = Random.value < 0.5f
+            ? MusicType.Normal
+            : (MusicType)(1 + Random.Range(0, (int)MusicType.Count - 1));
+        int fesIdx = Random.Range(0, 2);
+
+        switch (type)
+        {
+            case MusicType.Normal:
+                _openingName = OpeningBGMName.Opening;
+
+                NormalBGMName normal = (NormalBGMName)(Random.Range(0, (int)NormalBGMName.Count));
+
+                GameSoundManager.instance.GameBGMNormal(normal);
+                GameSoundManager.instance.NowOrNeverBGM(NowOrNever.NoworNever_Normal);
+                break;
+            case MusicType.SquidSisters:
+                _openingName = OpeningBGMName.Fes_Battle_Opening;
+
+                GameSoundManager.instance.GameBGMSquidSisters((SquidSisters)fesIdx);
+                GameSoundManager.instance.NowOrNeverBGM(NowOrNever.NoworNever_SquidSisters);
+                break;
+            case MusicType.Tentacles:
+                _openingName = OpeningBGMName.Fes_Battle_Opening;
+
+                GameSoundManager.instance.GameBGMSquidTentacles((Tentacles)fesIdx);
+                GameSoundManager.instance.NowOrNeverBGM(NowOrNever.NoworNever_Tentacles);
+                break;
+            case MusicType.DeepCut:
+                _openingName = OpeningBGMName.Fes_Battle_Opening;
+
+                GameSoundManager.instance.GameBGMSquidDeepCut((DeepCut)fesIdx);
+                GameSoundManager.instance.NowOrNeverBGM(NowOrNever.NoworNever_DeepCut);
+                break;
+        }
+
+        GameSoundManager.instance._GameBGMDESC._pause();
+        GameSoundManager.instance._NowOrNeverDESC._pause();
+    }
+
     Color GetTeamColor(int teamIndex) => teamIndex == 1 ? _teamColors1[_inkIdx] : _teamColors2[_inkIdx];
     Color GetEnemyColor(int teamIndex) => teamIndex == 1 ? _teamColors2[_inkIdx] : _teamColors1[_inkIdx];
 
     public void CloseStartUI()
     {
         _uiManager.CloseStartUI();
+    }
+
+    public void IntroBGMEnd()
+    {
+        _isIntroBGMEnd = true;
     }
 
 }

@@ -10744,8 +10744,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cde51117b70d3a24da8acf3950b53e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSoundManager
-  _swimVolumeSpeed: 2
-  _maxSwimVolue: 0.1
+  _swimVolumeSpeed: 0.5
+  _maxSwimVolue: 0.25
 --- !u!1 &8962964323798496639
 GameObject:
   m_ObjectHideFlags: 0

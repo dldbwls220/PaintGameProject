@@ -1,7 +1,9 @@
 using DefineEnum;
 using DefineStructure;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GameSoundManager : Singleton<GameSoundManager>
 {
@@ -12,16 +14,29 @@ public class GameSoundManager : Singleton<GameSoundManager>
     Dictionary<PlayerVoiceSFXName, AudioClip> _playerVoiceSFXDoc;
     Dictionary<PlayerSFX3DName, AudioClip> _playerSFX3DDoc;
     Dictionary<PlayerSFXName, AudioClip> _playerSFXDoc;
+    Dictionary<PlayerSFXLoopName, AudioClip> _playerSFXLoopDoc;
+
+    Dictionary<UIBGMName, AudioClip> _UIBGMDoc;
+    Dictionary<OpeningBGMName, AudioClip> _openingBGMDoc;
+    Dictionary<NormalBGMName, AudioClip> _normalBGMDoc;
+    Dictionary<SquidSisters, AudioClip> _squidSistersBGMDoc;
+    Dictionary<Tentacles, AudioClip> _tentaclesBGMDoc;
+    Dictionary<DeepCut, AudioClip> _deepCutBGMDoc;
+    Dictionary<NowOrNever, AudioClip> _nowOrNeverBGMDoc;
 
     Dictionary<WeaponSFX3DName, AudioClip> _weaponSFX3DDoc;
+
     public AudioPlayerDESC _SFXDESC;
     AudioSource _sfxPlayer;
-    public AudioPlayerDESC _BGMDESC;
-    AudioSource _bgmPlayer;
-    public AudioPlayerDESC _lastMinBGMDESC;
-    AudioSource _lastminbgmPlayer;
-    public AudioPlayerDESC _swimDESC;
-    AudioSource _swimPlayer;
+    public AudioPlayerDESC _UiBGMDESC;
+    AudioSource _uibgmPlayer;
+    public AudioPlayerDESC _GameBGMDESC;
+    AudioSource _gamebgmPlayer;
+    public AudioPlayerDESC _NowOrNeverDESC;
+    AudioSource _nowOrNeverPlayer;
+
+    Dictionary<PlayerSFXLoopName, AudioPlayerDESC> _SFXLoopDESCDoc;
+    Dictionary<PlayerSFXLoopName, AudioSource> _loopPlayerDoc;
 
     public override void Awake()
     {
@@ -34,18 +49,38 @@ public class GameSoundManager : Singleton<GameSoundManager>
         _playerSFX3DDoc = new Dictionary<PlayerSFX3DName, AudioClip>();
         _playerVoiceSFXDoc = new Dictionary<PlayerVoiceSFXName, AudioClip>();
         _playerSFXDoc = new Dictionary<PlayerSFXName, AudioClip>();
+        _playerSFXLoopDoc = new Dictionary<PlayerSFXLoopName, AudioClip>();
+
+        _UIBGMDoc = new Dictionary<UIBGMName, AudioClip>();
+        _openingBGMDoc = new Dictionary<OpeningBGMName, AudioClip>();
+        _normalBGMDoc = new Dictionary<NormalBGMName, AudioClip>();
+        _squidSistersBGMDoc = new Dictionary<SquidSisters, AudioClip>();
+        _tentaclesBGMDoc = new Dictionary<Tentacles, AudioClip>();
+        _deepCutBGMDoc = new Dictionary<DeepCut, AudioClip>();
+        _nowOrNeverBGMDoc = new Dictionary<NowOrNever, AudioClip>();
 
         _weaponSFX3DDoc = new Dictionary<WeaponSFX3DName, AudioClip>();
 
         _sfxPlayer = gameObject.AddComponent<AudioSource>();
-        _bgmPlayer = gameObject.AddComponent<AudioSource>(); ;
-        _lastminbgmPlayer = gameObject.AddComponent<AudioSource>();
-        _swimPlayer = gameObject.AddComponent<AudioSource>();
+        _uibgmPlayer = gameObject.AddComponent<AudioSource>();
+        _gamebgmPlayer = gameObject.AddComponent<AudioSource>();
+        _nowOrNeverPlayer = gameObject.AddComponent<AudioSource>();
 
         _SFXDESC = new AudioPlayerDESC(_sfxPlayer, 1, false, false);
-        _BGMDESC = new AudioPlayerDESC(_bgmPlayer, 1, false, false);
-        _lastMinBGMDESC = new AudioPlayerDESC(_lastminbgmPlayer, 1, false, false);
-        _swimDESC = new AudioPlayerDESC(_swimPlayer, 0.5f, false, true);
+        _UiBGMDESC = new AudioPlayerDESC(_uibgmPlayer, 1, false, false);
+        _GameBGMDESC = new AudioPlayerDESC(_gamebgmPlayer, 0.7f, false, false);
+        _NowOrNeverDESC = new AudioPlayerDESC(_nowOrNeverPlayer, 0.7f, false, false);
+
+        _loopPlayerDoc = new Dictionary<PlayerSFXLoopName, AudioSource>();
+        _SFXLoopDESCDoc = new Dictionary<PlayerSFXLoopName, AudioPlayerDESC>();
+        int loopCount = (int)PlayerSFXLoopName.Count;
+        for (int i = 0; i < loopCount; i++)
+        {
+            PlayerSFXLoopName name = (PlayerSFXLoopName)i;
+            AudioSource loopPlayer = gameObject.AddComponent<AudioSource>();
+            _loopPlayerDoc.Add(name, loopPlayer);
+            _SFXLoopDESCDoc.Add(name, new AudioPlayerDESC(loopPlayer, 0, false, true));
+        }
     }
 
     public void LoadAllSound()
@@ -104,6 +139,15 @@ public class GameSoundManager : Singleton<GameSoundManager>
             _playerSFXDoc.Add(name, clip);
         }
 
+        count = (int)PlayerSFXLoopName.Count;
+        for (int i = 0; i < count; i++)
+        {
+            PlayerSFXLoopName name = (PlayerSFXLoopName)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Other/" + name);
+            _playerSFXLoopDoc.Add(name, clip);
+
+        }
+
         count = (int)WeaponSFX3DName.Count;
         for (int i = 0; i < count; i++)
         {
@@ -111,6 +155,65 @@ public class GameSoundManager : Singleton<GameSoundManager>
             AudioClip clip = Resources.Load<AudioClip>(path + "Splattershot/" + name);
             _weaponSFX3DDoc.Add(name, clip);
         }
+
+        path = "Sound/Music/";
+
+        count = (int)UIBGMName.Count;
+        for (int i = 0; i < count; i++)
+        {
+            UIBGMName name = (UIBGMName)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "OtherScene/" + name);
+            _UIBGMDoc.Add(name, clip);
+        }
+
+        count = (int)OpeningBGMName.Count;
+        for (int i = 0; i < count; i++)
+        {
+            OpeningBGMName name = (OpeningBGMName)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Battle/Opening/" + name);
+            _openingBGMDoc.Add(name, clip);
+        }
+
+        count = (int)NormalBGMName.Count;
+        for (int i = 0; i < count; i++)
+        {
+            NormalBGMName name = (NormalBGMName)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Battle/" + name);
+            _normalBGMDoc.Add(name, clip);
+        }
+
+        count = (int)SquidSisters.Count;
+        for (int i = 0; i < count; i++)
+        {
+            SquidSisters name = (SquidSisters)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Battle/SquidSisters/" + name);
+            _squidSistersBGMDoc.Add(name, clip);
+        }
+
+        count = (int)Tentacles.Count;
+        for (int i = 0; i < count; i++)
+        {
+            Tentacles name = (Tentacles)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Battle/Tentacles/" + name);
+            _tentaclesBGMDoc.Add(name, clip);
+        }
+
+        count = (int)DeepCut.Count;
+        for (int i = 0; i < count; i++)
+        {
+            DeepCut name = (DeepCut)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Battle/DeepCut/" + name);
+            _deepCutBGMDoc.Add(name, clip);
+        }
+
+        count = (int)NowOrNever.Count;
+        for (int i = 0; i < count; i++)
+        {
+            NowOrNever name = (NowOrNever)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Battle/NowOrNever/" + name);
+            _nowOrNeverBGMDoc.Add(name, clip);
+        }
+
     }
 
     public void PlayerVoiceSFX(PlayerVoiceSFXName name, AudioSource source = null, float volume = 1f)
@@ -158,6 +261,81 @@ public class GameSoundManager : Singleton<GameSoundManager>
         source.PlayOneShot(_playerSFX3DDoc[name], volume);
     }
 
+    public void UIBGM(UIBGMName name)
+    {
+        if (!_UIBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _uibgmPlayer.clip = _UIBGMDoc[name];
+        _uibgmPlayer.Play();
+    }
+
+    public void OpeningBGM(OpeningBGMName name)
+    {
+        if (!_openingBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _uibgmPlayer.clip = _openingBGMDoc[name];
+        _uibgmPlayer.Play();
+    }
+
+    public void GameBGMNormal(NormalBGMName name)
+    {
+        if (!_normalBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _gamebgmPlayer.clip = _normalBGMDoc[name];
+        _gamebgmPlayer.Play();
+    }
+
+    public void GameBGMSquidSisters(SquidSisters name)
+    {
+        if (!_squidSistersBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _gamebgmPlayer.clip = _squidSistersBGMDoc[name];
+        _gamebgmPlayer.Play();
+    }
+    public void GameBGMSquidTentacles(Tentacles name)
+    {
+        if (!_tentaclesBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _gamebgmPlayer.clip = _tentaclesBGMDoc[name];
+        _gamebgmPlayer.Play();
+    }
+    public void GameBGMSquidDeepCut(DeepCut name)
+    {
+        if (!_deepCutBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _gamebgmPlayer.clip = _deepCutBGMDoc[name];
+        _gamebgmPlayer.Play();
+    }
+
+    public void NowOrNeverBGM(NowOrNever name)
+    {
+        if (!_nowOrNeverBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _nowOrNeverPlayer.clip = _nowOrNeverBGMDoc[name];
+        _nowOrNeverPlayer.Play();
+    }
+
     public void ProjectileSFX(ProjectileSFXName name, AudioSource source = null, float volume = 1f)
     {
         if (!_projectileSFXDoc.ContainsKey(name))
@@ -190,20 +368,34 @@ public class GameSoundManager : Singleton<GameSoundManager>
         source.PlayOneShot(_weaponSFX3DDoc[name], volume);
     }
 
-    public void PlayerSFXLoop(PlayerSFXName name, AudioSource source = null, float volume = 0.2f)
+    public void PlayerSFXLoop(PlayerSFXLoopName name, AudioSource source = null, float volume = 0)
     {
-        if (!_playerSFXDoc.ContainsKey(name))
+        if (!_playerSFXLoopDoc.ContainsKey(name))
         {
             Debug.LogFormat("{0} AudioClip이 없습니다", name);
             return;
         }
-        if (source == null) source = _swimPlayer;
+        if (source == null) source = _loopPlayerDoc[name];
 
-        source.volume = volume;
+        if (volume > 0)
+            source.volume = volume;
 
-        if (source.isPlaying && source.clip == _playerSFXDoc[name]) return;
 
-        source.clip = _playerSFXDoc[name];
+        if (source.isPlaying && source.clip == _playerSFXLoopDoc[name]) return;
+
+        source.clip = _playerSFXLoopDoc[name];
         source.Play();
     }
+
+    public void SetLoopVolume(PlayerSFXLoopName name, float volume)
+    {
+        AudioPlayerDESC desc = _SFXLoopDESCDoc[name];
+        desc._volum = volume;
+    }
+
+    public float GetLoopVolume(PlayerSFXLoopName name)
+    {
+        return _SFXLoopDESCDoc[name]._volum;
+    }
+
 }

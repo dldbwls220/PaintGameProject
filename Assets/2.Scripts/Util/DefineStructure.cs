@@ -61,6 +61,11 @@ namespace DefineStructure
             _player.Stop();
         }
 
+        public void _clip(AudioClip clip)
+        {
+            _player.clip = clip;
+        }
+
         public AudioPlayerDESC(AudioSource audioS, float vol, bool mute, bool loop = true)
         {
             _player = audioS;

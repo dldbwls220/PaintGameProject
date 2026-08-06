@@ -1,10 +1,11 @@
+using Cinemachine;
 using DefineEnum;
+using DefineStructure;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
-using Cinemachine;
-using DefineStructure;
+using static PlayerSoundManager;
 
 // InklingController를 건드리지 않고 Simple KCC 기반으로 Fusion 2 네트워크 이동을 처리하는 래퍼
 [RequireComponent(typeof(SimpleKCC))]
@@ -175,7 +176,8 @@ public class NetworkInklingMovement : NetworkBehaviour
         _weaponManager.InitWeapon();
 
         AddAimSource();
-        //AddVirtualCamera();
+
+        _playerSoundManager.SetLoopSFX();
 
         _weaponManager.Init(_inkColor, _aimTargetObj.transform, 100, _shootRoot.transform);
 
@@ -310,6 +312,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _weaponManager.AutoRefill(_isShooting);
         _weaponManager.RefillInk();
+       
     }
 
 
@@ -403,15 +406,38 @@ public class NetworkInklingMovement : NetworkBehaviour
             hasInputAuthority = HasInputAuthority,
         };
 
+        var soundstate = new PlayerSoundManager.SoundState
+        {
+            isSquid = _isSquid,
+            isMorphingSquid = _isMorphingSquid,
+            isMorphingInkling = _isMorphingInkling,
+            isGrounded = _isGrounded,
+            isMoving = _isMoving,
+            isShooting = _isShooting,
+            isSwimming = _isSwimming,
+            isSlowed = _isSlowed,
+            isAlive = _isAlive,
+            isWallClimb = _isWallClimb,
+            isRespawning = _health._nowRespawing,
+            wasMorphingSquid = _prevMorphingSquid,
+            wasMorphingInkling = _prevMorphingInkling,
+            wasRespwaning = _prevRespawing,
+            wasPendingRespawn = _prevPendingRespawn,
+            hasInputAuthority = HasInputAuthority,
+            health = _health,
+        };
+
         if (_prevMorphingInkling && !_isMorphingInkling)
         {
             PlayMorphSplashEffect();
         }
 
-        PlayinklingSFX();
+        
         PlaySwimWakeEffect();
 
+        _playerSoundManager.UpdateSound(soundstate);
         _renderC.UpdateRender(renderstate);
+        BoolCheck();
 
         var inkstate = new WeaponManager.InkTankState
         {
@@ -667,32 +693,12 @@ public class NetworkInklingMovement : NetworkBehaviour
         Destroy(fx, _morphFXLifeTime);
     }
 
-    void PlayinklingSFX()
+
+    void BoolCheck()
     {
-        if (HasInputAuthority)
-        {
-            if (_prevMorphingSquid && !_isMorphingSquid)
-                GameSoundManager.instance.PlayerSFX(PlayerSFXName.ToSquidMix00, volume: 0.4f);
-            if (_prevMorphingInkling && !_isMorphingInkling)
-                GameSoundManager.instance.PlayerSFX(PlayerSFXName.ToHumanMix00, volume: 0.4f);
-            if (!_prevPendingRespawn && _health._pendingRespawn)
-                GameSoundManager.instance.PlayerSFX(PlayerSFXName.RespawnStart00, volume: 0.4f);
-            if(_prevRespawing && !_health._nowRespawing)
-                GameSoundManager.instance.PlayerSFX(PlayerSFXName.RespawnEnd00, volume: 0.4f);
-        }
         _prevMorphingSquid = _isMorphingSquid;
         _prevMorphingInkling = _isMorphingInkling;
         _prevRespawing = _health._nowRespawing;
         _prevPendingRespawn = _health._pendingRespawn;
-
-        if(_isAlive && _isSquid && _isMoving && (_isWallClimb || (_isSwimming && _isGrounded)))
-        {
-            _playerSoundManager.PlaySwimSFX();
-        }
-        else
-        {
-            _playerSoundManager.OffLoopSFX();
-        }
     }
-
 }

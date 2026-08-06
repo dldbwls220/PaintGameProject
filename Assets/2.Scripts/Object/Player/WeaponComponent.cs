@@ -83,7 +83,7 @@ public class WeaponComponent : MonoBehaviour
     {
         while (_triggered && !_isEmpty)
         {
-            SoundManager._instance.PlaySFX(SFXName.Shtr_Shot_00);
+            //SoundManager._instance.PlaySFX(SFXName.Shtr_Shot_00);
 
             yield return new WaitForSeconds(_shootRate * 2);
         }
