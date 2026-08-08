@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9168d7db8e2554a48b5a2bfb4d7bbcb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KillLogUI
+  _text: {fileID: 3871164256300991797}
 --- !u!1 &1738912540766237679
 GameObject:
   m_ObjectHideFlags: 0

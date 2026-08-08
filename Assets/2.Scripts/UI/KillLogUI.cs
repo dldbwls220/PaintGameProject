@@ -1,16 +1,12 @@
+using TMPro;
 using UnityEngine;
 
 public class KillLogUI : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] TextMeshProUGUI _text;
 
-    // Update is called once per frame
-    void Update()
+    public void KillLogText(string victimName)
     {
-        
+        _text.text = victimName + "를 쓰러뜨렸다!";
     }
 }

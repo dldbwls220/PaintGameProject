@@ -231,6 +231,21 @@ public class GameManager : NetworkBehaviour
         return spawnPoint;
     }
 
+    public void PlayerKilled(PlayerRef killerPlayerRef, PlayerRef victimPlayerRef)
+    {
+        if (HasStateAuthority == false)
+            return;
+
+        if (PlayerData.TryGet(killerPlayerRef, out var data))
+        {
+            data._kills++;
+            PlayerData.Set(killerPlayerRef, data);
+        }
+
+        RPC_InstantiateKillLog(killerPlayerRef, victimPlayerRef);
+    }
+
+
     // 매치당 한 번만 뽑히는 잉크 색상 변형(팀 컬러 세트) 인덱스 — 새 매치 시작(spawnIndex == 1) 시 다시 뽑는다
     void EnsureInkVariantAssigned(int spawnIndex)
     {
@@ -311,6 +326,24 @@ public class GameManager : NetworkBehaviour
     public void IntroBGMEnd()
     {
         _isIntroBGMEnd = true;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_InstantiateKillLog(PlayerRef killer, PlayerRef victim)
+    {
+        if (Runner.LocalPlayer != killer) return;
+
+        string victimName = "";
+
+        if (PlayerData.TryGet(victim, out PlayerData victimData))
+        {
+            if (victimData._nickName != "")
+                victimName = victimData._nickName;
+            else
+                victimName = "잉클링";
+        }
+
+        GameUIManager._instance.InstantiateKillLog(victimName);
     }
 
 }

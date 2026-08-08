@@ -70,7 +70,14 @@ public class WeaponManager : NetworkBehaviour
         CheckInkStatus(s);
 
         if (HasInputAuthority)
+        {
             _inkTankC.OnOffInkTank(s.isSquid);
+
+            if (s.isSquid)
+                _inkTankC.SetInkUIPos();
+
+             GameUIManager._instance.OnOffEmptyInkUI(_isEmpty);
+        }
     }
 
     public void UpdateShootSound()

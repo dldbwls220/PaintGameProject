@@ -107,13 +107,14 @@ public class Health : NetworkBehaviour
 
             if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
             {
+                data._death++;
                 data._isAlive = false;
                 GameManager._instance.PlayerData.Set(Object.InputAuthority, data);
             }
 
             ExplodePaint();
             Respawn();
-            //킬로그 추가
+            GameManager._instance.PlayerKilled(player, Object.InputAuthority);
         }
 
         return true;

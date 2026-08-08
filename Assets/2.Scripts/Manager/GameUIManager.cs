@@ -1,7 +1,7 @@
 using DefineStructure;
 using Fusion;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -15,12 +15,19 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] TeamStatusUI _teamStatusUI;
     [SerializeField] TimerUI _timerUI;
     [SerializeField] BeatenInfo _beatenInfoUI;
+    [SerializeField] InkTankUI _inkTankUI;
 
     [Header("Non class Obj")]
-    [SerializeField] GameObject _inkTank;
     [SerializeField] GameObject _wipeOut;
     [SerializeField] GameObject _countDown;
     [SerializeField] GameObject _readyGo;
+    [SerializeField] GameObject _killLogContent;
+
+    [Header("Kill Log")]
+    [SerializeField] GameObject _killLogUIPrefab;
+    [SerializeField] float _killLogLifetime = 5f;
+
+    Queue<GameObject> _killLogQueue = new Queue<GameObject>();
 
     void Awake()
     {
@@ -38,7 +45,7 @@ public class GameUIManager : MonoBehaviour
         _timerUI.CloseWnd();
         _beatenInfoUI.CloseWnd();
         _readyGo.SetActive(false);
-        _inkTank.SetActive(false);
+        _inkTankUI.CloseWnd();
         _wipeOut.SetActive(false);
         _countDown.SetActive(false);
     }
@@ -70,9 +77,24 @@ public class GameUIManager : MonoBehaviour
 
     public void UpdateInkTank(float value)
     {
-        Slider slider = _inkTank.GetComponent<Slider>();
+        _inkTankUI.UpdateInkTank(value);
+    }
 
-        slider.value = value;
+    public void OnOffInkTank(bool isOn)
+    {
+        if (isOn) _inkTankUI.OpenWnd();
+        else _inkTankUI.CloseWnd();
+    }
+
+    public void OnOffEmptyInkUI(bool isOn)
+    {
+        if (isOn) _emptyinkUI.OpenWnd();
+        else _emptyinkUI.CloseWnd();
+    }
+
+    public void SetInkUIPos(Vector3 worldPos)
+    {
+        _inkTankUI.SetInkUIPos(worldPos);
     }
 
     public void StartReadyUI()
@@ -83,5 +105,27 @@ public class GameUIManager : MonoBehaviour
     public void SetTime(float time)
     {
         _timerUI.SetTime(time);
+    }
+
+    public void InstantiateKillLog(string victimName)
+    {
+        GameObject go = Instantiate(_killLogUIPrefab, _killLogContent.transform);
+        KillLogUI kill = go.GetComponent<KillLogUI>();
+
+        kill.KillLogText(victimName);
+
+        Destroy(go, _killLogLifetime);
+
+        if (_killLogQueue.Count < 2)
+        {
+            _killLogQueue.Enqueue(go);
+        }
+        else
+        {
+            GameObject destroyable = _killLogQueue.Dequeue();
+            Destroy(destroyable);
+
+            _killLogQueue.Enqueue(go);
+        }
     }
 }

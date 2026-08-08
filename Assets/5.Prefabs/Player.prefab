@@ -3241,7 +3241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1265452701479289100
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10572,11 +10572,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d29db47d6343cd4ebb5baef4f0426cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InkTankController
-  _inkSlider: {fileID: 1014054228314851023}
-  _screenOffset: {x: 180, y: 250}
   _maxInk: 100
   _currentInk: 0
-  _fillSpeed: 5
   _inktankOffset: 0
 --- !u!114 &5526676462442257824
 MonoBehaviour:
@@ -11647,11 +11644,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 685292591729947453, guid: 2d81d6383ff3f1947b7cb557a5d3317a, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 685292591729947453, guid: 2d81d6383ff3f1947b7cb557a5d3317a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1929791709772873822, guid: 2d81d6383ff3f1947b7cb557a5d3317a, type: 3}
       propertyPath: m_Name
@@ -11742,17 +11739,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d81d6383ff3f1947b7cb557a5d3317a, type: 3}
---- !u!114 &1014054228314851023 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4477068262934760524, guid: 2d81d6383ff3f1947b7cb557a5d3317a, type: 3}
-  m_PrefabInstance: {fileID: 3473147431495289475}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!224 &6366894231580595653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7523502587472912198, guid: 2d81d6383ff3f1947b7cb557a5d3317a, type: 3}

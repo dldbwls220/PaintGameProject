@@ -188,7 +188,7 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         }
         else if (_gameSceneState == SceneState.Port_Mackerel_GameScene)
         {
-            FadeSound(true);
+            GameSoundManager.instance._UiBGMDESC._volum = 1;
         }
     }
 
