@@ -39,13 +39,11 @@ public class EmptyInkUI : MonoBehaviour
         //InitEmptyInk();
     }
 
-    void InitEmptyInk(Color color)
+    public void InitEmptyInk()
     {
         _anim.clip = _blinkClip;
         _anim.Play();
         _isOn = true;
-
-        SetWindowColor(color);
 
         if (_originPos == null)
         {
@@ -84,7 +82,7 @@ public class EmptyInkUI : MonoBehaviour
         }
     }
 
-    void SetWindowColor(Color color)
+    public void SetWindowColor(Color color)
     {
         _frame.color = color;
         _bg.color = new Color(color.r, color.g, color.b);

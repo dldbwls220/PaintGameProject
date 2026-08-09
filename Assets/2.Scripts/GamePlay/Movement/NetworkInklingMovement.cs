@@ -169,7 +169,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _renderC.Init();
         _renderC.SetTeamColor(_inkColor);
 
-        _health.ApplyColorToFX(_enemyColor);
+        _health.ApplyColorToFX(_enemyColor, _inkColor);
 
         _kcc.SetGravity(_gravity);
 
@@ -186,6 +186,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             _cameraRoot.SetActive(true);
             _audioListnerRoot.SetActive(true);
             GameUIManager._instance.RegisterLocalPlayer(this);
+            GameUIManager._instance.SetColor(_inkColor, _enemyColor);
         }
         else
         {
@@ -203,6 +204,8 @@ public class NetworkInklingMovement : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!GetInput(out NetworkInputData input)) return;
+
+        if (GameManager._instance._gameEnd) return;
 
         _isAlive = _health._isAlive;
 

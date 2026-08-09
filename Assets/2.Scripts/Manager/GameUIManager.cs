@@ -1,7 +1,9 @@
 using DefineStructure;
 using Fusion;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -22,10 +24,18 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] GameObject _countDown;
     [SerializeField] GameObject _readyGo;
     [SerializeField] GameObject _killLogContent;
+    [SerializeField] GameObject _oneMinLeft;
 
     [Header("Kill Log")]
     [SerializeField] GameObject _killLogUIPrefab;
     [SerializeField] float _killLogLifetime = 5f;
+
+    [Header("Finish Anim")]
+    [SerializeField] Animation _finishAnim;
+
+    [Header("SetColor")]
+    [SerializeField] Image[] _colorImage;
+    [SerializeField] TextMeshProUGUI _textColor;
 
     Queue<GameObject> _killLogQueue = new Queue<GameObject>();
 
@@ -37,6 +47,7 @@ public class GameUIManager : MonoBehaviour
     public void InitUI()
     {
         _teamStatusUI.SpawnPlayerStatusUI();
+        _emptyinkUI.InitEmptyInk();
 
         _emptyinkUI.CloseWnd();
         _teamStatusUI.CloseWnd();
@@ -48,11 +59,35 @@ public class GameUIManager : MonoBehaviour
         _inkTankUI.CloseWnd();
         _wipeOut.SetActive(false);
         _countDown.SetActive(false);
+        _oneMinLeft.SetActive(false);
+    }
+
+    public void SetColor(Color teamColor, Color enemyColor)
+    {
+        _inkTankUI.InitColor(teamColor);
+        foreach (var item in _colorImage)
+        {
+            item.color = teamColor;
+        }
+        _textColor.color = teamColor;
+        _crosshairUI.SetColor(enemyColor);
+        _beatenInfoUI.SetColor(teamColor);
+        _emptyinkUI.SetWindowColor(teamColor);
     }
 
     public void CloseStartUI()
     {
         _startUI.CloseWnd();
+    }
+
+    public void OpenLastMinLeftWnd()
+    {
+        _oneMinLeft.SetActive(true);
+    }
+
+    public void OpenCountDownWnd()
+    {
+        _countDown.SetActive(true);
     }
 
     public void AssignPlayerStatus(NetworkDictionary<PlayerRef, PlayerData> playerData, PlayerRef localPlayer)
@@ -105,6 +140,11 @@ public class GameUIManager : MonoBehaviour
     public void SetTime(float time)
     {
         _timerUI.SetTime(time);
+    }
+
+    public void StartFinishAnim()
+    {
+        _finishAnim.Play();
     }
 
     public void InstantiateKillLog(string victimName)

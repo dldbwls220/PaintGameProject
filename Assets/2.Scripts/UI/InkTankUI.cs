@@ -3,12 +3,19 @@ using UnityEngine.UI;
 
 public class InkTankUI : MonoBehaviour
 {
+    [Header("InkTank Setting")]
+    [SerializeField] Image _inkFilled;
     [SerializeField] Slider _slider;
     [SerializeField] RectTransform _rectT;
     [SerializeField] Vector2 _screenOffset = new Vector2(180f, 250f);
 
     public void OpenWnd() => gameObject.SetActive(true);
     public void CloseWnd() => gameObject.SetActive(false);
+
+    public void InitColor(Color color)
+    {
+        _inkFilled.color = color;
+    }
 
     public void UpdateInkTank(float value)
     {

@@ -1,7 +1,8 @@
 using DefineEnum;
 using Fusion;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : NetworkBehaviour
 {
@@ -11,6 +12,17 @@ public class Health : NetworkBehaviour
     [SerializeField] float _healthRegenSpeed = 10f;
     [SerializeField] float _preRespawnDelay = 0.5f; // 리스폰 소리가 먼저 재생되는 대기 시간
     [SerializeField] float _respawnTime = 1f;       // 대기 이후 이어지는 기존 리스폰 연출 시간
+
+    [Header("Assist Setting")]
+    [SerializeField] float _attackerExpireTime = 8f; // 공격자가 어시스트 대상으로 남아있는 시간
+
+    [Header("Death Icon Setting")]
+    [SerializeField] GameObject _killedIcon;
+    [SerializeField] GameObject _assistIcont;
+    [SerializeField] GameObject _deathIcon;
+    [SerializeField] Image _killedImage;
+    [SerializeField] Image _asssitImage;
+    [SerializeField] Image _deathImage;
 
     [Header("Death Splash Setting")]
     [SerializeField] float _radius = 1.5f;
@@ -35,6 +47,9 @@ public class Health : NetworkBehaviour
     float _prevHealth;
     Color _inkColor = Color.white;
 
+    Dictionary<PlayerRef, TickTimer> _attackerTimers = new Dictionary<PlayerRef, TickTimer>();
+    List<PlayerRef> _expiredAttackerBuffer = new List<PlayerRef>();
+
     [Networked] public float _currentHealth { get; private set; }
     [Networked] public TickTimer _hitTimer { get; set; }
     [Networked] TickTimer _healthTimer { get; set; }
@@ -44,17 +59,26 @@ public class Health : NetworkBehaviour
     [Networked] public NetworkBool _pendingRespawn { get; set; } = false;
     [Networked] public NetworkBool _nowRespawing { get; set; } = false;
 
+    // 0번: 킬러, 1~2번: 어시스트(최대 2명)
+    [Networked, Capacity(3)] public NetworkArray<PlayerRef> _lastAttackers => default;
+
     const int DESPAWN_DELAY_TICKS = 10;
 
     public override void Spawned()
     {
         if (HasStateAuthority)
             _currentHealth = _maxHealth;
+
+        _killedIcon.SetActive(false);
+        _assistIcont.SetActive(false);
+        _deathIcon.SetActive(false);
     }
 
     public override void FixedUpdateNetwork()
     {
         if(_hitTimer.Expired(Runner)) _isHit = false;
+
+        PruneExpiredAttackers();
 
         if (_healthTimer.Expired(Runner) && !_isAlive && !_pendingRespawn)
         {
@@ -89,6 +113,31 @@ public class Health : NetworkBehaviour
             AutoHealthRegen();
     }
 
+    public override void Render()
+    {
+        UpdateDeathIcons();
+    }
+
+    void UpdateDeathIcons()
+    {
+        if (_isAlive)
+        {
+            _killedIcon.SetActive(false);
+            _assistIcont.SetActive(false);
+            _deathIcon.SetActive(false);
+            return;
+        }
+
+        PlayerRef local = Runner.LocalPlayer;
+
+        bool isKiller = _lastAttackers[0] == local;
+        bool isAssist = !isKiller && (_lastAttackers[1] == local || _lastAttackers[2] == local);
+
+        _killedIcon.SetActive(isKiller);
+        _assistIcont.SetActive(isAssist);
+        _deathIcon.SetActive(!isKiller && !isAssist);
+    }
+
     public bool ApplyDamage(PlayerRef player, float damage, MainWeaponState mw)
     {
         if(!HasStateAuthority) return false;
@@ -98,6 +147,8 @@ public class Health : NetworkBehaviour
         _currentHealth -= damage;
 
         _isHit = true;
+
+        AddAttackerList(player);
 
         _hitTimer = TickTimer.CreateFromSeconds(Runner, _hitDuration);
 
@@ -114,10 +165,30 @@ public class Health : NetworkBehaviour
 
             ExplodePaint();
             Respawn();
+            RecordLastAttackers(player);
             GameManager._instance.PlayerKilled(player, Object.InputAuthority);
         }
 
         return true;
+    }
+
+    void RecordLastAttackers(PlayerRef killer)
+    {
+        _lastAttackers.Set(0, killer);
+
+        int slot = 1;
+
+        foreach (var kv in _attackerTimers)
+        {
+            if (slot >= _lastAttackers.Length) break;
+            if (kv.Key == killer) continue;
+
+            _lastAttackers.Set(slot, kv.Key);
+            slot++;
+        }
+
+        for (; slot < _lastAttackers.Length; slot++)
+            _lastAttackers.Set(slot, PlayerRef.None);
     }
 
     public void AutoHealthRegen()
@@ -128,9 +199,12 @@ public class Health : NetworkBehaviour
         }
     }
 
-    public void ApplyColorToFX(Color color)
+    public void ApplyColorToFX(Color Enemy, Color Team)
     {
-        _inkColor = color;
+        _inkColor = Enemy;
+        _deathImage.color = Team;
+        _asssitImage.color = Team;
+        _killedImage.color = Team;
     }
 
     public void PlayDeadSplashEffect()
@@ -195,6 +269,27 @@ public class Health : NetworkBehaviour
                 RPC_OnDeathPaint(hit.point, hit.normal, _inkColor, paintRadius);
             }
         }
+    }
+
+    void AddAttackerList(PlayerRef attacker)
+    {
+        _attackerTimers[attacker] = TickTimer.CreateFromSeconds(Runner, _attackerExpireTime);
+    }
+
+    void PruneExpiredAttackers()
+    {
+        if (_attackerTimers.Count == 0) return;
+
+        _expiredAttackerBuffer.Clear();
+
+        foreach (var kv in _attackerTimers)
+        {
+            if (kv.Value.Expired(Runner))
+                _expiredAttackerBuffer.Add(kv.Key);
+        }
+
+        foreach (var attacker in _expiredAttackerBuffer)
+            _attackerTimers.Remove(attacker);
     }
 
     void PlayDeadSound()

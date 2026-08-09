@@ -19,19 +19,11 @@ public class CrosshairUI : MonoBehaviour
 
     public void OpenCrosshair()
     {
-        //_cornerBracket.enabled = true;
-        //_innerCircle.enabled = true;
-        //_outerCircle.enabled = true;
-        //_cross.enabled = true;
         gameObject.SetActive(true);
     }
 
     public void CloseCrosshair()
     {
-        //_cornerBracket.enabled = false;
-        //_innerCircle.enabled = false;
-        //_outerCircle.enabled = false;
-        //_cross.enabled = false;
         gameObject.SetActive(false);
     }
 
@@ -74,5 +66,10 @@ public class CrosshairUI : MonoBehaviour
             ((RectTransform)_crosshairObj.transform).anchoredPosition = Vector2.zero;
         else
             ((RectTransform)_crosshairObj.transform).anchoredPosition = localPoint;
+    }
+
+    public void SetColor(Color color)
+    {
+        _outerCircle.color = color;
     }
 }

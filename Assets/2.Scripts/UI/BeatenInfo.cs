@@ -18,7 +18,12 @@ public class BeatenInfo : MonoBehaviour
 
     public void BeatenInfotxt(string weaponText)
     {
-        weaponText = weaponText + "에\n당했다!";
+        _weaponText.text = weaponText + "에\n당했다!";
+    }
+
+    public void BeatenNameTxt(string name)
+    {
+        _weaponText.text = name + "에게\n당했다!";
     }
 
     public void SetColor(Color color)

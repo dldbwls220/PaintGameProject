@@ -35,9 +35,6 @@ public class GameSoundManager : Singleton<GameSoundManager>
     public AudioPlayerDESC _NowOrNeverDESC;
     AudioSource _nowOrNeverPlayer;
 
-    Dictionary<PlayerSFXLoopName, AudioPlayerDESC> _SFXLoopDESCDoc;
-    Dictionary<PlayerSFXLoopName, AudioSource> _loopPlayerDoc;
-
     public override void Awake()
     {
         base.Awake();
@@ -70,17 +67,6 @@ public class GameSoundManager : Singleton<GameSoundManager>
         _UiBGMDESC = new AudioPlayerDESC(_uibgmPlayer, 1, false, false);
         _GameBGMDESC = new AudioPlayerDESC(_gamebgmPlayer, 0.7f, false, false);
         _NowOrNeverDESC = new AudioPlayerDESC(_nowOrNeverPlayer, 0.7f, false, false);
-
-        _loopPlayerDoc = new Dictionary<PlayerSFXLoopName, AudioSource>();
-        _SFXLoopDESCDoc = new Dictionary<PlayerSFXLoopName, AudioPlayerDESC>();
-        int loopCount = (int)PlayerSFXLoopName.Count;
-        for (int i = 0; i < loopCount; i++)
-        {
-            PlayerSFXLoopName name = (PlayerSFXLoopName)i;
-            AudioSource loopPlayer = gameObject.AddComponent<AudioSource>();
-            _loopPlayerDoc.Add(name, loopPlayer);
-            _SFXLoopDESCDoc.Add(name, new AudioPlayerDESC(loopPlayer, 0, false, true));
-        }
     }
 
     public void LoadAllSound()
@@ -368,14 +354,15 @@ public class GameSoundManager : Singleton<GameSoundManager>
         source.PlayOneShot(_weaponSFX3DDoc[name], volume);
     }
 
-    public void PlayerSFXLoop(PlayerSFXLoopName name, AudioSource source = null, float volume = 0)
+    // source는 재생 주체(플레이어)마다 별도로 소유해야 한다 — 공유 AudioSource를 쓰면
+    // 여러 플레이어의 매 프레임 볼륨 갱신이 서로를 덮어써서 소리가 끊기거나 안 들리게 된다.
+    public void PlayerSFXLoop(PlayerSFXLoopName name, AudioSource source, float volume = 0)
     {
         if (!_playerSFXLoopDoc.ContainsKey(name))
         {
             Debug.LogFormat("{0} AudioClip이 없습니다", name);
             return;
         }
-        if (source == null) source = _loopPlayerDoc[name];
 
         if (volume > 0)
             source.volume = volume;
@@ -384,18 +371,32 @@ public class GameSoundManager : Singleton<GameSoundManager>
         if (source.isPlaying && source.clip == _playerSFXLoopDoc[name]) return;
 
         source.clip = _playerSFXLoopDoc[name];
+        source.loop = true;
         source.Play();
     }
 
-    public void SetLoopVolume(PlayerSFXLoopName name, float volume)
+    public void SetLoopVolume(AudioSource source, float volume)
     {
-        AudioPlayerDESC desc = _SFXLoopDESCDoc[name];
-        desc._volum = volume;
+        if (volume < 0)
+        {
+            source.volume = 0;
+            source.mute = true;
+        }
+        else if (volume > 1)
+        {
+            source.volume = 1;
+            source.mute = false;
+        }
+        else
+        {
+            source.volume = volume;
+            source.mute = false;
+        }
     }
 
-    public float GetLoopVolume(PlayerSFXLoopName name)
+    public float GetLoopVolume(AudioSource source)
     {
-        return _SFXLoopDESCDoc[name]._volum;
+        return source.volume;
     }
 
 }

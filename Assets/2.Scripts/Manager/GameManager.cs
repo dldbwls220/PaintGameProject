@@ -52,6 +52,7 @@ public class GameManager : NetworkBehaviour
     [Networked, HideInInspector] public int _inkIdx { get; private set; }
     [Networked] public NetworkBool _introFinished { get; set; }
     [Networked] public NetworkBool _gameStart { get; set; }
+    [Networked] public NetworkBool _gameEnd { get; set; }
     [Networked] NetworkBool _introStarted { get; set; }
     [Networked] float _introStartTime { get; set; }
 
@@ -103,6 +104,8 @@ public class GameManager : NetworkBehaviour
             _gameStart = true;
             GameTime = TickTimer.CreateFromSeconds(Runner, _gameDuration);
         }
+
+        if(GameTime.RemainingTime(Runner) <= 1) { _gameEnd = true; }
     }
 
     public override void Render()
@@ -145,6 +148,19 @@ public class GameManager : NetworkBehaviour
         {
             GameSoundManager.instance._GameBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._GameBGMDESC._volum, 0, _gameBGMFadeSpeed * Time.deltaTime);
             GameSoundManager.instance._NowOrNeverDESC._unpause();
+            _uiManager.OpenLastMinLeftWnd();
+        }
+
+        if (GameTime.RemainingTime(Runner) <= 11)
+        {
+            _uiManager.OpenCountDownWnd();
+        }
+
+        if (GameTime.RemainingTime(Runner) <= 1 && !_gameEnd)
+        {
+            _gameEnd = true;
+            _uiManager.StartFinishAnim();
+            GameSoundManager.instance.PlayerSFX(PlayerSFXName.whistleCmp00);
         }
     }
 
@@ -156,6 +172,7 @@ public class GameManager : NetworkBehaviour
         if (_introPlaying || !_introStarted) return;
 
         GameSoundManager.instance.OpeningBGM(_openingName);
+        GameSoundManager.instance._UiBGMDESC._volum = 1;
 
         double elapsed = Runner.SimulationTime - _introStartTime;
         if (elapsed < 0) elapsed = 0;

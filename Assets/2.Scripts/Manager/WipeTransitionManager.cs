@@ -169,6 +169,19 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
             yield return new WaitUntil(() => !_networkrunner.SceneManager.IsBusy);
         }
 
+        // 게임 씬은 SceneManager.IsBusy가 풀린 뒤에도 로컬 플레이어 캐릭터의 네트워크 스폰
+        // (RigBuilder 빌드, 히트박스/무기 초기화 등)이 아직 끝나지 않았을 수 있다.
+        // 그 초기화 비용이 로딩 화면 뒤에서 처리되도록, 로컬 플레이어 스폰까지 기다린다.
+        if (_gameSceneState == SceneState.Port_Mackerel_GameScene)
+        {
+            float waitForSpawn = 0f;
+            while (NetworkPlayer._instance == null && waitForSpawn < 5f)
+            {
+                waitForSpawn += Time.deltaTime;
+                yield return null;
+            }            
+        }
+
         float remaining = _minLoadingDuration - (Time.time - loadingStartTime);
         if (remaining > 0f)
         {
@@ -186,10 +199,9 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
             GameSoundManager.instance.UIBGM(UIBGMName.Dubble_Bath);
             FadeSound(true);
         }
-        else if (_gameSceneState == SceneState.Port_Mackerel_GameScene)
-        {
-            GameSoundManager.instance._UiBGMDESC._volum = 1;
-        }
+        // Port_Mackerel_GameScene의 경우 GameManager.StartIntroIfNeeded()가
+        // OpeningBGM 클립을 실제로 세팅한 직후에 볼륨을 복원한다.
+        // 여기서 미리 볼륨을 올리면 아직 남아있는 로비 BGM 클립이 잠깐 풀볼륨으로 재생되는 문제가 있었다.
     }
 
     IEnumerator LoadCustomizationScene()

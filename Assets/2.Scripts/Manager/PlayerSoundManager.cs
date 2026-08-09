@@ -10,7 +10,25 @@ public class PlayerSoundManager : MonoBehaviour
     [SerializeField] float _swimVolumeSpeed;
     [SerializeField] float _maxSwimVolue;
 
+    // 플레이어별 전용 루프 채널. GameSoundManager의 공유 AudioSource를 쓰면
+    // 여러 플레이어의 매 프레임 갱신이 서로의 볼륨을 덮어써 소리가 나오지 않는 문제가 있었다.
+    AudioSource _swimLoopSource;
+    AudioSource _slowedLoopSource;
+
     bool _prevMorphingSquid, _prevMorphingInkling, _prevRespawing, _prevPendingRespawn;
+
+    void Awake()
+    {
+        _swimLoopSource = gameObject.AddComponent<AudioSource>();
+        _swimLoopSource.playOnAwake = false;
+        _swimLoopSource.loop = true;
+        _swimLoopSource.volume = 0;
+
+        _slowedLoopSource = gameObject.AddComponent<AudioSource>();
+        _slowedLoopSource.playOnAwake = false;
+        _slowedLoopSource.loop = true;
+        _slowedLoopSource.volume = 0;
+    }
 
     public struct SoundState 
     {
@@ -45,34 +63,35 @@ public class PlayerSoundManager : MonoBehaviour
 
     public void SetLoopSFX()
     {
-        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.SwimmingInInk_loopable);
+        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.SwimmingInInk_loopable, _swimLoopSource);
+        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.Slowed_loopable, _slowedLoopSource);
     }
 
     public void PlaySwimSFX(in SoundState state)
     {
-        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.SwimmingInInk_loopable);
+        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.SwimmingInInk_loopable, _swimLoopSource);
 
         if (state.isAlive && state.isSquid && state.isMoving && (state.isWallClimb || (state.isSwimming && state.isGrounded)))
-            GameSoundManager.instance.SetLoopVolume(PlayerSFXLoopName.SwimmingInInk_loopable,
-                Mathf.MoveTowards(GameSoundManager.instance.GetLoopVolume(PlayerSFXLoopName.SwimmingInInk_loopable), _maxSwimVolue, _swimVolumeSpeed * Time.deltaTime));
+            GameSoundManager.instance.SetLoopVolume(_swimLoopSource,
+                Mathf.MoveTowards(GameSoundManager.instance.GetLoopVolume(_swimLoopSource), _maxSwimVolue, _swimVolumeSpeed * Time.deltaTime));
         else
-            OffLoopSFX(PlayerSFXLoopName.SwimmingInInk_loopable);
+            OffLoopSFX(_swimLoopSource);
     }
 
     public void PlaySlowedSFX(in SoundState state)
     {
-        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.Slowed_loopable);
+        GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.Slowed_loopable, _slowedLoopSource);
 
         if (state.isAlive && !state.isSquid && state.isSlowed)
-            GameSoundManager.instance.SetLoopVolume(PlayerSFXLoopName.Slowed_loopable,
-                Mathf.MoveTowards(GameSoundManager.instance.GetLoopVolume(PlayerSFXLoopName.Slowed_loopable), _maxSwimVolue, _swimVolumeSpeed * Time.deltaTime));
+            GameSoundManager.instance.SetLoopVolume(_slowedLoopSource,
+                Mathf.MoveTowards(GameSoundManager.instance.GetLoopVolume(_slowedLoopSource), _maxSwimVolue, _swimVolumeSpeed * Time.deltaTime));
         else
-            OffLoopSFX(PlayerSFXLoopName.Slowed_loopable);
+            OffLoopSFX(_slowedLoopSource);
     }
 
-    public void OffLoopSFX(PlayerSFXLoopName name)
+    public void OffLoopSFX(AudioSource source)
     {
-        GameSoundManager.instance.SetLoopVolume(name, 0);
+        GameSoundManager.instance.SetLoopVolume(source, 0);
     }
 
     void PlayinklingSFX(in SoundState state)
