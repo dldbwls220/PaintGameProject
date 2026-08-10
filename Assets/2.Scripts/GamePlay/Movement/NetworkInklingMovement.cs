@@ -154,6 +154,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             PlayerCustomization myCustom = PlayerCustomizeManager.instance.Customization;
             _characterClothChanger.SetCustomization(myCustom);
             RPC_SubmitCustomization(myCustom);
+            RPC_SubmitNickname(PlayerCustomizeManager.instance.Data._nickName);
         }
         else
         {
@@ -205,7 +206,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         if (!GetInput(out NetworkInputData input)) return;
 
-        if (GameManager._instance._gameEnd) return;
+        //if (GameManager._instance._gameEnd) return;
 
         _isAlive = _health._isAlive;
 
@@ -216,6 +217,12 @@ public class NetworkInklingMovement : NetworkBehaviour
         //캐릭터 느려짐 여부 확인 (MovementInput의 변신 입력 처리보다 먼저 계산되어야 함)
         if (_isOnPaint && !_isSameColor) _isSlowed = true;
         else _isSlowed = false;
+
+        if (GameManager._instance._gameEnd)
+        {
+            ForceIdleOnGameEnd();
+            return;
+        }
 
         MovementInput(input);
 
@@ -318,6 +325,27 @@ public class NetworkInklingMovement : NetworkBehaviour
        
     }
 
+
+    // 게임 종료 시 이동/벽타기 등 동작 상태를 기본값으로 강제 해제 (_isSlowed는 유지)
+    void ForceIdleOnGameEnd()
+    {
+        _moveDirection = Vector3.zero;
+        _pendingJumpImpulse = 0f;
+
+        _isShooting = false;
+        _isMoving = false;
+        _isWallClimb = false;
+        _isSwimming = false;
+        _isSquid = false;
+
+        _targetWeight = 0f;
+        _layerWeight = 0f;
+
+        _currentMoveVelocity = Vector3.zero;
+
+        _kcc.SetGravity(_gravity);
+        _kcc.Move(Vector3.zero, 0f);
+    }
 
     void MovementInput(NetworkInputData input)
     {
@@ -563,6 +591,13 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         _custom = custom;
         GameManager._instance.SetPlayerCustomization(Object.InputAuthority, custom);
+    }
+
+    // 로컬 클라이언트가 NicknameUI에서 설정한 닉네임을 StateAuthority(호스트)에 전달 → GameManager.PlayerData._nickName에 반영되어 모두에게 동기화된다
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    void RPC_SubmitNickname(NetworkString<_32> nickname)
+    {
+        GameManager._instance.SetPlayerNickname(Object.InputAuthority, nickname);
     }
 
     // _custom이 동기화되어 값이 바뀔 때 호출된다.

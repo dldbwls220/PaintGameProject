@@ -71,7 +71,7 @@ public class GameUIManager : MonoBehaviour
         }
         _textColor.color = teamColor;
         _crosshairUI.SetColor(enemyColor);
-        _beatenInfoUI.SetColor(teamColor);
+        _beatenInfoUI.SetColor(enemyColor);
         _emptyinkUI.SetWindowColor(teamColor);
     }
 
@@ -167,5 +167,16 @@ public class GameUIManager : MonoBehaviour
 
             _killLogQueue.Enqueue(go);
         }
+    }
+
+    public void OpenBeatenWnd(string killerName)
+    {
+        _beatenInfoUI.BeatenNameTxt(killerName);
+        _beatenInfoUI.OpenWnd();
+    }
+
+    public void CloseBeatenWnd()
+    {
+        _beatenInfoUI.CloseWnd();
     }
 }

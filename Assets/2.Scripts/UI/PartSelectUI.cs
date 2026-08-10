@@ -14,20 +14,24 @@ public class PartSelectUI : MonoBehaviour
     [SerializeField] Animation _clothAnim;
     [SerializeField] Animation _shoesAnim;
     [SerializeField] Animation _styleAnim;
+    [SerializeField] Animation _nameAnim;
     AnimationState _headState;
     AnimationState _clothState;
     AnimationState _shoesState;
     AnimationState _styleState;
+    AnimationState _nameState;
 
     bool _isHeadOpen;
     bool _isShoesOpen;
     bool _isStyleOpen;
     bool _isClothOpen;
+    bool _isNameOpen;
 
     bool _wasHeadOpen;
     bool _wasShoesOpen;
     bool _wasStyleOpen;
     bool _wasClothOpen;
+    bool _wasNameOpen;
 
     private void Start()
     {
@@ -35,6 +39,7 @@ public class PartSelectUI : MonoBehaviour
         _clothState = _clothAnim[_clothAnim.clip.name];
         _shoesState = _shoesAnim[_shoesAnim.clip.name];
         _styleState = _styleAnim[_styleAnim.clip.name];
+        _nameState = _nameAnim[_nameAnim.clip.name];
 
         OpenHeadGearWnd();
     }
@@ -91,6 +96,13 @@ public class PartSelectUI : MonoBehaviour
         _styleAnim.Play();
     }
 
+    void PlayNameAnim()
+    {
+        _nameState.speed = 1;
+        _nameState.time = 0;
+        _nameAnim.Play();
+    }
+
     void ReverseHeadGearAnim()
     {
         _headState.speed = -1;
@@ -117,6 +129,14 @@ public class PartSelectUI : MonoBehaviour
         _styleState.time = _styleState.length;
         _styleAnim.Play();
     }
+
+    void ReverseNameAnim()
+    {
+        _nameState.speed = -1;
+        _nameState.time = _styleState.length;
+        _nameAnim.Play();
+    }
+
     #endregion[WndAnim]
 
     public void OpenHeadGearWnd()
@@ -133,6 +153,7 @@ public class PartSelectUI : MonoBehaviour
         _isClothOpen = true;
         _isStyleOpen = false;
         _isHeadOpen = false;
+        _isNameOpen = false;
     }
 
     public void OpenShoesGearWnd()
@@ -141,6 +162,7 @@ public class PartSelectUI : MonoBehaviour
         _isClothOpen = false;
         _isStyleOpen = false;
         _isHeadOpen = false;
+        _isNameOpen = false;
     }
 
     public void OpenStyleWnd()
@@ -149,6 +171,16 @@ public class PartSelectUI : MonoBehaviour
         _isClothOpen = false;
         _isStyleOpen = true;
         _isHeadOpen = false;
+        _isNameOpen = false;
+    }
+
+    public void OpenNameWnd()
+    {
+        _isShoesOpen = false;
+        _isClothOpen = false;
+        _isStyleOpen = false;
+        _isHeadOpen = false;
+        _isNameOpen = true;
     }
 
     void playAnimation()
@@ -189,10 +221,20 @@ public class PartSelectUI : MonoBehaviour
             PlayStyleAnim();
         }
 
+        if (_wasNameOpen && !_isNameOpen)
+        {
+            ReverseNameAnim();
+        }
+        else if (!_wasNameOpen && _isNameOpen)
+        {
+            PlayNameAnim();
+        }
+
         _wasHeadOpen = _isHeadOpen;
         _wasClothOpen = _isClothOpen;
         _wasShoesOpen = _isShoesOpen;
         _wasStyleOpen = _isStyleOpen;
+        _wasNameOpen = _isNameOpen;
 
     }
 

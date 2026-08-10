@@ -78,8 +78,8 @@ namespace DefineStructure
 
     public struct PlayerData : INetworkStruct
     {
-        [Networked, Capacity(24)]
-        public string _nickName { get => default; set { } }
+        [Networked]
+        public NetworkString<_32> _nickName { get; set; }
         public Color _teamColor;
         public Color _enemyColor;
         public int _teamIndex;
@@ -91,6 +91,8 @@ namespace DefineStructure
         public bool _isAlive;
         public bool _isConnected;
         public PlayerCustomization _custom;
+
+        public string DisplayName => _nickName.Length == 0 ? "잉클링" : _nickName.Value;
     }
 
     public struct PlayerCustomization : INetworkStruct

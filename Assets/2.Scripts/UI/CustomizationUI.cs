@@ -9,6 +9,7 @@ public class CustomizationUI : MonoBehaviour
     [SerializeField] GameObject _clothGearWnd;
     [SerializeField] GameObject _shoedGearWmd;
     [SerializeField] GameObject _styleWnd;
+    [SerializeField] GameObject _inputNameWnd;
 
     [Header("Gear Contents")]
     [SerializeField] GameObject _headContent;
@@ -34,6 +35,7 @@ public class CustomizationUI : MonoBehaviour
         _clothGearWnd.SetActive(false);
         _shoedGearWmd.SetActive(false);
         _styleWnd.SetActive(false);
+        _inputNameWnd.SetActive(false);
 
         SetAllGears();
     }
@@ -60,6 +62,11 @@ public class CustomizationUI : MonoBehaviour
         _styleWnd.SetActive(true);
     }
 
+    public void OpenInputNameWnd()
+    {
+        _inputNameWnd.SetActive(true);
+    }
+
     public void CloseHeadGearWnd()
     {
         _headGearWnd.SetActive(false);
@@ -78,6 +85,11 @@ public class CustomizationUI : MonoBehaviour
     public void CloseStyleWnd()
     {
         _styleWnd.SetActive(false);
+    }
+
+    public void CloseInputNameWnd()
+    {
+        _inputNameWnd.SetActive(false);
     }
 
     #endregion[Open N Close]

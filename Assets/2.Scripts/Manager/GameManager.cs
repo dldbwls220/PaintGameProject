@@ -105,7 +105,7 @@ public class GameManager : NetworkBehaviour
             GameTime = TickTimer.CreateFromSeconds(Runner, _gameDuration);
         }
 
-        if(GameTime.RemainingTime(Runner) <= 1) { _gameEnd = true; }
+        //if(GameTime.RemainingTime(Runner) <= 1) { _gameEnd = true; }
     }
 
     public override void Render()
@@ -232,6 +232,15 @@ public class GameManager : NetworkBehaviour
         PlayerData.Set(player, data);
     }
 
+    // 각 클라이언트가 RPC로 보낸 닉네임을 해당 플레이어의 PlayerData에 반영한다 (StateAuthority에서만 호출됨)
+    public void SetPlayerNickname(PlayerRef player, NetworkString<_32> nickname)
+    {
+        if (!PlayerData.TryGet(player, out var data)) return;
+
+        data._nickName = nickname;
+        PlayerData.Set(player, data);
+    }
+
     public Transform GetSpawnPoint(int teamIdx, int spawnIdx , bool isRespawn = false)
     {
         Transform spawnPoint = default;
@@ -354,10 +363,7 @@ public class GameManager : NetworkBehaviour
 
         if (PlayerData.TryGet(victim, out PlayerData victimData))
         {
-            if (victimData._nickName != "")
-                victimName = victimData._nickName;
-            else
-                victimName = "잉클링";
+            victimName = victimData.DisplayName;
         }
 
         GameUIManager._instance.InstantiateKillLog(victimName);

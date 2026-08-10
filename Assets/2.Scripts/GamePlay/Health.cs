@@ -116,6 +116,11 @@ public class Health : NetworkBehaviour
     public override void Render()
     {
         UpdateDeathIcons();
+
+        if (_isAlive && HasInputAuthority)
+        {
+            GameUIManager._instance.CloseBeatenWnd();
+        }
     }
 
     void UpdateDeathIcons()
@@ -161,6 +166,11 @@ public class Health : NetworkBehaviour
                 data._death++;
                 data._isAlive = false;
                 GameManager._instance.PlayerData.Set(Object.InputAuthority, data);
+            }
+
+            if (GameManager._instance.PlayerData.TryGet(player, out var killerData))
+            {
+                RPC_OpenBeatenWnd(Object.InputAuthority, killerData.DisplayName);
             }
 
             ExplodePaint();
@@ -305,5 +315,13 @@ public class Health : NetworkBehaviour
     void RPC_OnDeathPaint(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
         WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    void RPC_OpenBeatenWnd(PlayerRef victim, string killerName)
+    {
+        if (Runner.LocalPlayer != victim) return;
+
+        GameUIManager._instance.OpenBeatenWnd(killerName);
     }
 }

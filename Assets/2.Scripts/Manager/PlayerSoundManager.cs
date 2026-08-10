@@ -69,6 +69,12 @@ public class PlayerSoundManager : MonoBehaviour
 
     public void PlaySwimSFX(in SoundState state)
     {
+        if (!state.hasInputAuthority)
+        {
+            OffLoopSFX(_swimLoopSource);
+            return;
+        }
+
         GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.SwimmingInInk_loopable, _swimLoopSource);
 
         if (state.isAlive && state.isSquid && state.isMoving && (state.isWallClimb || (state.isSwimming && state.isGrounded)))
@@ -80,6 +86,12 @@ public class PlayerSoundManager : MonoBehaviour
 
     public void PlaySlowedSFX(in SoundState state)
     {
+        if (!state.hasInputAuthority)
+        {
+            OffLoopSFX(_slowedLoopSource);
+            return;
+        }
+
         GameSoundManager.instance.PlayerSFXLoop(PlayerSFXLoopName.Slowed_loopable, _slowedLoopSource);
 
         if (state.isAlive && !state.isSquid && state.isSlowed)

@@ -4,9 +4,10 @@ using DefineStructure;
 public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
 {
     PlayerCustomization _customization;
+    PlayerData _data;
 
     public PlayerCustomization Customization => _customization;
-
+    public PlayerData Data => _data;
 
     private void Start()
     {
@@ -52,5 +53,12 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
         PlayerCustomization c = _customization;
         c._eyebrows = eyebrowa;
         _customization = c;
+    }
+
+    public void SetNickname(string name)
+    {
+        PlayerData data = _data;
+        data._nickName = name;
+        _data = data;
     }
 }
