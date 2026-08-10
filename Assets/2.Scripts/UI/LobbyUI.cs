@@ -30,6 +30,11 @@ public class LobbyUI : MonoBehaviour
         _players[idx].InitPlayerBar(name, isMe);
     }
 
+    public void UpdateUserName(int idx, string name)
+    {
+        _players[idx].SetName(name);
+    }
+
     public void LeaveUser(int idx)
     {
         _players[idx].PlayerExit();

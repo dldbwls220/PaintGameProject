@@ -15,6 +15,9 @@ public class LobbyManager : NetworkBehaviour
     [Networked, Capacity(8)]
     public NetworkDictionary<PlayerRef, int> PlayerSlots => default;
 
+    [Networked, Capacity(8)]
+    public NetworkDictionary<PlayerRef, NetworkString<_32>> PlayerNicknames => default;
+
     [Networked] TickTimer StartTimer { get; set; }
     [Networked] NetworkBool _isFull { get; set; }
 
@@ -22,6 +25,7 @@ public class LobbyManager : NetworkBehaviour
     [Networked] NetworkBool _wasWaiting { get; set; }
 
     readonly Dictionary<PlayerRef, int> _shownSlots = new();
+    readonly Dictionary<PlayerRef, string> _shownNicknames = new();
 
     public static LobbyManager _instance => _uniqueinstance;
 
@@ -33,6 +37,12 @@ public class LobbyManager : NetworkBehaviour
     public override void Spawned()
     {
         _isWaiting = true;
+
+        var nickname = PlayerCustomizeManager.instance.Data._nickName;
+        if (HasStateAuthority)
+            PlayerNicknames.Set(Runner.LocalPlayer, nickname);
+        else
+            RPC_SubmitNickname(nickname);
     }
 
     public override void Render()
@@ -48,15 +58,32 @@ public class LobbyManager : NetworkBehaviour
         }
         if (left != null)
         {
-            foreach (var player in left) _shownSlots.Remove(player);
+            foreach (var player in left)
+            {
+                _shownSlots.Remove(player);
+                _shownNicknames.Remove(player);
+            }
         }
 
         foreach (var kv in PlayerSlots)
         {
             if (!_shownSlots.ContainsKey(kv.Key))
             {
-                _UI.JoinUser(kv.Value, "testname", kv.Key == Runner.LocalPlayer);
+                string name = GetNickname(kv.Key);
+                _UI.JoinUser(kv.Value, name, kv.Key == Runner.LocalPlayer);
                 _shownSlots[kv.Key] = kv.Value;
+                _shownNicknames[kv.Key] = name;
+            }
+        }
+
+        // 닉네임 RPC가 슬롯 입장보다 늦게 도착하거나 이후에 바뀔 수 있으므로 매 프레임 최신값과 비교해 갱신한다
+        foreach (var kv in _shownSlots)
+        {
+            string name = GetNickname(kv.Key);
+            if (_shownNicknames[kv.Key] != name)
+            {
+                _UI.UpdateUserName(kv.Value, name);
+                _shownNicknames[kv.Key] = name;
             }
         }
 
@@ -147,6 +174,20 @@ public class LobbyManager : NetworkBehaviour
             StartTimer = TickTimer.CreateFromSeconds(Runner, _startDelay);
             _isFull = false;
         }
+    }
+
+    string GetNickname(PlayerRef player)
+    {
+        if (!PlayerNicknames.TryGet(player, out var nickname) || nickname.Length == 0)
+            return "잉클링";
+
+        return nickname.Value;
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    void RPC_SubmitNickname(NetworkString<_32> nickname, RpcInfo info = default)
+    {
+        PlayerNicknames.Set(info.Source, nickname);
     }
 
     int GetNextFreeIndex()

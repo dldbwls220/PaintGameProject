@@ -3,8 +3,10 @@ using DefineEnum;
 using DefineStructure;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UI;
 using static PlayerSoundManager;
 
 // InklingController를 건드리지 않고 Simple KCC 기반으로 Fusion 2 네트워크 이동을 처리하는 래퍼
@@ -36,6 +38,10 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Header("Weapon")]
     [SerializeField] Transform _shootRoot;
     [SerializeField] float _inktankOffset;
+
+    [Header("Nickname Setting")]
+    [SerializeField] TextMeshProUGUI _nameText;
+    [SerializeField] Image _playerDeathCrossIcon;
 
     Color _inkColor;
     Color _enemyColor;
@@ -93,6 +99,9 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     [Networked, OnChangedRender(nameof(OnCustomizationChanged))]
     PlayerCustomization _custom { get; set; }
+
+    [Networked, OnChangedRender(nameof(OnNicknameChanged))]
+    NetworkString<_32> _nickname { get; set; }
 
     [Networked] public NetworkBool _isSquid { get; set; }
     [Networked] public NetworkBool _isShooting { get; set; }
@@ -166,6 +175,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inklingHitboxOffset = _hitbox.Offset;
 
         AssignTeamColors();
+        InitNicknameUI();
 
         _renderC.Init();
         _renderC.SetTeamColor(_inkColor);
@@ -597,6 +607,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     void RPC_SubmitNickname(NetworkString<_32> nickname)
     {
+        _nickname = nickname;
         GameManager._instance.SetPlayerNickname(Object.InputAuthority, nickname);
     }
 
@@ -731,6 +742,54 @@ public class NetworkInklingMovement : NetworkBehaviour
         Destroy(fx, _morphFXLifeTime);
     }
 
+    void InitNicknameUI()
+    {
+        _nameText.color = _inkColor;
+        _playerDeathCrossIcon.color = _inkColor;
+        SetNameText(_nickname.Length == 0 ? "잉클링" : _nickname.Value);
+
+        _nameText.enabled = false;
+        _playerDeathCrossIcon.enabled = false;
+    }
+
+    void OnNicknameChanged()
+    {
+        SetNameText(_nickname.Length == 0 ? "잉클링" : _nickname.Value);
+    }
+
+    void SetNameText(string name)
+    {
+        _nameText.text = name;
+    }
+
+    void UpdateNicknameUI()
+    {
+
+    }
+
+    void OnOffNameText(bool isOn)
+    {
+        if (isOn)
+        {
+            _nameText.enabled = true;
+        }
+        else
+        {
+            _nameText.enabled = false;
+        }
+    }
+
+    void OnOffCrossIcon(bool isOn)
+    {
+        if (isOn)
+        {
+            _playerDeathCrossIcon.enabled = true;
+        }
+        else
+        {
+            _playerDeathCrossIcon.enabled = false;
+        }
+    }
 
     void BoolCheck()
     {
@@ -738,5 +797,17 @@ public class NetworkInklingMovement : NetworkBehaviour
         _prevMorphingInkling = _isMorphingInkling;
         _prevRespawing = _health._nowRespawing;
         _prevPendingRespawn = _health._pendingRespawn;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    void RPC_OpenNicknameUI()
+    {
+        _nameText.enabled = true;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    void RPC_CloseEnemyNicknameUI()
+    {
+        _nameText.enabled = false;
     }
 }

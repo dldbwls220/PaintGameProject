@@ -24,6 +24,11 @@ public class LobbyPlayerUI : MonoBehaviour
         PlayAnimForward();
     }
 
+    public void SetName(string playerName)
+    {
+        _playerNameTxt.text = playerName;
+    }
+
     public void PlayerExit()
     {
         _arrow.enabled = false;
