@@ -363,6 +363,25 @@ namespace DefineEnum
 
     #endregion[UI]
 
+    #region[결과]
+
+    public enum ResultState
+    {
+        Win,
+        Loose
+    }
+
+    public enum JudgeNJudgeJrFaceState
+    {
+        Default,
+        Win,
+        Loose
+    }
+
+    #endregion[결과]
+
+    #region[리소스]
+
     public enum PoolDataType
     {
         HEADGEARIMG,
@@ -381,4 +400,6 @@ namespace DefineEnum
 
         Count
     }
+
+    #endregion[리소스]
 }

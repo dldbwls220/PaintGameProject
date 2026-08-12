@@ -56,6 +56,7 @@ public class GameManager : NetworkBehaviour
     [Networked] public NetworkBool _introFinished { get; set; }
     [Networked] public NetworkBool _gameStart { get; set; }
     [Networked] public NetworkBool _gameEnd { get; set; }
+    [Networked] public NetworkBool _isJudging { get; set; }
     [Networked] NetworkBool _introStarted { get; set; }
     [Networked] float _introStartTime { get; set; }
 

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: JudgeJr_AnimController
+  m_Controller: {fileID: 9100000, guid: 0e5b7cdb0fe2638479c8c7ea3eaf919e, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 3ed963c23de5f1d40acef64d6481d937, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c08f64895f119e545a7ebef5265e2ff7, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: d9dd50ad37b6c9140979eba3a8dc8bfc, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 86eee6aa3c1b6cf4899d1ee775fe7ffb, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: cd222b317b3b94b4b84fab0187bec637, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 8eb0e47972f26ba4d8789b96e3cee248, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 9588ba63fad64ef4e8b897114a7cb992, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: dddcef754f0e41e42aad44f43a8c722d, type: 2}
