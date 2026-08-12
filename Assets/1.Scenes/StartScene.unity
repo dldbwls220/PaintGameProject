@@ -1666,6 +1666,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4687049690470712052, guid: cadda288b0b91504bbc6f2c5e15f4cba, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -511.48163
+      objectReference: {fileID: 0}
     - target: {fileID: 4838947673700602223, guid: cadda288b0b91504bbc6f2c5e15f4cba, type: 3}
       propertyPath: m_RaycastTarget
       value: 0

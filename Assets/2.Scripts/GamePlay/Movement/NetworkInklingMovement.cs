@@ -116,11 +116,11 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public NetworkBool _isSlowed { get; set; }
     [Networked] public NetworkBool _isWallClimb { get; set; }
     [Networked] public NetworkBool _isAlive { get; set; }
+    [Networked] public NetworkBool _openNicknameWnd { get; set; }
 
     // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
     bool _prevIsOnPaint;
     bool _prevIsSameColor;
-
     bool _prevMorphingSquid, _prevMorphingInkling, _prevRespawing, _prevPendingRespawn;
 
     [Networked] public TickTimer _morphTimer { get; set; }
@@ -472,7 +472,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             PlayMorphSplashEffect();
         }
-
+        UpdateNicknameUI();
         
         PlaySwimWakeEffect();
 
@@ -762,9 +762,42 @@ public class NetworkInklingMovement : NetworkBehaviour
         _nameText.text = name;
     }
 
+    bool IsLocalTeammate()
+    {
+        if (GameManager._instance.PlayerData.TryGet(Runner.LocalPlayer, out var localData))
+            return localData._teamIndex == _teamIndex;
+        return false;
+    }
+
     void UpdateNicknameUI()
     {
-
+        bool reveal = false;
+        
+        if (HasInputAuthority)
+        {
+            if (!GameManager._instance._introFinished)
+            {
+                bool isTeamCam = GameManager._instance._gameStart ? !GameManager._instance._gameStart : GameManager._instance._nowTeamCam;
+                reveal = isTeamCam;
+            }
+            else
+                reveal = false;
+        }
+        else
+        {
+            if (IsLocalTeammate())
+            {
+                bool isTeamCam = GameManager._instance._gameStart ? GameManager._instance._gameStart : GameManager._instance._nowTeamCam;
+                reveal = !_isAlive || isTeamCam;
+            }
+            else
+            {
+                bool isTeamCam = GameManager._instance._gameStart ? !GameManager._instance._gameStart : GameManager._instance._nowTeamCam;
+                reveal = !_isAlive || isTeamCam;
+            }
+            OnOffCrossIcon(!_isAlive);
+        }
+        OnOffNameText(reveal);     
     }
 
     void OnOffNameText(bool isOn)
@@ -797,17 +830,5 @@ public class NetworkInklingMovement : NetworkBehaviour
         _prevMorphingInkling = _isMorphingInkling;
         _prevRespawing = _health._nowRespawing;
         _prevPendingRespawn = _health._pendingRespawn;
-    }
-
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-    void RPC_OpenNicknameUI()
-    {
-        _nameText.enabled = true;
-    }
-
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-    void RPC_CloseEnemyNicknameUI()
-    {
-        _nameText.enabled = false;
     }
 }

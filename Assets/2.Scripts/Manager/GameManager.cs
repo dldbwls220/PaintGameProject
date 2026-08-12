@@ -36,13 +36,13 @@ public class GameManager : NetworkBehaviour
     bool _isIntroBGMEnd;
     bool _introFadeOutComplete;
     bool _wasGameStart;
+   
+    public bool _nowTeamCam { get; set; }
 
     [Networked]
     [Capacity(8)]
     [HideInInspector]
     public NetworkDictionary<PlayerRef, PlayerData> PlayerData { get; }
-
-    readonly Dictionary<NetworkInklingMovement, int> _inklingDic = new();
 
     [Networked]
     [HideInInspector]
@@ -219,13 +219,11 @@ public class GameManager : NetworkBehaviour
 
         Quaternion spawnRot = teamIndex == 1 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
 
-        NetworkInklingMovement inkling = runner.Spawn(_playerPrefab, spawnPos, spawnRot, player,
+        runner.Spawn(_playerPrefab, spawnPos, spawnRot, player,
             onBeforeSpawned: (_, obj) =>
             {
                 obj.GetComponent<NetworkPlayer>().SetSpawnIndex(spawnIndex);
             });
-
-        _inklingDic[inkling] = teamIndex;
     }
 
     // 각 클라이언트가 RPC로 보낸 커스터마이징 값을 해당 플레이어의 PlayerData에 반영한다 (StateAuthority에서만 호출됨)
@@ -352,7 +350,7 @@ public class GameManager : NetworkBehaviour
     public void CloseStartUI()
     {
         _uiManager.CloseStartUI();
-
+        _nowTeamCam = true;
     }
 
     public void IntroBGMEnd()
