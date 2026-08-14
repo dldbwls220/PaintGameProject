@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using DefineEnum;
 using TMPro;
 
 public class NicknameUI : MonoBehaviour
@@ -36,10 +38,16 @@ public class NicknameUI : MonoBehaviour
 
     public void SetNickname()
     {
-        if (_inputNickname == null) return;
+        if (_inputNickname.text == "") return;
 
         PlayerCustomizeManager.instance.SetNickname(_inputNickname.text);
         _inputNickname.text = null;
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00, volume: 0.6f);
+
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == _inputNickname.gameObject)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 
     void CheckCurrentName()

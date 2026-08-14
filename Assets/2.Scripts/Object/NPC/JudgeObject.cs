@@ -17,24 +17,17 @@ public class JudgeObject : MonoBehaviour
     [Header("ColorDebug")]
     [SerializeField] Color _DeBugcolor;
 
-    private void Start()
-    {
-        //SetJudgeFace(JudgeNJudgeJrFaceState.Default);
+    //private void Update()
+    //{
+    //    if (Input.GetKey(KeyCode.Q))
+    //    {
+    //        JudgeAnim(ResultState.Win, true);
+    //    }
+    //}
 
-        InitJudge();
-    }
-
-    private void Update()
+    public void InitJudge(Color color)
     {
-        if (Input.GetKey(KeyCode.Q))
-        {
-            JudgeAnim(ResultState.Win, true);
-        }
-    }
-
-    public void InitJudge()
-    {
-        _flagObject.InitFlag(_DeBugcolor);
+        _flagObject.InitFlag(color);
         _mpb = new MaterialPropertyBlock();
     }
 

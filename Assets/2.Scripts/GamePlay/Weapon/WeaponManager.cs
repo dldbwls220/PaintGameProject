@@ -62,7 +62,9 @@ public class WeaponManager : NetworkBehaviour
     public void Shoot(bool isShootPressed)
     {
         _currentWeapon?.Shoot(_inkShootTF, _target.position, _inkColor, isShootPressed, _isEmpty);
-        _inkTankC.UpdateInkTank(_currentInk / _totalInk);
+
+        if (HasInputAuthority)
+            _inkTankC.UpdateInkTank(_currentInk / _totalInk);
     }
 
     public void UpdateInkStatus(in InkTankState s)
@@ -112,7 +114,8 @@ public class WeaponManager : NetworkBehaviour
         float offsetSpeed = fillSpeed * (0.5f / _totalInk);
         _inktankOffset = Mathf.MoveTowards(_inktankOffset, 0, offsetSpeed * Runner.DeltaTime);
 
-        _inkTankC.UpdateInkTank(_currentInk / _totalInk);
+        if (HasInputAuthority)
+            _inkTankC.UpdateInkTank(_currentInk / _totalInk);
 
         Debug.Log("자동충전");
     }
@@ -133,7 +136,8 @@ public class WeaponManager : NetworkBehaviour
         float offsetSpeed = fillSpeed * (0.5f / _totalInk);
         _inktankOffset = Mathf.MoveTowards(_inktankOffset, 0, offsetSpeed * Runner.DeltaTime);
 
-        _inkTankC.UpdateInkTank(_currentInk / _totalInk);
+        if (HasInputAuthority)
+            _inkTankC.UpdateInkTank(_currentInk / _totalInk);
     }
 
     public void PlayShootFX()

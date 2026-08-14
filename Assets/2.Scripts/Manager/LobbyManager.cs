@@ -71,6 +71,8 @@ public class LobbyManager : NetworkBehaviour
             {
                 string name = GetNickname(kv.Key);
                 _UI.JoinUser(kv.Value, name, kv.Key == Runner.LocalPlayer);
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.PlayerJoined, volume: 0.6f);
+
                 _shownSlots[kv.Key] = kv.Value;
                 _shownNicknames[kv.Key] = name;
             }
