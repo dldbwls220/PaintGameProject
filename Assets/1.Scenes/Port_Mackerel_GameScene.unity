@@ -260841,7 +260841,7 @@ MonoBehaviour:
     depthMin: 0
     depthMax: 10
   _brushShader: {fileID: 4800000, guid: 100ed71a7b2554149890d4cdec73cb7b, type: 3}
-  _offXZGizzmo: 0
+  _offXZGizzmo: 1
   _offXYGizzmo: 0
   _offZYGizzmo: 0
 --- !u!43 &1169491488
@@ -424047,6 +424047,7 @@ GameObject:
   - component: {fileID: 2067567330}
   - component: {fileID: 2067567331}
   - component: {fileID: 2067567332}
+  - component: {fileID: 2067567333}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -424082,6 +424083,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _playerPrefab: {fileID: 4471312381918550399, guid: 98b99b743a8647d43a00c05d6d68afbe, type: 3}
+  _gridManager: {fileID: 2067567333}
   _gameDuration: 180
   _respawnTime: 9
   _teamColors1:
@@ -424113,6 +424115,8 @@ MonoBehaviour:
   __gameStart:
     _value: 0
   __gameEnd:
+    _value: 0
+  __isJudging:
     _value: 0
 --- !u!114 &2067567331
 MonoBehaviour:
@@ -424178,6 +424182,25 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2067567333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067567327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 991391cf3b1652140be82b64800bd6f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridManager
+  _gridWorldSize: {x: 0, y: 0}
+  _nodeRadius: 0.5
+  _paintableMask:
+    serializedVersion: 2
+    m_Bits: 512
+  _displayGizzmos: 0
+  _debugCheckColorKey: 290
 --- !u!1 &2075853213
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ public class GameManager : NetworkBehaviour
     static GameManager _uniqueinstance;
     [Header("Class Reference")]
     [SerializeField] NetworkInklingMovement _playerPrefab;
+    [SerializeField] GridManager _gridManager;
     [Header("Gameplay Setting")]
     [SerializeField] float _gameDuration = 180f;
     [SerializeField] float _respawnTime = 9f;
@@ -73,6 +74,8 @@ public class GameManager : NetworkBehaviour
         _uiManager = ui.GetComponentInChildren<GameUIManager>();
         _uiManager.InitUI();
 
+
+        CreatGrid();
         _playableDirector.stopped += OnIntroFinished;
     }
 
@@ -343,6 +346,12 @@ public class GameManager : NetworkBehaviour
 
         GameSoundManager.instance._GameBGMDESC._pause();
         GameSoundManager.instance._NowOrNeverDESC._pause();
+    }
+
+    void CreatGrid()
+    {
+        if (WorldInkZoneManager.instance != null)
+            _gridManager.CreateGride(WorldInkZoneManager.instance.XZWorldSize());
     }
 
     Color GetTeamColor(int teamIndex) => teamIndex == 1 ? _teamColors1[_inkIdx] : _teamColors2[_inkIdx];

@@ -232,6 +232,22 @@ public class WorldInkZoneManager : Singleton<WorldInkZoneManager>
         return result;
     }
 
+    public Vector2 XZWorldSize()
+    {
+        Vector2 vector = new Vector2();
+
+        foreach (var zone in _zones)
+        {
+            if (zone.axis == ZoneAxis.XZ)
+            {
+                vector = new Vector2(zone.sizeU, zone.sizeV);
+                break;
+            }
+        }
+
+        return vector;
+    }
+
     bool IsValidIndex(int index)
     {
         if (index < 0 || index >= _zones.Count)
