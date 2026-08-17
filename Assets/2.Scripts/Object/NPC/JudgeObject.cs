@@ -14,16 +14,22 @@ public class JudgeObject : MonoBehaviour
     [SerializeField] JudgeFlagObject _flagObject;
     MaterialPropertyBlock _mpb;
 
-    [Header("ColorDebug")]
-    [SerializeField] Color _DeBugcolor;
+    [Header("Debug")]
+    [SerializeField] Color _debugcolor;
+    [SerializeField] ResultState _state;
 
-    //private void Update()
-    //{
-    //    if (Input.GetKey(KeyCode.Q))
-    //    {
-    //        JudgeAnim(ResultState.Win, true);
-    //    }
-    //}
+    private void Start()
+    {
+        InitJudge(_debugcolor);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Q))
+        {
+            JudgeAnim(_state, true);
+        }
+    }
 
     public void InitJudge(Color color)
     {
