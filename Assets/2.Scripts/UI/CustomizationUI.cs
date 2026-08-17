@@ -25,7 +25,6 @@ public class CustomizationUI : MonoBehaviour
     {
         _instance = this;
 
-        ResourcePoolManager.instance.AllLoadResources();
         InitCustomizationUI();
     }
 

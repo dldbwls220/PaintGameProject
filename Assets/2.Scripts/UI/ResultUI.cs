@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using Coffee.UIExtensions;
 
 public class ResultUI : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class ResultUI : MonoBehaviour
     [SerializeField] RectTransform _enemyFill;
     [SerializeField] RectTransform _goodFill;
 
+    [Header("UI FX")]
+    [SerializeField] RectTransform _FXRoot;
+    [SerializeField] GameObject _cartoonSparkOut;
+
     Vector2 _enemyFillLastPos;
     Vector2 _goodFillLastPos;
 
@@ -42,8 +47,17 @@ public class ResultUI : MonoBehaviour
         _goodFillLastPos = _goodFill.anchoredPosition;
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            PlayParticle();
+        }
+    }
+
     void LateUpdate()
     {
+        SetParticlePos();
         CompensateFillMovement(_enemyFill, ref _enemyFillLastPos, _enemyFrontWaves, _enemyBackWaves, _enemyFillWaves);
         CompensateFillMovement(_goodFill, ref _goodFillLastPos, _goodFrontWaves, _goodBackWaves, _goodFillWaves);
     }
@@ -86,6 +100,26 @@ public class ResultUI : MonoBehaviour
                 .SetRelative(true)
                 .SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Restart);
+        }
+    }
+
+    void PlayParticle()
+    {        
+        UIParticle particle = _cartoonSparkOut.GetComponent<UIParticle>();
+
+        if (particle != null)
+        {
+            particle.Play();
+        }       
+    }
+
+    void SetParticlePos()
+    {
+        RectTransform rect = _cartoonSparkOut.GetComponent<RectTransform>();
+
+        if (rect != null)
+        {
+            rect.position = _FXRoot.position;
         }
     }
 
