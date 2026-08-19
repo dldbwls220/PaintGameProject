@@ -32,6 +32,7 @@ public class GameUIManager : MonoBehaviour
 
     [Header("Finish Anim")]
     [SerializeField] Animation _finishAnim;
+    [SerializeField] AnimationClip _fadeoutClip;
 
     [Header("SetColor")]
     [SerializeField] Image[] _colorImage;
@@ -147,6 +148,12 @@ public class GameUIManager : MonoBehaviour
         _finishAnim.Play();
     }
 
+    public void EndFinishAnim()
+    {
+        _finishAnim.clip = _fadeoutClip;
+        _finishAnim.Play();
+    }
+
     public void InstantiateKillLog(string victimName)
     {
         GameObject go = Instantiate(_killLogUIPrefab, _killLogContent.transform);
@@ -178,5 +185,10 @@ public class GameUIManager : MonoBehaviour
     public void CloseBeatenWnd()
     {
         _beatenInfoUI.CloseWnd();
+    }
+
+    public void CloseUI()
+    {
+        _crosshairUI.CloseCrosshair();
     }
 }

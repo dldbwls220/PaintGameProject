@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using DefineEnum;
 using DG.Tweening;
 using Coffee.UIExtensions;
 using TMPro;
@@ -37,9 +38,6 @@ public class ResultUI : MonoBehaviour
     [Header("UI Text")]
     [SerializeField] TextMeshProUGUI _goodText;
     [SerializeField] TextMeshProUGUI _badText;
-
-    [Header("UI References")]
-    [SerializeField] Animation _fadeInAnim;
 
     bool _wasJudgingStart;
     bool _wasJudgingEnd;
@@ -86,11 +84,6 @@ public class ResultUI : MonoBehaviour
         SetWaveColor(team, enemy);
         _badText.color = enemy;
         _goodText.color = team;
-    }
-
-    public void FadeInUI()
-    {
-        _fadeInAnim.Play();
     }
 
     void SetParticleColor(Color team, Color enemy)
@@ -193,7 +186,11 @@ public class ResultUI : MonoBehaviour
         if (_goodSlider.value == team && _badSlider.value == enemy)
         {
             if (!_wasJudgingEnd)
+            {
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.DeadSplash00);
                 PlayParticle();
+            }
+
 
             _wasJudgingEnd = true; 
         }

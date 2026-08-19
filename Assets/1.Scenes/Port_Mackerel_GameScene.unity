@@ -424084,7 +424084,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _playerPrefab: {fileID: 4471312381918550399, guid: 98b99b743a8647d43a00c05d6d68afbe, type: 3}
   _gridManager: {fileID: 2067567333}
-  _gameDuration: 180
+  _gameDuration: 20
   _respawnTime: 9
   _teamColors1:
   - {r: 0.82745105, g: 0.9960785, b: 0.24313727, a: 1}
@@ -424107,6 +424107,7 @@ MonoBehaviour:
   _playableDirector: {fileID: 1339369573}
   _introFadeSpeed: 0.3
   _gameBGMFadeSpeed: 0.8
+  _mainCamera: {fileID: 1029450984}
   _PlayerData:
     _items: []
   __inkIdx: 0
@@ -424201,6 +424202,7 @@ MonoBehaviour:
     m_Bits: 512
   _displayGizzmos: 0
   _debugCheckColorKey: 290
+  _nodesPerFrame: 50
 --- !u!1 &2075853213
 GameObject:
   m_ObjectHideFlags: 0

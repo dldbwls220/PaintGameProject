@@ -1,5 +1,6 @@
 using DefineEnum;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class ResultManager : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class ResultManager : MonoBehaviour
     [SerializeField] JudgeObject _JudgeJr;
     [Header("Result Camera")]
     [SerializeField] Camera _camera;
+    [Header("Timeline")]
+    [SerializeField] PlayableDirector _resultTimeline;
     public float _teamRate { get; private set; }
     public float _enemyRate { get; private set; }
 
@@ -33,6 +36,12 @@ public class ResultManager : MonoBehaviour
         _resultUI.CloseWnd();
     }
 
+    public void OpenCameraNUI()
+    {
+        _camera.gameObject.SetActive(true);
+        _resultUI.OpenWnd();
+    }
+
     public void GetColor(Color team, Color enemy)
     {
         _resultUI.InitUI(team, enemy);
@@ -42,6 +51,8 @@ public class ResultManager : MonoBehaviour
     {
         _teamRate = team;
         _enemyRate = enemy;
+
+        Debug.Log("ÆÀ : " + _teamRate + " Àû : " + _enemyRate);
     }
 
     public void InitJudge(Color team, Color enemy, ResultState teamState, ResultState enemyState)
@@ -67,10 +78,14 @@ public class ResultManager : MonoBehaviour
         _JudgeJr.JudgeAnim(true);
 
         _isJudgingStart = true;
+
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.Pour00);
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.Pour10);
     }
 
-    public void FadeInScreen()
+    public void StartTimeline()
     {
-        _resultUI.FadeInUI();
+        _resultTimeline.Play();
     }
+
 }

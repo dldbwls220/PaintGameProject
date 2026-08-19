@@ -181,6 +181,10 @@ namespace DefineEnum
         Count01,
         whistleCmp00,
 
+        Pour00,
+        Pour10,
+        DeadSplash00,
+
         Count
     }
 

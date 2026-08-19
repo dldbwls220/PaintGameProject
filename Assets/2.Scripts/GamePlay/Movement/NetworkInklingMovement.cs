@@ -417,11 +417,6 @@ public class NetworkInklingMovement : NetworkBehaviour
     {
         LogPaintStatusChange();
 
-        if (HasInputAuthority)
-        {
-            ResultManager._instance?.GetColor(_inkColor, _enemyColor);
-        }
-
         // 히트박스를 둘로 나눠 enabled로 토글하면 LagCompensation이 꺼진 히트박스를
         // 계속 반환하는 문제가 있어, 히트박스 하나를 폼에 맞게 크기만 조절한다.
         // 권한과 무관하게 매 프레임 실행되는 Render에서 복제된 Networked 값만으로 계산한다.

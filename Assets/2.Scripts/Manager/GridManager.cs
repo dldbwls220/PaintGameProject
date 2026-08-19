@@ -65,7 +65,7 @@ public class GridManager : MonoBehaviour
         {
             foreach (Node node in _grid)
             {
-                if (node._color == null) continue;
+                if (node._color == null || node._color.Value.a < 1) continue;
 
                 Color c = node._color.Value;
                 colorCounts.TryGetValue(c, out int count);

@@ -29,6 +29,8 @@ public class GameManager : NetworkBehaviour
     [Header("GameSoundSetting")]
     [SerializeField] float _introFadeSpeed = 0.3f;
     [SerializeField] float _gameBGMFadeSpeed = 0.5f;
+    [Header("Camera")]
+    [SerializeField] Camera _mainCamera;
     OpeningBGMName _openingName;
 
     int _spawnCount;
@@ -169,10 +171,13 @@ public class GameManager : NetworkBehaviour
         if (GameTime.RemainingTime(Runner) <= 1 && !_gameEnd)
         {
             _gameEnd = true;
-            _uiManager.StartFinishAnim();
+
             GameSoundManager.instance.PlayerSFX(PlayerSFXName.whistleCmp00);
-            _gridManager.CheckPaintableColor();
+
+            _uiManager.StartFinishAnim();
+            _uiManager.CloseUI();
             StartCoroutine(LoadResultSceneRoutine());
+            _gridManager.CheckPaintableColor();
         }
     }
 
@@ -304,8 +309,46 @@ public class GameManager : NetworkBehaviour
     void OnGridCheckComplete()
     {
         if(ResultManager._instance == null) return;
+        if (!PlayerData.TryGet(Runner.LocalPlayer, out var data)) return;
 
-        ResultManager._instance.GetTargetValueRate(1, 1);
+        _mainCamera.gameObject.SetActive(false);
+        ResultManager._instance.OpenCameraNUI();
+
+        Color teamColor = data._teamColor;
+        Color enemyColor = data._enemyColor;
+
+        float teamRate = GetCloseColorRate(_gridManager.GetColorRate(), teamColor);
+        float enemyRate = GetCloseColorRate(_gridManager.GetColorRate(), enemyColor);
+
+
+        ResultState teamState = teamRate > enemyRate ? ResultState.Win : ResultState.Loose;
+        ResultState enemyState = teamRate > enemyRate ? ResultState.Loose : ResultState.Win;
+
+        ResultManager._instance.GetColor(teamColor, enemyColor);
+        ResultManager._instance.GetTargetValueRate(teamRate, enemyRate);
+        ResultManager._instance.InitJudge(teamColor, enemyColor, teamState, enemyState);
+
+        _uiManager.EndFinishAnim();
+        ResultManager._instance.StartTimeline();
+    }
+
+    float GetCloseColorRate(Dictionary<Color , float > colorrate, Color color)
+    {
+        float distToMyTeam = 0;
+        float rate = 0;
+
+        foreach (var kv in colorrate)
+        {
+            distToMyTeam = Mathf.Abs(kv.Key.r - color.r) + Mathf.Abs(kv.Key.g - color.g) + Mathf.Abs(kv.Key.b - color.b);
+            
+            if (distToMyTeam < 0.5f)
+            {
+                rate = kv.Value;
+                break;
+            }
+        }
+
+        return rate;
     }
 
     void FadeOutBGM()
