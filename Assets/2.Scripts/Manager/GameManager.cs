@@ -1,9 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
 using DefineStructure;
 using Fusion;
 using DefineEnum;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
@@ -77,11 +79,13 @@ public class GameManager : NetworkBehaviour
 
         CreatGrid();
         _playableDirector.stopped += OnIntroFinished;
+        _gridManager.OnCheckComplete += OnGridCheckComplete;
     }
 
     private void OnDestroy()
     {
         _playableDirector.stopped -= OnIntroFinished;
+        _gridManager.OnCheckComplete -= OnGridCheckComplete;
     }
 
     public override void Spawned()
@@ -94,7 +98,6 @@ public class GameManager : NetworkBehaviour
         }
 
         SetGameBGM();
-      
     }
 
     public override void FixedUpdateNetwork()
@@ -168,6 +171,8 @@ public class GameManager : NetworkBehaviour
             _gameEnd = true;
             _uiManager.StartFinishAnim();
             GameSoundManager.instance.PlayerSFX(PlayerSFXName.whistleCmp00);
+            _gridManager.CheckPaintableColor();
+            StartCoroutine(LoadResultSceneRoutine());
         }
     }
 
@@ -296,6 +301,13 @@ public class GameManager : NetworkBehaviour
             _introFinished = true;
     }
 
+    void OnGridCheckComplete()
+    {
+        if(ResultManager._instance == null) return;
+
+        ResultManager._instance.GetTargetValueRate(1, 1);
+    }
+
     void FadeOutBGM()
     {
         if (_isIntroBGMEnd && !_introFadeOutComplete)
@@ -346,6 +358,21 @@ public class GameManager : NetworkBehaviour
 
         GameSoundManager.instance._GameBGMDESC._pause();
         GameSoundManager.instance._NowOrNeverDESC._pause();
+    }
+
+    IEnumerator LoadResultSceneRoutine()
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync(SceneState.ResultScene.ToString(), LoadSceneMode.Additive);
+        yield return op;
+
+        if (ResultManager._instance != null)
+        {
+            ResultManager._instance.InitResultScene();
+        }
+        else
+        {
+            Debug.LogError("ResultScene을 로드했지만 ResultManager 인스턴스를 찾지 못했습니다.");
+        }
     }
 
     void CreatGrid()

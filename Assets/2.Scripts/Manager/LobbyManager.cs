@@ -22,7 +22,7 @@ public class LobbyManager : NetworkBehaviour
     [Networked] NetworkBool _isFull { get; set; }
 
     [Networked] NetworkBool _isWaiting { get; set; }
-    [Networked] NetworkBool _wasWaiting { get; set; }
+    bool _wasWaiting;
 
     readonly Dictionary<PlayerRef, int> _shownSlots = new();
     readonly Dictionary<PlayerRef, string> _shownNicknames = new();
@@ -100,12 +100,11 @@ public class LobbyManager : NetworkBehaviour
         {
             GameSoundManager.instance.PlayerSFX(PlayerSFXName.BattleStartBell, volume: 0.2f);
         }
+        _wasWaiting = _isWaiting;
     }
 
     public override void FixedUpdateNetwork()
     {
-        _wasWaiting = _isWaiting;
-
         if (HasStateAuthority)
         {
             if (Input.GetKey(KeyCode.Space))

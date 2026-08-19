@@ -20,27 +20,33 @@ public class JudgeObject : MonoBehaviour
 
     private void Start()
     {
-        InitJudge(_debugcolor);
+        InitJudge(_debugcolor, _state);
     }
 
     private void Update()
     {
         if (Input.GetKey(KeyCode.Q))
         {
-            JudgeAnim(_state, true);
+            //JudgeAnim(_state, true);
         }
     }
 
-    public void InitJudge(Color color)
+    public void JudgeEnd()
     {
+        ResultManager._instance._isJudgingEnd = true;
+    }
+
+    public void InitJudge(Color color, ResultState state)
+    {
+        _state = state;
         _flagObject.InitFlag(color);
         _mpb = new MaterialPropertyBlock();
     }
 
-    public void JudgeAnim(ResultState state, bool _isJudging)
+    public void JudgeAnim(bool _isJudging)
     {
         _flagObject.StartAnim();
-        _judgeAnimator.SetInteger("AniState", (int)state);
+        _judgeAnimator.SetInteger("AniState", (int)_state);
         _judgeAnimator.SetBool("IsJudging", _isJudging);
     }
 

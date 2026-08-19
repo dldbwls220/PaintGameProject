@@ -198,6 +198,7 @@ public class NetworkInklingMovement : NetworkBehaviour
             _audioListnerRoot.SetActive(true);
             GameUIManager._instance.RegisterLocalPlayer(this);
             GameUIManager._instance.SetColor(_inkColor, _enemyColor);
+
         }
         else
         {
@@ -415,6 +416,11 @@ public class NetworkInklingMovement : NetworkBehaviour
     public override void Render()
     {
         LogPaintStatusChange();
+
+        if (HasInputAuthority)
+        {
+            ResultManager._instance?.GetColor(_inkColor, _enemyColor);
+        }
 
         // 히트박스를 둘로 나눠 enabled로 토글하면 LagCompensation이 꺼진 히트박스를
         // 계속 반환하는 문제가 있어, 히트박스 하나를 폼에 맞게 크기만 조절한다.

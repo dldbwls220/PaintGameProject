@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/1.Scenes/Port_Mackerel_GameScene.unity
     guid: 6b2a2649437b11c4ea4b9669c9c01a80
   - enabled: 1
+    path: Assets/1.Scenes/ResultScene.unity
+    guid: a2061005f0f30a545b08166b7d4b4091
+  - enabled: 1
     path: Assets/1.Scenes/CustomizationScene.unity
     guid: 842a5c720e7a3764e84c36930544a40a
   m_configObjects:

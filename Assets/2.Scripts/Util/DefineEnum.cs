@@ -346,6 +346,7 @@ namespace DefineEnum
         StartScene,
         LobbyScene,
         Port_Mackerel_GameScene,
+        ResultScene,
         CustomizationScene
     }
 

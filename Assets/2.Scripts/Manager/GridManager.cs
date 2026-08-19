@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour
@@ -53,6 +54,31 @@ public class GridManager : MonoBehaviour
     {
         if (_checkRoutine != null) return;
         _checkRoutine = StartCoroutine(CheckPaintableColorRoutine());
+    }
+
+    public Dictionary<Color, float> GetColorRate()
+    {
+        var colorCounts = new Dictionary<Color, int>();
+        int totalCount = 0;
+
+        if (_grid != null)
+        {
+            foreach (Node node in _grid)
+            {
+                if (node._color == null) continue;
+
+                Color c = node._color.Value;
+                colorCounts.TryGetValue(c, out int count);
+                colorCounts[c] = count + 1;
+                totalCount++;
+            }
+        }
+
+        var colorRateDic = new Dictionary<Color, float>();
+        foreach (var kv in colorCounts)
+            colorRateDic[kv.Key] = totalCount > 0 ? (float)kv.Value / totalCount : 0f;
+
+        return colorRateDic;
     }
 
     IEnumerator CheckPaintableColorRoutine()

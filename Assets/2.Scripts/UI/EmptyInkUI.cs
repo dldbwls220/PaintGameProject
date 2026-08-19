@@ -21,13 +21,6 @@ public class EmptyInkUI : MonoBehaviour
     bool _isOn;
     Vector2[] _originPos;
 
-
-    // Update is called once per frame
-    private void Start()
-    {
-
-    }
-
     void Update()
     {
         MoveBar();
@@ -36,7 +29,6 @@ public class EmptyInkUI : MonoBehaviour
     public void OpenWnd()
     {
         gameObject.SetActive(true);
-        //InitEmptyInk();
     }
 
     public void InitEmptyInk()
