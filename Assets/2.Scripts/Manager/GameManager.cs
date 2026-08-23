@@ -62,8 +62,11 @@ public class GameManager : NetworkBehaviour
     [Networked] public NetworkBool _gameStart { get; set; }
     [Networked] public NetworkBool _gameEnd { get; set; }
     [Networked] public NetworkBool _isJudging { get; set; }
+    [Networked] public NetworkBool _isResultStarted { get; set; }
     [Networked] NetworkBool _introStarted { get; set; }
     [Networked] float _introStartTime { get; set; }
+
+    bool _wasResultStarted;
 
     public static GameManager _instance => _uniqueinstance;
 
@@ -178,6 +181,14 @@ public class GameManager : NetworkBehaviour
             _uiManager.CloseUI();
             StartCoroutine(LoadResultSceneRoutine());
             _gridManager.CheckPaintableColor();
+        }
+
+        if (_isResultStarted && !_wasResultStarted)
+        {
+            _uiManager.EndFinishAnim();
+            ResultManager._instance.StartTimeline();
+
+            _wasResultStarted = true;
         }
     }
 
@@ -324,12 +335,15 @@ public class GameManager : NetworkBehaviour
         ResultState teamState = teamRate > enemyRate ? ResultState.Win : ResultState.Loose;
         ResultState enemyState = teamRate > enemyRate ? ResultState.Loose : ResultState.Win;
 
-        ResultManager._instance.GetColor(teamColor, enemyColor);
-        ResultManager._instance.GetTargetValueRate(teamRate, enemyRate);
-        ResultManager._instance.InitJudge(teamColor, enemyColor, teamState, enemyState);
+        ResultManager._instance.InitResultResources(teamColor, enemyColor, teamRate, enemyRate , teamState, enemyState);
 
-        _uiManager.EndFinishAnim();
-        ResultManager._instance.StartTimeline();
+        if (HasStateAuthority)
+        {
+            _isResultStarted = true;
+        }
+
+        //_uiManager.EndFinishAnim();
+        //ResultManager._instance.StartTimeline();
     }
 
     float GetCloseColorRate(Dictionary<Color , float > colorrate, Color color)

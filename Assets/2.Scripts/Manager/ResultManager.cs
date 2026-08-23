@@ -25,6 +25,8 @@ public class ResultManager : MonoBehaviour
     public bool _isJudgingStart { get; private set; }
     public bool _isJudgingEnd { get; set; }
 
+    ResultState _myState;
+
     private void Awake()
     {
         _uniqueinstance = this;
@@ -34,6 +36,15 @@ public class ResultManager : MonoBehaviour
     {
         _camera.gameObject.SetActive(false);
         _resultUI.CloseWnd();
+    }
+
+    public void InitResultResources(Color team, Color enemy, float teamRate, float enemyRate, ResultState teamState, ResultState enemyState)
+    {
+        GetColor(team, enemy);
+        GetTargetValueRate(teamRate, enemyRate);
+        InitJudge(team, enemy, teamState, enemyState);
+
+        _myState = teamState;
     }
 
     public void OpenCameraNUI()
@@ -81,6 +92,11 @@ public class ResultManager : MonoBehaviour
 
         GameSoundManager.instance.PlayerSFX(PlayerSFXName.Pour00);
         GameSoundManager.instance.PlayerSFX(PlayerSFXName.Pour10);
+    }
+
+    public void PlaySquidParticle()
+    {
+        _resultUI.PlaySquidParticle(_myState);
     }
 
     public void StartTimeline()

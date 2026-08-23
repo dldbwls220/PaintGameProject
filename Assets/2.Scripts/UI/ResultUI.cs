@@ -29,11 +29,17 @@ public class ResultUI : MonoBehaviour
     [SerializeField] float _frontSpeed = 30f;
     [SerializeField] float _backSpeed = 30f;
 
-    [Header("UI FX")]
+    [Header("UI CartoonSpark FX")]
     [SerializeField] RectTransform _FXRoot;
     [SerializeField] GameObject _cartoonSparkOutObj;
     UIParticle _cartoonSparkOut;
     RectTransform _cartoonFill;
+
+    [Header("UI Squid FX")]
+    [SerializeField] GameObject _winSquidObj;
+    [SerializeField] GameObject _loseSquidObj;
+    UIParticle _winSquid;
+    UIParticle _loseSquid;
 
     [Header("UI Text")]
     [SerializeField] TextMeshProUGUI _goodText;
@@ -54,11 +60,6 @@ public class ResultUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.E))
-        {
-            PlayParticle();
-        }
-
         if (ResultManager._instance._isJudgingStart && !_wasJudgingStart)
         {
             IncreaseSliderValue25();
@@ -80,6 +81,9 @@ public class ResultUI : MonoBehaviour
         _cartoonSparkOut = _cartoonSparkOutObj.GetComponent<UIParticle>();
         _cartoonFill = _cartoonSparkOutObj.GetComponent<RectTransform>();
 
+        _winSquid = _winSquidObj.GetComponent<UIParticle>();
+        _loseSquid = _loseSquidObj.GetComponent<UIParticle>();
+
         SetParticleColor(team, enemy);
         SetWaveColor(team, enemy);
         _badText.color = enemy;
@@ -88,11 +92,12 @@ public class ResultUI : MonoBehaviour
 
     void SetParticleColor(Color team, Color enemy)
     {
-        ParticleSystem[] particles = _cartoonSparkOutObj.GetComponentsInChildren<ParticleSystem>();
+        ParticleSystem[] sparkParticles = _cartoonSparkOutObj.GetComponentsInChildren<ParticleSystem>();
+        ParticleSystem[] winSquidParticles = _winSquidObj.GetComponentsInChildren<ParticleSystem>();
 
-        for (int i = 0; i < particles.Length; i++)
+        for (int i = 0; i < sparkParticles.Length; i++)
         {
-            var main = particles[i].main;
+            var main = sparkParticles[i].main;
             switch (i)
             {
                 case 0:
@@ -105,6 +110,12 @@ public class ResultUI : MonoBehaviour
                     main.startColor = enemy;
                     break;
             }
+        }
+
+        foreach (var particle in winSquidParticles)
+        {
+            var main = particle.main;
+            main.startColor= team;
         }
     }
 
@@ -149,11 +160,24 @@ public class ResultUI : MonoBehaviour
         }
     }
 
-    void PlayParticle()
+    void PlaySparkParticle()
     {
         if (_cartoonSparkOut != null)
         {
             _cartoonSparkOut.Play();
+        }
+    }
+
+    public void PlaySquidParticle(ResultState state)
+    {
+        switch (state)
+        {
+            case ResultState.Win:
+                _winSquid.Play(); 
+                break;
+            case ResultState.Loose:
+                _loseSquid.Play();
+                break;
         }
     }
 
@@ -188,7 +212,7 @@ public class ResultUI : MonoBehaviour
             if (!_wasJudgingEnd)
             {
                 GameSoundManager.instance.PlayerSFX(PlayerSFXName.DeadSplash00);
-                PlayParticle();
+                PlaySparkParticle();
             }
 
 
