@@ -47,6 +47,7 @@ public class ResultManager : MonoBehaviour
         GetColor(team, enemy);
         GetTargetValueRate(teamRate, enemyRate);
         InitJudge(team, enemy, teamState, enemyState);
+        _resultUI.InitSocreBoard(team, enemy, teamState);
 
         _myState = teamState;
         SetMusic();
@@ -58,12 +59,12 @@ public class ResultManager : MonoBehaviour
         _resultUI.OpenWnd();
     }
 
-    public void GetColor(Color team, Color enemy)
+    void GetColor(Color team, Color enemy)
     {
         _resultUI.InitUI(team, enemy);
     }
 
-    public void GetTargetValueRate(float team, float enemy)
+    void GetTargetValueRate(float team, float enemy)
     {
         _teamRate = team;
         _enemyRate = enemy;
@@ -71,7 +72,7 @@ public class ResultManager : MonoBehaviour
         Debug.Log("ÆÀ : " + _teamRate + " Àû : " + _enemyRate);
     }
 
-    public void InitJudge(Color team, Color enemy, ResultState teamState, ResultState enemyState)
+     void InitJudge(Color team, Color enemy, ResultState teamState, ResultState enemyState)
     {
         _Judge.InitJudge(team, teamState);
         _JudgeJr.InitJudge(enemy, enemyState);

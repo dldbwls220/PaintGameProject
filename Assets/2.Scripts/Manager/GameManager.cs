@@ -443,6 +443,14 @@ public class GameManager : NetworkBehaviour
     Color GetTeamColor(int teamIndex) => teamIndex == 1 ? _teamColors1[_inkIdx] : _teamColors2[_inkIdx];
     Color GetEnemyColor(int teamIndex) => teamIndex == 1 ? _teamColors2[_inkIdx] : _teamColors1[_inkIdx];
 
+    public void UpdateScore(int score)
+    {
+        if (!PlayerData.TryGet(Runner.LocalPlayer, out var data)) return;
+
+        data._score += score;
+        _uiManager.SetScore(data._score);
+    }
+
     public void CloseStartUI()
     {
         _uiManager.CloseStartUI();

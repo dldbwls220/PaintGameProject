@@ -29,6 +29,12 @@ public class ResultUI : MonoBehaviour
     [SerializeField] float _frontSpeed = 30f;
     [SerializeField] float _backSpeed = 30f;
 
+    [Header("ScoreBoard")]
+    [SerializeField] Image _teamScoreBoardImg;
+    [SerializeField] Image _enemyScoreBoardImg;
+    [SerializeField] TextMeshProUGUI _winOrLoseTeam;
+    [SerializeField] TextMeshProUGUI _winOrLoseEnemy;
+
     [Header("UI CartoonSpark FX")]
     [SerializeField] RectTransform _FXRoot;
     [SerializeField] GameObject _cartoonSparkOutObj;
@@ -168,18 +174,7 @@ public class ResultUI : MonoBehaviour
         }
     }
 
-    public void PlaySquidParticle(ResultState state)
-    {
-        switch (state)
-        {
-            case ResultState.Win:
-                _winSquid.Play(); 
-                break;
-            case ResultState.Loose:
-                _loseSquid.Play();
-                break;
-        }
-    }
+ 
 
     void SetParticlePos()
     {
@@ -217,6 +212,39 @@ public class ResultUI : MonoBehaviour
 
 
             _wasJudgingEnd = true; 
+        }
+    }
+
+    public void InitSocreBoard(Color team, Color enemy, ResultState teamState)
+    {
+        _teamScoreBoardImg.color = team;
+        _enemyScoreBoardImg.color = enemy;
+        _winOrLoseTeam.color = team;
+        _winOrLoseEnemy.color = enemy;
+
+        switch (teamState)
+        {
+            case ResultState.Win:
+                _winOrLoseTeam.text = "VICTORY";
+                _winOrLoseEnemy.text = "DEFEAT";
+                break;
+            case ResultState.Loose:
+                _winOrLoseTeam.text = "DEFEAT";
+                _winOrLoseEnemy.text = "VICTORY";
+                break;
+        }
+    }
+
+    public void PlaySquidParticle(ResultState state)
+    {
+        switch (state)
+        {
+            case ResultState.Win:
+                _winSquid.Play();
+                break;
+            case ResultState.Loose:
+                _loseSquid.Play();
+                break;
         }
     }
 

@@ -60,4 +60,9 @@ public class WorldInkZoneReceiver : MonoBehaviour
     {
         return WorldInkZoneManager.instance.CheckPaintColor(_zoneIndex, hit.point);
     }
+
+    public Color CheckPaintColor(Vector3 hitpos)
+    {
+        return WorldInkZoneManager.instance.CheckPaintColor(_zoneIndex, hitpos);
+    }
 }

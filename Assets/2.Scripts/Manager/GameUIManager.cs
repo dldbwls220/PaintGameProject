@@ -25,6 +25,7 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] GameObject _readyGo;
     [SerializeField] GameObject _killLogContent;
     [SerializeField] GameObject _oneMinLeft;
+    [SerializeField] GameObject _score;
 
     [Header("Kill Log")]
     [SerializeField] GameObject _killLogUIPrefab;
@@ -37,6 +38,9 @@ public class GameUIManager : MonoBehaviour
     [Header("SetColor")]
     [SerializeField] Image[] _colorImage;
     [SerializeField] TextMeshProUGUI _textColor;
+
+    [Header("Score")]
+    [SerializeField] TextMeshProUGUI _scoreText;
 
     Queue<GameObject> _killLogQueue = new Queue<GameObject>();
 
@@ -61,6 +65,7 @@ public class GameUIManager : MonoBehaviour
         _wipeOut.SetActive(false);
         _countDown.SetActive(false);
         _oneMinLeft.SetActive(false);
+        _score.SetActive(false);
     }
 
     public void SetColor(Color teamColor, Color enemyColor)
@@ -103,6 +108,7 @@ public class GameUIManager : MonoBehaviour
         _timerUI.OpenWnd();
         _teamStatusUI.DangerSign(true, false);
         _teamStatusUI.DangerSign(false, false);
+        _score.SetActive(true);
     }
 
     // 로컬 플레이어(HasInputAuthority)가 스폰됐을 때 화면 전용(로컬) UI를 그 플레이어에 연결한다
@@ -141,6 +147,11 @@ public class GameUIManager : MonoBehaviour
     public void SetTime(float time)
     {
         _timerUI.SetTime(time);
+    }
+
+    public void SetScore(int score)
+    {
+        _scoreText.text = $"{score:0000}p";
     }
 
     public void StartFinishAnim()

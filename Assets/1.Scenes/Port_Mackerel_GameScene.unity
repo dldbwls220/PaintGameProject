@@ -424204,7 +424204,7 @@ MonoBehaviour:
     m_Bits: 512
   _displayGizzmos: 0
   _debugCheckColorKey: 290
-  _nodesPerFrame: 50
+  _nodesPerFrame: 100
 --- !u!1 &2075853213
 GameObject:
   m_ObjectHideFlags: 0
