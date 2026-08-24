@@ -115,6 +115,20 @@ namespace DefineEnum
         Count
     }
 
+    public enum ResultBGM
+    {
+        EgoOverboard_DeepCutVictory,
+        Fest_Zest_TentaclesVictory,
+        Inkopolis_Punch_SquidSistersVictory,
+        Learning_Curve_NormalDefeat,
+        Partys_Over_TentaclesDefeat,
+        Rinse_Repeat_NormalVictory,
+        Still_Swimmin_DeepCutDefeat,
+        Stomping_Kick_SquidSistersDefeat,
+
+        Count
+    }
+
     public enum  SFXName
     {
         Shtr_Shot_00,

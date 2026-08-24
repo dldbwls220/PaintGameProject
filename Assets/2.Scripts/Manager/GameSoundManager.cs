@@ -23,6 +23,7 @@ public class GameSoundManager : Singleton<GameSoundManager>
     Dictionary<Tentacles, AudioClip> _tentaclesBGMDoc;
     Dictionary<DeepCut, AudioClip> _deepCutBGMDoc;
     Dictionary<NowOrNever, AudioClip> _nowOrNeverBGMDoc;
+    Dictionary<ResultBGM, AudioClip> _resultBGMDoc;
 
     Dictionary<WeaponSFX3DName, AudioClip> _weaponSFX3DDoc;
 
@@ -34,6 +35,8 @@ public class GameSoundManager : Singleton<GameSoundManager>
     AudioSource _gamebgmPlayer;
     public AudioPlayerDESC _NowOrNeverDESC;
     AudioSource _nowOrNeverPlayer;
+    public AudioPlayerDESC _ResultBGMDESC;
+    AudioSource _resultPlayer;
 
     public override void Awake()
     {
@@ -55,6 +58,7 @@ public class GameSoundManager : Singleton<GameSoundManager>
         _tentaclesBGMDoc = new Dictionary<Tentacles, AudioClip>();
         _deepCutBGMDoc = new Dictionary<DeepCut, AudioClip>();
         _nowOrNeverBGMDoc = new Dictionary<NowOrNever, AudioClip>();
+        _resultBGMDoc = new Dictionary<ResultBGM, AudioClip>();
 
         _weaponSFX3DDoc = new Dictionary<WeaponSFX3DName, AudioClip>();
 
@@ -62,11 +66,13 @@ public class GameSoundManager : Singleton<GameSoundManager>
         _uibgmPlayer = gameObject.AddComponent<AudioSource>();
         _gamebgmPlayer = gameObject.AddComponent<AudioSource>();
         _nowOrNeverPlayer = gameObject.AddComponent<AudioSource>();
+        _resultPlayer = gameObject.GetComponent<AudioSource>();
 
         _SFXDESC = new AudioPlayerDESC(_sfxPlayer, 1, false, false);
         _UiBGMDESC = new AudioPlayerDESC(_uibgmPlayer, 1, false, false);
         _GameBGMDESC = new AudioPlayerDESC(_gamebgmPlayer, 0.7f, false, false);
         _NowOrNeverDESC = new AudioPlayerDESC(_nowOrNeverPlayer, 0.7f, false, false);
+        _ResultBGMDESC = new AudioPlayerDESC(_resultPlayer, 0.7f, false, false);
     }
 
     public void LoadAllSound()
@@ -200,6 +206,14 @@ public class GameSoundManager : Singleton<GameSoundManager>
             _nowOrNeverBGMDoc.Add(name, clip);
         }
 
+        count = (int)ResultBGM.Count;
+        for (int i = 0; i < count; i++)
+        {
+            ResultBGM name = (ResultBGM)i;
+            AudioClip clip = Resources.Load<AudioClip>(path + "Battle/Result/" + name);
+            _resultBGMDoc.Add(name, clip);
+        }
+
     }
 
     public void PlayerVoiceSFX(PlayerVoiceSFXName name, AudioSource source = null, float volume = 1f)
@@ -320,6 +334,17 @@ public class GameSoundManager : Singleton<GameSoundManager>
         }
         _nowOrNeverPlayer.clip = _nowOrNeverBGMDoc[name];
         _nowOrNeverPlayer.Play();
+    }
+
+    public void Result(ResultBGM name)
+    {
+        if(!_resultBGMDoc.ContainsKey(name))
+        {
+            Debug.LogFormat("{0} AudioClip이 없습니다", name);
+            return;
+        }
+        _resultPlayer.clip = _resultBGMDoc[name];
+        _resultPlayer.Play();
     }
 
     public void ProjectileSFX(ProjectileSFXName name, AudioSource source = null, float volume = 1f)

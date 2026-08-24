@@ -68,6 +68,8 @@ public class GameManager : NetworkBehaviour
 
     bool _wasResultStarted;
 
+    public MusicType musicType { get; private set; }
+
     public static GameManager _instance => _uniqueinstance;
 
     void Awake()
@@ -378,12 +380,12 @@ public class GameManager : NetworkBehaviour
 
     void SetGameBGM()
     {
-        MusicType type = Random.value < 0.5f
+        musicType = Random.value < 0.5f
             ? MusicType.Normal
             : (MusicType)(1 + Random.Range(0, (int)MusicType.Count - 1));
         int fesIdx = Random.Range(0, 2);
 
-        switch (type)
+        switch (musicType)
         {
             case MusicType.Normal:
                 _openingName = OpeningBGMName.Opening;

@@ -1,6 +1,7 @@
 using DefineEnum;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Rendering;
 
 public class ResultManager : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class ResultManager : MonoBehaviour
     [SerializeField] Camera _camera;
     [Header("Timeline")]
     [SerializeField] PlayableDirector _resultTimeline;
+
+    ResultBGM bgm;
+
     public float _teamRate { get; private set; }
     public float _enemyRate { get; private set; }
 
@@ -45,6 +49,7 @@ public class ResultManager : MonoBehaviour
         InitJudge(team, enemy, teamState, enemyState);
 
         _myState = teamState;
+        SetMusic();
     }
 
     public void OpenCameraNUI()
@@ -96,7 +101,32 @@ public class ResultManager : MonoBehaviour
 
     public void PlaySquidParticle()
     {
-        _resultUI.PlaySquidParticle(_myState);
+        _resultUI.PlaySquidParticle(_myState);        
+    }
+
+    void SetMusic()
+    {
+        switch (GameManager._instance.musicType)
+        {
+            case MusicType.Normal:
+                bgm = _myState == ResultState.Win ? ResultBGM.Rinse_Repeat_NormalVictory : ResultBGM.Learning_Curve_NormalDefeat;
+                break;
+            case MusicType.SquidSisters:
+                bgm = _myState == ResultState.Win ? ResultBGM.Inkopolis_Punch_SquidSistersVictory : ResultBGM.Stomping_Kick_SquidSistersDefeat;
+                break;
+            case MusicType.Tentacles:
+                bgm = _myState == ResultState.Win ? ResultBGM.Fest_Zest_TentaclesVictory : ResultBGM.Partys_Over_TentaclesDefeat;
+                break;
+            case MusicType.DeepCut:
+                bgm = _myState == ResultState.Win ? ResultBGM.EgoOverboard_DeepCutVictory : ResultBGM.Still_Swimmin_DeepCutDefeat;
+                break;
+        }
+
+    }
+
+    public void PlayResultBGM()
+    {
+        GameSoundManager.instance.Result(bgm);
     }
 
     public void StartTimeline()

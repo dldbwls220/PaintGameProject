@@ -424084,7 +424084,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _playerPrefab: {fileID: 4471312381918550399, guid: 98b99b743a8647d43a00c05d6d68afbe, type: 3}
   _gridManager: {fileID: 2067567333}
-  _gameDuration: 20
+  _gameDuration: 180
   _respawnTime: 9
   _teamColors1:
   - {r: 0.82745105, g: 0.9960785, b: 0.24313727, a: 1}
@@ -424118,6 +424118,8 @@ MonoBehaviour:
   __gameEnd:
     _value: 0
   __isJudging:
+    _value: 0
+  __isResultStarted:
     _value: 0
 --- !u!114 &2067567331
 MonoBehaviour:
