@@ -31342,10 +31342,13 @@ MonoBehaviour:
   - {fileID: 1299790022}
   _frontSpeed: 30
   _backSpeed: 30
+  _scoreBar: {fileID: 2476551147836990503, guid: 036359e509681ed4abfafda4e96dba6f, type: 3}
   _teamScoreBoardImg: {fileID: 595537271}
   _enemyScoreBoardImg: {fileID: 1574085269}
   _winOrLoseTeam: {fileID: 956026598}
   _winOrLoseEnemy: {fileID: 1998853238}
+  _teamScoreContent: {fileID: 681540738}
+  _enemyScoreContent: {fileID: 276588564}
   _FXRoot: {fileID: 2129339258}
   _cartoonSparkOutObj: {fileID: 1668460008}
   _winSquidObj: {fileID: 770434982}

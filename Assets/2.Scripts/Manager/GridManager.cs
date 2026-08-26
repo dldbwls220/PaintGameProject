@@ -50,10 +50,56 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public void CheckPaintableColor()
+    //public void CheckPaintableColor()
+    //{
+    //    if (_checkRoutine != null) return;
+    //    _checkRoutine = StartCoroutine(CheckPaintableColorRoutine());
+    //}
+
+    public bool PaintNodesInRadius(Vector3 point, float radius, Color color)
     {
-        if (_checkRoutine != null) return;
-        _checkRoutine = StartCoroutine(CheckPaintableColorRoutine());
+        if (_grid == null) return false;
+
+        bool isColorChanged = false;
+
+        Vector3 worldBottomLeft = transform.position
+            - Vector3.right * _gridWorldSize.x / 2
+            - Vector3.forward * _gridWorldSize.y / 2;
+
+        float percentX = Mathf.Clamp01((point.x - worldBottomLeft.x) / _gridWorldSize.x);
+        float percentY = Mathf.Clamp01((point.z - worldBottomLeft.z) / _gridWorldSize.y);
+
+        int centerX = Mathf.RoundToInt((_gridSizeX - 1) * percentX);
+        int centerY = Mathf.RoundToInt((_gridSizeY - 1) * percentY);
+
+        int cellRadius = Mathf.CeilToInt(radius / _nodeDiameter);
+        float sqrRadius = radius * radius;
+
+        int xMin = Mathf.Max(0, centerX - cellRadius);
+        int xMax = Mathf.Min(_gridSizeX - 1, centerX + cellRadius);
+        int yMin = Mathf.Max(0, centerY - cellRadius);
+        int yMax = Mathf.Min(_gridSizeY - 1, centerY + cellRadius);
+
+        for (int x = xMin; x <= xMax; x++)
+        {
+            for (int y = yMin; y <= yMax; y++)
+            {
+                Node node = _grid[x, y];
+
+                float dx = node._worldPosition.x - point.x;
+                float dz = node._worldPosition.z - point.z;
+
+                if (dx * dx + dz * dz <= sqrRadius)
+                {
+                    if (node._color != color)
+                        isColorChanged = true;
+
+                    node._color = color;
+                }
+            }
+        }
+
+        return isColorChanged;
     }
 
     public Dictionary<Color, float> GetColorRate()
@@ -104,10 +150,10 @@ public class GridManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(_debugCheckColorKey))
-        {
-            CheckPaintableColor();
-        }
+        //if (Input.GetKeyDown(_debugCheckColorKey))
+        //{
+        //    CheckPaintableColor();
+        //}
     }
 
     private void OnDrawGizmos()

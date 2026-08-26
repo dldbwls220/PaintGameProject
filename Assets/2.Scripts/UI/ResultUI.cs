@@ -4,6 +4,8 @@ using DefineEnum;
 using DG.Tweening;
 using Coffee.UIExtensions;
 using TMPro;
+using DefineStructure;
+using System.Collections.Generic;
 
 public class ResultUI : MonoBehaviour
 {
@@ -30,10 +32,13 @@ public class ResultUI : MonoBehaviour
     [SerializeField] float _backSpeed = 30f;
 
     [Header("ScoreBoard")]
+    [SerializeField] GameObject _scoreBar;
     [SerializeField] Image _teamScoreBoardImg;
     [SerializeField] Image _enemyScoreBoardImg;
     [SerializeField] TextMeshProUGUI _winOrLoseTeam;
     [SerializeField] TextMeshProUGUI _winOrLoseEnemy;
+    [SerializeField] GameObject _teamScoreContent;
+    [SerializeField] GameObject _enemyScoreContent;
 
     [Header("UI CartoonSpark FX")]
     [SerializeField] RectTransform _FXRoot;
@@ -232,6 +237,31 @@ public class ResultUI : MonoBehaviour
                 _winOrLoseTeam.text = "DEFEAT";
                 _winOrLoseEnemy.text = "VICTORY";
                 break;
+        }
+    }
+
+    public void InstantiateScoreBar(List<PlayerData> teamData, List<PlayerData> enemyData)
+    {
+        if (teamData.Count > 0)
+        {
+            foreach (PlayerData playerData in teamData)
+            {
+                GameObject go = Instantiate(_scoreBar, _teamScoreContent.transform);
+                ScoreBarUI ui = go.GetComponent<ScoreBarUI>();
+
+                ui.InitScoreBar(playerData._kills, playerData._death, playerData._score, playerData.DisplayName, playerData._teamColor);
+            }
+        }
+       
+        if (enemyData.Count > 0)
+        {
+            foreach (PlayerData playerData in enemyData)
+            {
+                GameObject go = Instantiate(_scoreBar, _enemyScoreContent.transform);
+                ScoreBarUI ui = go.GetComponent<ScoreBarUI>();
+
+                ui.InitScoreBar(playerData._kills, playerData._death, playerData._score, playerData.DisplayName, playerData._teamColor);
+            }
         }
     }
 

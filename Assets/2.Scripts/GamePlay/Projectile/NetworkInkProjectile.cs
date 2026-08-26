@@ -129,12 +129,6 @@ public class NetworkInkProjectile : NetworkBehaviour
                 else
                 {
                     OnHit(lHit.Point, lHit.Normal, false, lHit.GameObject.layer);
-
-                    //WorldInkZoneReceiver receiver = lHit.Collider.GetComponent<WorldInkZoneReceiver>();
-                    //if (receiver != null)
-                    //{
-                    //    CheckColorNUpdateSocore(receiver, lHit.Point);
-                    //}
                 }
             }
         }
@@ -205,18 +199,6 @@ public class NetworkInkProjectile : NetworkBehaviour
             RPC_OnEnemyHit(point, normal, _inkColor, data.PaintRadius);
     }
 
-    //void CheckColorNUpdateSocore(WorldInkZoneReceiver receiver, Vector3 point)
-    //{
-    //    Color color = receiver.CheckPaintColor(point);
-
-    //    float distToMyTeam = Mathf.Abs(color.r - _inkColor.r) + Mathf.Abs(color.g - _inkColor.g) + Mathf.Abs(color.b - _inkColor.b);
-
-    //    if (distToMyTeam < 0.5f)
-    //    {
-    //        GameManager._instance.UpdateScore(_paintScore);
-    //    }
-    //}
-
     void CheckPlayerAround(Vector3 position, Vector3 dir)
     {
         if (!HasStateAuthority) return;
@@ -249,7 +231,13 @@ public class NetworkInkProjectile : NetworkBehaviour
         // Paintable 콜라이더가 인접해 있을 수 있어(PaintAuto의 OverlapSphere 폴백),
         // 여기서 걸러내지 않으면 엉뚱한 인접 벽이 대신 칠해진다.
         if (layer == LayerMask.NameToLayer("Paintable"))
+        {
             WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+            if (GameManager._instance.PaintRadiusNode(point, paintRadius, color))
+            {
+                GameManager._instance.UpdateScore(_paintScore);
+            }
+        }
 
         GameObject fxPrefab = _splashFXPrefab;
         if (fxPrefab != null)

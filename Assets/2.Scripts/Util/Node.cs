@@ -17,8 +17,6 @@ public class Node
         set => _gridIndex.y = value;
     }
 
-    Color _prevColor = Color.white;
-
     public Node(Vector3 worldPosition, int gridX, int grideY)
     {
         _worldPosition = worldPosition + Vector3.up * 20;

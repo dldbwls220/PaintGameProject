@@ -1,4 +1,6 @@
 using DefineEnum;
+using DefineStructure;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
@@ -51,6 +53,11 @@ public class ResultManager : MonoBehaviour
 
         _myState = teamState;
         SetMusic();
+    }
+
+    public void InitScoreBar(List<PlayerData> teamdata, List<PlayerData> enemydata)
+    {
+        _resultUI.InstantiateScoreBar(teamdata, enemydata);
     }
 
     public void OpenCameraNUI()

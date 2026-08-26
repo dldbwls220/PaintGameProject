@@ -86,13 +86,11 @@ public class GameManager : NetworkBehaviour
 
         CreatGrid();
         _playableDirector.stopped += OnIntroFinished;
-        _gridManager.OnCheckComplete += OnGridCheckComplete;
     }
 
     private void OnDestroy()
     {
         _playableDirector.stopped -= OnIntroFinished;
-        _gridManager.OnCheckComplete -= OnGridCheckComplete;
     }
 
     public override void Spawned()
@@ -182,7 +180,6 @@ public class GameManager : NetworkBehaviour
             _uiManager.StartFinishAnim();
             _uiManager.CloseUI();
             StartCoroutine(LoadResultSceneRoutine());
-            _gridManager.CheckPaintableColor();
         }
 
         if (_isResultStarted && !_wasResultStarted)
@@ -319,7 +316,7 @@ public class GameManager : NetworkBehaviour
             _introFinished = true;
     }
 
-    void OnGridCheckComplete()
+    void OnResultSceneLoadComplete()
     {
         if(ResultManager._instance == null) return;
         if (!PlayerData.TryGet(Runner.LocalPlayer, out var data)) return;
@@ -338,11 +335,9 @@ public class GameManager : NetworkBehaviour
         ResultState enemyState = teamRate > enemyRate ? ResultState.Loose : ResultState.Win;
 
         ResultManager._instance.InitResultResources(teamColor, enemyColor, teamRate, enemyRate , teamState, enemyState);
+        SortPlayerScore();
 
-        if (HasStateAuthority)
-        {
-            _isResultStarted = true;
-        }
+
 
         //_uiManager.EndFinishAnim();
         //ResultManager._instance.StartTimeline();
@@ -427,10 +422,21 @@ public class GameManager : NetworkBehaviour
         if (ResultManager._instance != null)
         {
             ResultManager._instance.InitResultScene();
+
+            yield return new WaitForSeconds(2);
+
+            OnResultSceneLoadComplete();
         }
         else
         {
             Debug.LogError("ResultScene을 로드했지만 ResultManager 인스턴스를 찾지 못했습니다.");
+        }
+
+        yield return new WaitForSeconds(8f);
+
+        if (HasStateAuthority)
+        {
+            _isResultStarted = true;
         }
     }
 
@@ -440,14 +446,45 @@ public class GameManager : NetworkBehaviour
             _gridManager.CreateGride(WorldInkZoneManager.instance.XZWorldSize());
     }
 
+    void SortPlayerScore()
+    {
+        if (!PlayerData.TryGet(Runner.LocalPlayer, out var localData)) return;
+
+        int myTeamIndex = localData._teamIndex;
+
+        List<PlayerData> teamList = new List<PlayerData>();
+        List<PlayerData> enemyList = new List<PlayerData>();
+
+        foreach (var kv in PlayerData)
+        {
+            PlayerData data = kv.Value;
+
+            if (data._teamIndex == myTeamIndex)
+                teamList.Add(data);
+            else
+                enemyList.Add(data);
+        }
+
+        teamList.Sort((a, b) => b._score.CompareTo(a._score));
+        enemyList.Sort((a, b) => b._score.CompareTo(a._score));
+
+        ResultManager._instance.InitScoreBar(teamList, enemyList);
+    }
+
     Color GetTeamColor(int teamIndex) => teamIndex == 1 ? _teamColors1[_inkIdx] : _teamColors2[_inkIdx];
     Color GetEnemyColor(int teamIndex) => teamIndex == 1 ? _teamColors2[_inkIdx] : _teamColors1[_inkIdx];
+
+    public bool PaintRadiusNode(Vector3 point, float radius, Color color)
+    {
+        return _gridManager.PaintNodesInRadius(point, radius, color);
+    }
 
     public void UpdateScore(int score)
     {
         if (!PlayerData.TryGet(Runner.LocalPlayer, out var data)) return;
 
         data._score += score;
+        PlayerData.Set(Runner.LocalPlayer, data);
         _uiManager.SetScore(data._score);
     }
 
