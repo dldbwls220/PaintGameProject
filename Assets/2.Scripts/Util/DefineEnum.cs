@@ -39,6 +39,20 @@ namespace DefineEnum
         Bottom
     }
 
+    public enum EmoteState
+    {
+        Idle,
+        WaveHand,
+        Chicken,
+        Crouching,
+        Bowing,
+        DanceNPose,
+
+        Count,
+
+        Loose = 99
+    }
+
     #endregion[잉클링]
 
     #region[소리]
@@ -387,7 +401,7 @@ namespace DefineEnum
     public enum ResultState
     {
         Win,
-        Loose
+        Lose
     }
 
     public enum JudgeNJudgeJrFaceState

@@ -4,8 +4,10 @@ Shader "UI/Scroll"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+        _TilingX ("Tiling X", Float) = 1
         _TilingY ("Tiling Y", Float) = 1
-        _Speed ("Scroll Speed", Float) = 1
+        _SpeedX ("Scroll Speed X", Float) = 0
+        _Speed ("Scroll Speed Y", Float) = 1
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -79,7 +81,9 @@ Shader "UI/Scroll"
             fixed4 _Color;
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;
+            float _TilingX;
             float _TilingY;
+            float _SpeedX;
             float _Speed;
 
             v2f vert(appdata_t v)
@@ -100,9 +104,10 @@ Shader "UI/Scroll"
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                // 아래에서 위로 흐르도록 시간에 따라 UV.y를 계속 증가시킨다.
+                // 시간에 따라 UV.x/UV.y를 계속 증가시켜 가로/세로로 흐르게 한다.
                 // 텍스처 Wrap Mode가 Repeat이어야 이음매 없이 무한 반복된다.
                 float2 uv = IN.texcoord;
+                uv.x = uv.x * _TilingX + _Time.y * _SpeedX;
                 uv.y = uv.y * _TilingY + _Time.y * _Speed;
 
                 half4 color = tex2D(_MainTex, uv) + _TextureSampleAdd;

@@ -331,8 +331,8 @@ public class GameManager : NetworkBehaviour
         float enemyRate = GetCloseColorRate(_gridManager.GetColorRate(), enemyColor);
 
 
-        ResultState teamState = teamRate > enemyRate ? ResultState.Win : ResultState.Loose;
-        ResultState enemyState = teamRate > enemyRate ? ResultState.Loose : ResultState.Win;
+        ResultState teamState = teamRate > enemyRate ? ResultState.Win : ResultState.Lose;
+        ResultState enemyState = teamRate > enemyRate ? ResultState.Lose : ResultState.Win;
 
         ResultManager._instance.InitResultResources(teamColor, enemyColor, teamRate, enemyRate , teamState, enemyState);
         SortPlayerScore();
@@ -423,7 +423,7 @@ public class GameManager : NetworkBehaviour
         {
             ResultManager._instance.InitResultScene();
 
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(3);
 
             OnResultSceneLoadComplete();
         }

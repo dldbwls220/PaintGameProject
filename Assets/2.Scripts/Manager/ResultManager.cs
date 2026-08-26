@@ -85,15 +85,11 @@ public class ResultManager : MonoBehaviour
         _JudgeJr.InitJudge(enemy, enemyState);
     }
 
+    #region[Timeline]
     public void JudgeNJudgeJrAppear()
     {
         _characterAnimator.SetTrigger("JudgeGoUp");
         _uiAnimator.SetTrigger("ResultUIGoUp");
-    }
-
-    public void JudgeNJudgeJrLeft()
-    {
-        _characterAnimator.SetTrigger("JudgeGoSide");
     }
 
     public void PlayJudgeResultAnim()
@@ -106,11 +102,42 @@ public class ResultManager : MonoBehaviour
         GameSoundManager.instance.PlayerSFX(PlayerSFXName.Pour00);
         GameSoundManager.instance.PlayerSFX(PlayerSFXName.Pour10);
     }
-
     public void PlaySquidParticle()
     {
-        _resultUI.PlaySquidParticle(_myState);        
+        _resultUI.PlaySquidParticle(_myState);
     }
+    public void PlayResultBGM()
+    {
+        GameSoundManager.instance.Result(bgm);
+    }
+
+    public void JudgeNJudgeJrLeft()
+    {
+        _characterAnimator.SetTrigger("JudgeGoSide");
+    }
+
+    public void CharacterAppear()
+    {
+        _characterAnimator.SetTrigger("CharacterAppear");
+        _uiAnimator.SetTrigger("UserNameUIAppear");
+    }
+   
+    public void OpenResultBG()
+    {
+        switch (_myState)
+        {
+            case ResultState.Win:
+                _resultUI.OpenWinBG();
+                break;
+            case ResultState.Lose:
+                _resultUI.OpenLoseBG();
+                break;
+        }
+    }
+
+    #endregion[Timeline]
+
+
 
     void SetMusic()
     {
@@ -132,10 +159,7 @@ public class ResultManager : MonoBehaviour
 
     }
 
-    public void PlayResultBGM()
-    {
-        GameSoundManager.instance.Result(bgm);
-    }
+   
 
     public void StartTimeline()
     {

@@ -56,6 +56,10 @@ public class ResultUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI _goodText;
     [SerializeField] TextMeshProUGUI _badText;
 
+    [Header("Result BG")]
+    [SerializeField] GameObject _winBG;
+    [SerializeField] GameObject _loseBG;
+
     bool _wasJudgingStart;
     bool _wasJudgingEnd;
 
@@ -89,6 +93,9 @@ public class ResultUI : MonoBehaviour
 
     public void InitUI(Color team, Color enemy)
     {
+        _winBG.SetActive(false);
+        _loseBG.SetActive(false);
+
         _cartoonSparkOut = _cartoonSparkOutObj.GetComponent<UIParticle>();
         _cartoonFill = _cartoonSparkOutObj.GetComponent<RectTransform>();
 
@@ -233,7 +240,7 @@ public class ResultUI : MonoBehaviour
                 _winOrLoseTeam.text = "VICTORY";
                 _winOrLoseEnemy.text = "DEFEAT";
                 break;
-            case ResultState.Loose:
+            case ResultState.Lose:
                 _winOrLoseTeam.text = "DEFEAT";
                 _winOrLoseEnemy.text = "VICTORY";
                 break;
@@ -272,10 +279,20 @@ public class ResultUI : MonoBehaviour
             case ResultState.Win:
                 _winSquid.Play();
                 break;
-            case ResultState.Loose:
+            case ResultState.Lose:
                 _loseSquid.Play();
                 break;
         }
+    }
+
+    public void OpenWinBG()
+    {
+        _winBG.SetActive(true);
+    }
+
+    public void OpenLoseBG()
+    {
+        _loseBG.SetActive(true);
     }
 
     public void OpenWnd()
