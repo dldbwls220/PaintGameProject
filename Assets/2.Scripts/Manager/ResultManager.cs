@@ -16,6 +16,7 @@ public class ResultManager : MonoBehaviour
     [Header("Animator")]
     [SerializeField] Animator _characterAnimator;
     [SerializeField] Animator _uiAnimator;
+    [SerializeField] Animator[] _emoteAnims;
     [Header("JudgeNJudgeJr")]
     [SerializeField] JudgeObject _Judge;
     [SerializeField] JudgeObject _JudgeJr;
@@ -38,6 +39,8 @@ public class ResultManager : MonoBehaviour
 
     ResultState _myState;
 
+    HashSet<EmoteState> _emotes;
+
     private void Awake()
     {
         _uniqueinstance = this;
@@ -47,6 +50,7 @@ public class ResultManager : MonoBehaviour
     {
         _camera.gameObject.SetActive(false);
         _resultUI.CloseWnd();
+        _emotes = new HashSet<EmoteState>();
     }
 
     public void InitResultResources(Color team, Color enemy, float teamRate, float enemyRate, ResultState teamState, ResultState enemyState)
@@ -55,6 +59,7 @@ public class ResultManager : MonoBehaviour
         GetTargetValueRate(teamRate, enemyRate);
         InitJudge(team, enemy, teamState, enemyState);
         _resultUI.InitSocreBoard(team, enemy, teamState);
+        ChooseEmote();
 
         _myState = teamState;
         SetMusic();
@@ -115,6 +120,15 @@ public class ResultManager : MonoBehaviour
         _JudgeJr.InitJudge(enemy, enemyState);
     }
 
+    void ChooseEmote()
+    {
+        while (_emotes.Count < 4)
+        {
+            _emotes.Add((EmoteState)Random.Range(0,(int)EmoteState.Count));
+        }
+    }
+
+
     #region[Timeline]
     public void JudgeNJudgeJrAppear()
     {
@@ -146,6 +160,15 @@ public class ResultManager : MonoBehaviour
         _characterAnimator.SetTrigger("JudgeGoSide");
     }
 
+    public void PlayEmotes()
+    {
+        int idx = 0;
+        foreach (var emote in _emotes)
+        {
+            _emoteAnims[idx++].SetInteger("EmoteState", (int)emote);
+        }
+    }
+
     public void CharacterAppear()
     {
         _characterAnimator.SetTrigger("CharacterAppear");
@@ -163,6 +186,17 @@ public class ResultManager : MonoBehaviour
                 _resultUI.OpenLoseBG();
                 break;
         }
+    }
+
+    public void CloseResultUI()
+    {
+        _characterAnimator.SetTrigger("MyCharacterZoomIn");
+        _uiAnimator.SetTrigger("ResultSliderGoLeft");
+    }
+
+    public void OpenScoreBoard()
+    {
+        _uiAnimator.SetTrigger("OpenScoreWnd");
     }
 
     #endregion[Timeline]

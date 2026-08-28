@@ -59,6 +59,11 @@ public class ResultUI : MonoBehaviour
     [Header("Result BG")]
     [SerializeField] GameObject _winBG;
     [SerializeField] GameObject _loseBG;
+    [SerializeField] float _winBGAlpha = 0.3f;
+    [SerializeField] float _fadeInSpeed = 2f;
+    [SerializeField] Image _winStripe;
+    bool _isWinBGOpen;
+    bool _wasWinBGOpen;
 
     bool _wasJudgingStart;
     bool _wasJudgingEnd;
@@ -84,6 +89,20 @@ public class ResultUI : MonoBehaviour
         {
             FinalSliderValue();
         }
+
+        if (_isWinBGOpen && !_wasWinBGOpen)
+        {
+            if (!_wasWinBGOpen)
+            {
+                float alpha = _winStripe.color.a;
+
+                alpha = Mathf.MoveTowards(_winStripe.color.a, _winBGAlpha, _fadeInSpeed * Time.deltaTime);
+
+                _winStripe.color = new Color(_winStripe.color.r, _winStripe.color.g, _winStripe.color.b, alpha);
+
+                if(_winStripe.color.a == _winBGAlpha) _wasWinBGOpen = true;
+            }
+        }
     }
 
     void LateUpdate()
@@ -106,6 +125,7 @@ public class ResultUI : MonoBehaviour
         SetWaveColor(team, enemy);
         _badText.color = enemy;
         _goodText.color = team;
+        _winStripe.color = new Color(team.r, team.g, team.b, 0);
     }
 
     void SetParticleColor(Color team, Color enemy)
@@ -288,6 +308,8 @@ public class ResultUI : MonoBehaviour
     public void OpenWinBG()
     {
         _winBG.SetActive(true);
+
+        _isWinBGOpen = true;
     }
 
     public void OpenLoseBG()

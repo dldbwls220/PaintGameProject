@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8190309005901077484
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
+  m_Name: Signal Emitter
+  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalEmitter
+  m_Time: 17.75
+  m_Retroactive: 0
+  m_EmitOnce: 0
+  m_Asset: {fileID: 11400000, guid: bdc9d5d5eb52348429b74a45d4e77ffd, type: 2}
 --- !u!114 &-1205825785612494341
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -68,6 +84,8 @@ MonoBehaviour:
     - {fileID: 7725455801845788010}
     - {fileID: 6839019799044230564}
     - {fileID: 8581148663559445155}
+    - {fileID: 4612645443202961147}
+    - {fileID: -8190309005901077484}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +149,7 @@ MonoBehaviour:
     m_Start: 0
     m_ClipIn: 0
     m_Asset: {fileID: -417649780895381491}
-    m_Duration: 10.016666666666667
+    m_Duration: 18.05
     m_TimeScale: 1
     m_ParentTrack: {fileID: 894066279278761475}
     m_EaseInDuration: 0
@@ -198,6 +216,22 @@ MonoBehaviour:
     m_DisplayName: Result Camera
   m_Markers:
     m_Objects: []
+--- !u!114 &4612645443202961147
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
+  m_Name: Signal Emitter
+  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalEmitter
+  m_Time: 17.216666666666665
+  m_Retroactive: 0
+  m_EmitOnce: 0
+  m_Asset: {fileID: 11400000, guid: e5be4d671a40e224797297b8272c9919, type: 2}
 --- !u!114 &6839019799044230564
 MonoBehaviour:
   m_ObjectHideFlags: 1
