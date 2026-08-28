@@ -133,6 +133,9 @@ public class GameManager : NetworkBehaviour
         StartIntroIfNeeded();
         FadeOutBGM();
 
+        if (PlayerData.TryGet(Runner.LocalPlayer, out var d))
+            _uiManager.SetScore(d._score);
+
         try
         {
             _uiManager.AssignPlayerStatus(PlayerData, Runner.LocalPlayer);
@@ -229,6 +232,7 @@ public class GameManager : NetworkBehaviour
 
         var playerData = new PlayerData
         {
+            _self = player,
             _teamColor = GetTeamColor(teamIndex),
             _enemyColor = GetEnemyColor(teamIndex),
             _statisticPostion = int.MaxValue,
@@ -468,7 +472,7 @@ public class GameManager : NetworkBehaviour
         teamList.Sort((a, b) => b._score.CompareTo(a._score));
         enemyList.Sort((a, b) => b._score.CompareTo(a._score));
 
-        ResultManager._instance.InitScoreBar(teamList, enemyList);
+        ResultManager._instance.GetPlayerData(teamList, enemyList, Runner.LocalPlayer);
     }
 
     Color GetTeamColor(int teamIndex) => teamIndex == 1 ? _teamColors1[_inkIdx] : _teamColors2[_inkIdx];
@@ -477,15 +481,6 @@ public class GameManager : NetworkBehaviour
     public bool PaintRadiusNode(Vector3 point, float radius, Color color)
     {
         return _gridManager.PaintNodesInRadius(point, radius, color);
-    }
-
-    public void UpdateScore(int score)
-    {
-        if (!PlayerData.TryGet(Runner.LocalPlayer, out var data)) return;
-
-        data._score += score;
-        PlayerData.Set(Runner.LocalPlayer, data);
-        _uiManager.SetScore(data._score);
     }
 
     public void CloseStartUI()
@@ -497,6 +492,15 @@ public class GameManager : NetworkBehaviour
     public void IntroBGMEnd()
     {
         _isIntroBGMEnd = true;
+    }
+
+    public void AddScore(PlayerRef shooter, int score)
+    {
+        if (!HasStateAuthority) return;
+        if (!PlayerData.TryGet(shooter, out var data)) return;
+
+        data._score += score;
+        PlayerData.Set(shooter, data);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

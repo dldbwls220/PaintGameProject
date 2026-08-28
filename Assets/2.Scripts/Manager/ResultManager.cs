@@ -1,5 +1,6 @@
 using DefineEnum;
 using DefineStructure;
+using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -22,7 +23,11 @@ public class ResultManager : MonoBehaviour
     [SerializeField] Camera _camera;
     [Header("Timeline")]
     [SerializeField] PlayableDirector _resultTimeline;
+    [Header("Set Cloth")]
+    [SerializeField] CharacterClothChanger[] _otherPlayer;
+    [SerializeField] CharacterClothChanger _mePlayer;
 
+    PlayerRef _localPlayer;
     ResultBGM bgm;
 
     public float _teamRate { get; private set; }
@@ -55,15 +60,40 @@ public class ResultManager : MonoBehaviour
         SetMusic();
     }
 
-    public void InitScoreBar(List<PlayerData> teamdata, List<PlayerData> enemydata)
+    public void GetPlayerData(List<PlayerData> teamdata, List<PlayerData> enemydata, PlayerRef player)
     {
-        _resultUI.InstantiateScoreBar(teamdata, enemydata);
+        _localPlayer = player;
+        InstantiateScoreBar(teamdata, enemydata);
+        SetClothes(teamdata);
     }
+
 
     public void OpenCameraNUI()
     {
         _camera.gameObject.SetActive(true);
         _resultUI.OpenWnd();
+    }
+
+    void InstantiateScoreBar(List<PlayerData> teamdata, List<PlayerData> enemydata)
+    {
+        _resultUI.InstantiateScoreBar(teamdata, enemydata);
+    }
+
+    void SetClothes(List<PlayerData> teamdata)
+    {
+        int idx = 0;
+
+        foreach (PlayerData playerdata in teamdata)
+        {
+            if (playerdata._self == _localPlayer)
+            {
+                _mePlayer.SetCustomization(playerdata._custom);
+            }
+            else
+            {
+                _otherPlayer[idx].SetCustomization(playerdata._custom);
+            }
+        }
     }
 
     void GetColor(Color team, Color enemy)

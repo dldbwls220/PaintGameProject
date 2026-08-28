@@ -82,6 +82,7 @@ namespace DefineStructure
         public NetworkString<_32> _nickName { get; set; }
         public Color _teamColor;
         public Color _enemyColor;
+        public PlayerRef _self;
         public int _teamIndex;
         public int _kills;
         public int _death;

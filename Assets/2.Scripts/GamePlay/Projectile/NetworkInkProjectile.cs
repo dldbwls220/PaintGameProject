@@ -233,9 +233,14 @@ public class NetworkInkProjectile : NetworkBehaviour
         if (layer == LayerMask.NameToLayer("Paintable"))
         {
             WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
-            if (GameManager._instance.PaintRadiusNode(point, paintRadius, color))
+
+            // 그리드 페인트는 모든 피어가 로컬로 수행(결과 씬 색상 비율 계산에 사용).
+            // 점수 가산은 호스트에서만, 실제 발사자(Object.InputAuthority) 기준으로 처리한다.
+            bool paintedNew = GameManager._instance.PaintRadiusNode(point, paintRadius, color);
+
+            if (HasStateAuthority && paintedNew)
             {
-                GameManager._instance.UpdateScore(_paintScore);
+                GameManager._instance.AddScore(Object.InputAuthority, _paintScore);
             }
         }
 
