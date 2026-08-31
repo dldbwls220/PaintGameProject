@@ -222,6 +222,8 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _isAlive = _health._isAlive;
 
+        _hitbox.HitboxActive = _isAlive;
+
         CheckPaintColor();
 
         _inktankOffset = _weaponManager.UpdateInktankOffset();
@@ -424,7 +426,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _hitbox.Offset = isInklingForm ? _inklingHitboxOffset : _squidHitboxOffset;
 
         // 죽은 상태에서는 히트박스를 꺼서 랙 보정 쿼리에 잡히지 않도록 한다 (HitboxActive는 enabled 토글과 달리 안전)
-        _hitbox.HitboxActive = _health._isAlive;
+        
 
         var renderstate = new InklingRenderController.RenderState
         {

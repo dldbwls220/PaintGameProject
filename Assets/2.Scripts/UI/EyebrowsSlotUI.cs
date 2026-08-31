@@ -58,6 +58,11 @@ public class EyebrowsSlotUI : MonoBehaviour
     public void SetEyebrows()
     {
         PlayerCustomizeManager.instance.SetEyebrowa(_eyebrowaState);
+
+        if (CustomizeVisualManager._instance != null)
+        {
+            CustomizeVisualManager._instance.UpdateClothing();
+        }
     }
 
     public void OnMouseEyebrow()

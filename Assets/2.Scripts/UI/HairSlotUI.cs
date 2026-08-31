@@ -58,6 +58,11 @@ public class HairSlotUI : MonoBehaviour
     public void SetHair()
     {
         PlayerCustomizeManager.instance.SetHair(_hairState);
+
+        if (CustomizeVisualManager._instance != null)
+        {
+            CustomizeVisualManager._instance.UpdateClothing();
+        }
     }
 
     public void OnMouseHair()

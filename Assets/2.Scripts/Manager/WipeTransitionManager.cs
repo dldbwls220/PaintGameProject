@@ -235,6 +235,15 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
                 Debug.LogError("CustomizationScene을 로드했지만 CustomizationUI 인스턴스를 찾지 못했습니다.");
             }
 
+            if (CustomizeVisualManager._instance != null)
+            {
+                CustomizeVisualManager._instance.LoadCustomizeCharacter();
+            }
+            else
+            {
+                Debug.LogError("CustomizationScene을 로드했지만 CustomizeVisualManager 인스턴스를 찾지 못했습니다.");
+            }
+
             CloseLoadingWnd();
             EndWipeAnim();
         }
@@ -244,6 +253,7 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
             yield return new WaitForSeconds(_anim.clip.length);
             _isCustomizeSceneLoading = false;
             CustomizationUI._instance.transform.parent.gameObject.SetActive(true);
+            CustomizeVisualManager._instance.OpenObject();
 
             EndWipeAnim();
         }
@@ -266,6 +276,11 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         if (_isCustomizeSceneLoaded && CustomizationUI._instance != null)
         {
             CustomizationUI._instance.transform.parent.gameObject.SetActive(false);
+        }
+
+        if (_isCustomizeSceneLoaded && CustomizeVisualManager._instance != null)
+        {
+            CustomizeVisualManager._instance.CloseObject();
         }
 
         EndWipeAnim();

@@ -8,6 +8,8 @@ public class ResourcePoolManager : Singleton<ResourcePoolManager>
 
     public void AllLoadResources()
     {
+        if (_allPoolDatas != null) return;
+
         _allPoolDatas = new Dictionary<PoolDataType, Dictionary<string, object>>();
         LoadClothGear();
         LoadHeadGear();

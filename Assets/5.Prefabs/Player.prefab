@@ -10710,6 +10710,7 @@ MonoBehaviour:
   _swimAccel: 15
   _respawningTime: 1
   _turnDuration: 0.8
+  _respawnRevealDelay: 0.15
   _multiAC: {fileID: 26589746309510797}
   _rigBuilder: {fileID: 1875132854502961994}
   _mouseTarget: {fileID: 4842202179997333524, guid: 71d2575a5b3f4ca449f06b181a20367a, type: 3}

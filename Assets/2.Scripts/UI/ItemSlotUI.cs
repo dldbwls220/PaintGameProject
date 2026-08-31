@@ -94,6 +94,11 @@ public class ItemSlotUI : MonoBehaviour
         {
             PlayerCustomizeManager.instance.SetShoe(_shoeState);
         }
+
+        if (CustomizeVisualManager._instance != null)
+        {
+            CustomizeVisualManager._instance.UpdateClothing();
+        }
     }
 
     public void PlayAnimation()

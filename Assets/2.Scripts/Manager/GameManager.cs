@@ -170,7 +170,6 @@ public class GameManager : NetworkBehaviour
             if (GameSoundManager.instance._GameBGMDESC._volum == 0)
             {
                 GameSoundManager.instance._GameBGMDESC._stop();
-                GameSoundManager.instance._GameBGMDESC._volum = 0.7f;
             }
 
             GameSoundManager.instance._NowOrNeverDESC._unpause();
@@ -428,6 +427,7 @@ public class GameManager : NetworkBehaviour
         }
 
         GameSoundManager.instance._GameBGMDESC._pause();
+        GameSoundManager.instance._GameBGMDESC._volum = 0.7f;
         GameSoundManager.instance._NowOrNeverDESC._pause();
     }
 

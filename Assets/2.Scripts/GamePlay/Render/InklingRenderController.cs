@@ -138,6 +138,17 @@ public class InklingRenderController : MonoBehaviour
 
     public void UpdateRender(in RenderState s)
     {
+        // 결과 연출이 시작되면 인게임 캐릭터는 완전히 숨긴다.
+        // 여기서 return하지 않으면 UpdateFormRender가 폼 상태에 맞춰 렌더러를 도로 켜버린다.
+        if (GameManager._instance != null && GameManager._instance._isResultStarted)
+        {
+            SwitchRender(FormState.Inkling, false);
+            SwitchRender(FormState.Half, false);
+            SwitchRender(FormState.Squid, false);
+            InkTankRender(false);
+            return;
+        }
+
         UpdateFormRender(s);
         UpdateAnimation(s);
         UpdateInkRefillRender(s);
@@ -147,6 +158,7 @@ public class InklingRenderController : MonoBehaviour
 
     void UpdateFormRender(in RenderState s)
     {
+
         if (!s.isAlive || s.suppressRender)
         {
             SwitchRender(FormState.Inkling, false);

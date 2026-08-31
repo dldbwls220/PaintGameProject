@@ -1,23 +1,39 @@
 using DefineEnum;
 using DefineStructure;
+using UnityEngine;
 
 public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
 {
+    GameObject _emoteCharacterPrefab;
     PlayerCustomization _customization;
     PlayerData _data;
 
     public PlayerCustomization Customization => _customization;
     public PlayerData Data => _data;
 
-    private void Start()
-    {
-        //test
-        initDefaultcustom();
-    }
-
     public void initDefaultcustom()
     {
+        if (_emoteCharacterPrefab != null) return;
+
         _customization = PlayerCustomization.Default;
+        LoadNInitCustomCharacter();
+    }
+
+    public void InstantiateCharacter(Transform pos)
+    {
+        Instantiate(_emoteCharacterPrefab, pos);
+    }
+
+    public void SaveCharacter(GameObject obj)
+    {
+        _emoteCharacterPrefab = obj;
+    }
+
+    void LoadNInitCustomCharacter()
+    {
+        GameObject go = Resources.Load<GameObject>("Object/Player/EmoteCharacter");
+
+        _emoteCharacterPrefab = go;
     }
 
     public void SetHead(HeadState head)
