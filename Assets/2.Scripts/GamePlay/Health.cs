@@ -314,7 +314,8 @@ public class Health : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     void RPC_OnDeathPaint(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
-        WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+        if (WorldInkZoneManager._instance == null) return;
+        WorldInkZoneManager._instance.PaintAuto(point, normal, color, paintRadius, _hardness);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

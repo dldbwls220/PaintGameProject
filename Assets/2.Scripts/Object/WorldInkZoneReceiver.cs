@@ -27,7 +27,7 @@ public class WorldInkZoneReceiver : MonoBehaviour
             return;
         }
 
-        WorldInkZoneManager mgr = WorldInkZoneManager.instance;
+        WorldInkZoneManager mgr = WorldInkZoneManager._instance;
         if (mgr == null)
         {
             Debug.LogError("[WorldInkZoneReceiver] WorldInkZoneManager가 씬에 없습니다.");
@@ -58,11 +58,13 @@ public class WorldInkZoneReceiver : MonoBehaviour
     /// </summary>
     public Color CheckPaintColor(RaycastHit hit)
     {
-        return WorldInkZoneManager.instance.CheckPaintColor(_zoneIndex, hit.point);
+        if (WorldInkZoneManager._instance == null) return Color.clear;
+        return WorldInkZoneManager._instance.CheckPaintColor(_zoneIndex, hit.point);
     }
 
     public Color CheckPaintColor(Vector3 hitpos)
     {
-        return WorldInkZoneManager.instance.CheckPaintColor(_zoneIndex, hitpos);
+        if (WorldInkZoneManager._instance == null) return Color.clear;
+        return WorldInkZoneManager._instance.CheckPaintColor(_zoneIndex, hitpos);
     }
 }

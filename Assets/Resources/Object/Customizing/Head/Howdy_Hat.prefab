@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8251994410921040993}
   - component: {fileID: 19389891595982918}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: HAT017_belt_body__M_HAT017
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4432107100442752414}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Howdy_Hat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3201010153720151355}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Root_Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}

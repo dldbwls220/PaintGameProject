@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 245548270062937586}
   - component: {fileID: 3278152368483915920}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_EYE029__M_EYE029flame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1187603191451401955}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Retro_BluFocals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2658154717026262950}
   - component: {fileID: 3246474006811872629}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_EYE029__M_EYE029metal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8541769151594647513}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6456236153538112028}
   - component: {fileID: 6235520302478166464}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_EYE029__M_EYE029glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}

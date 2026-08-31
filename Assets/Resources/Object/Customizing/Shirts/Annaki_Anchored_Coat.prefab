@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3449930483426778094}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Elbow_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8563194919070654494}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Spine_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1584474797249314607}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Arm_2_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7434487980207995118}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Arm_1_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5313627469534051133}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5994288559008598204}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_1_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1338765274336167404}
   - component: {fileID: 8435558819216270959}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Clt_JKT053_body__M_JKT053
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,7 +315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6065890781019934917}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Clavicle_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7792322231306933076}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Skl_Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -380,7 +380,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7067231311331237037}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Arm_Assist_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +411,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6345399612182354524}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Clavicle_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -443,7 +443,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4143510472180779268}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Arm_2_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -476,7 +476,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 747566130262603267}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Spine_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -508,7 +508,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8038986023840794288}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Waist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -542,7 +542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4666713752810079943}
   - component: {fileID: 3655128030589221691}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Clt_JKT053_decoration_charmpin__M_JKT053
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -634,7 +634,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3159087509228701029}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Wrist_Assist_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -665,7 +665,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7088626464900270931}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Wrist_Assist_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,7 +696,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7892084119835409551}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_Assist_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -727,7 +727,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7106158774405926042}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Arm_Assist_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -758,7 +758,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4830666846778220027}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Arm_1_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -791,7 +791,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6057679146858880505}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Spine_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -823,7 +823,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3914945744710313210}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_1_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -855,7 +855,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7231524999064059518}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -886,7 +886,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2783457706921089225}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_Assist_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -917,7 +917,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3004726030140268473}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Elbow_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -948,7 +948,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3450548138498326405}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Annaki_Anchored_Coat
   m_TagString: Untagged
   m_Icon: {fileID: 0}

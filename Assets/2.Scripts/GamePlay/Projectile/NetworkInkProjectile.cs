@@ -232,7 +232,8 @@ public class NetworkInkProjectile : NetworkBehaviour
         // 여기서 걸러내지 않으면 엉뚱한 인접 벽이 대신 칠해진다.
         if (layer == LayerMask.NameToLayer("Paintable"))
         {
-            WorldInkZoneManager.instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+            if (WorldInkZoneManager._instance != null)
+                WorldInkZoneManager._instance.PaintAuto(point, normal, color, paintRadius, _hardness);
 
             // 그리드 페인트는 모든 피어가 로컬로 수행(결과 씬 색상 비율 계산에 사용).
             // 점수 가산은 호스트에서만, 실제 발사자(Object.InputAuthority) 기준으로 처리한다.

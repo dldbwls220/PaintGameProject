@@ -61,6 +61,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Header("Respawning Time")]
     [SerializeField] float _respawningTime = 1f;
     [SerializeField] float _turnDuration = 0.4f; // 반바퀴 회전에 걸리는 시간 (_respawningTime보다 짧게)
+    [SerializeField] float _respawnRevealDelay = 0.15f; // 리스폰 텔레포트가 보간 버퍼를 통과할 때까지 모델을 숨겨 두는 시간 (사망 위치 깜빡임 방지)
 
     [Networked] private Vector3 _currentMoveVelocity { get; set; }
 
@@ -296,21 +297,18 @@ public class NetworkInklingMovement : NetworkBehaviour
             _kcc.ResetVelocity();
             targetVelocity = _wallClimb.ClimbingWall(_climbAxis, _sideAxis); // X/Z까지 완전히 덮어씀
             _currentMoveVelocity = targetVelocity; // 관성 없이 즉시 반영 → 원본처럼 스냅한 반응
-
-            //_kcc.SetLookRotation(_camForward);
         }
         else
         {
             _isWallClimb = false;
             _currentMoveVelocity = Vector3.MoveTowards(_currentMoveVelocity, targetVelocity, accel * Runner.DeltaTime);
-
         }
 
         if(_isWallClimb) _kcc.SetGravity(0);
         else _kcc.SetGravity(_gravity);
 
         // 캐릭터간 밀어내기: _currentMoveVelocity(관성 상태)에는 누적하지 않고, 이번 틱의 실제 이동에만 더함
-        Vector3 separationVelocity = (_characterSeparation != null && !_isWallClimb)
+        Vector3 separationVelocity = (_characterSeparation != null && !_isWallClimb && _isAlive)
             ? _characterSeparation.GetPushVelocity(this)
             : Vector3.zero;
 
@@ -425,8 +423,12 @@ public class NetworkInklingMovement : NetworkBehaviour
         _hitbox.CapsuleExtents = isInklingForm ? _inklingHitboxExtents : _squidHitboxExtents;
         _hitbox.Offset = isInklingForm ? _inklingHitboxOffset : _squidHitboxOffset;
 
+        // 죽은 상태에서는 히트박스를 꺼서 랙 보정 쿼리에 잡히지 않도록 한다 (HitboxActive는 enabled 토글과 달리 안전)
+        _hitbox.HitboxActive = _health._isAlive;
+
         var renderstate = new InklingRenderController.RenderState
         {
+            suppressRender = ShouldSuppressRespawnReveal(),
             isSquid = _isSquid,
             isMorphingSquid = _isMorphingSquid,
             isMorphingInkling = _isMorphingInkling,
@@ -499,6 +501,17 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             _aimTargetObj.transform.position = _aimTargetPosition;
         }
+    }
+
+    // 리스폰이 막 시작된 구간에서는 모델을 숨겨 둔다.
+    bool ShouldSuppressRespawnReveal()
+    {
+        if (!_health._nowRespawing) return false;
+
+        float remain = _respawningTimer.RemainingTime(Runner) ?? _respawningTime;
+        float elapsed = _respawningTime - remain;
+
+        return !_wasRespawning || elapsed < _respawnRevealDelay;
     }
 
     float UpdateSpeed()

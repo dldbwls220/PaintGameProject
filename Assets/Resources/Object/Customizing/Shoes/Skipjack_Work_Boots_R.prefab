@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1241570940922731827}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Ankle_Assist_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3189749513488533750}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Ankle_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5833369951258392229}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5359878741179600595}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Toe_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2704227199707713850}
   - component: {fileID: 3535219367926848970}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Shs_BOT020_R__M_BOT020_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,7 +231,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 177075038695950871}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Skipjack_Work_Boots_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}

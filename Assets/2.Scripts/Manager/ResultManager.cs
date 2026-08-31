@@ -3,6 +3,7 @@ using DefineStructure;
 using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
 
@@ -24,9 +25,14 @@ public class ResultManager : MonoBehaviour
     [SerializeField] Camera _camera;
     [Header("Timeline")]
     [SerializeField] PlayableDirector _resultTimeline;
-    [Header("Set Cloth")]
+    [Header("Set Emote Character")]
     [SerializeField] CharacterClothChanger[] _otherPlayer;
     [SerializeField] CharacterClothChanger _mePlayer;
+    [SerializeField] EmoteCharacter[] _emoteCharacters;
+    [Header("Scene Select Timer")]
+    [SerializeField] float _sceneChooseTimer = 30f;
+    [Header("BGM Setting")]
+    [SerializeField] float _resultFadeSpeed = 0.3f;
 
     PlayerRef _localPlayer;
     ResultBGM bgm;
@@ -37,6 +43,9 @@ public class ResultManager : MonoBehaviour
     public bool _isJudgingStart { get; private set; }
     public bool _isJudgingEnd { get; set; }
 
+    bool _isResultSceneEnd;
+    bool _wasResultSceneEnd;
+
     ResultState _myState;
 
     HashSet<EmoteState> _emotes;
@@ -46,11 +55,18 @@ public class ResultManager : MonoBehaviour
         _uniqueinstance = this;
     }
 
+    private void Update()
+    {
+        FadeOutBGM();
+    }
+
     public void InitResultScene()
     {
         _camera.gameObject.SetActive(false);
         _resultUI.CloseWnd();
         _emotes = new HashSet<EmoteState>();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void InitResultResources(Color team, Color enemy, float teamRate, float enemyRate, ResultState teamState, ResultState enemyState)
@@ -99,6 +115,11 @@ public class ResultManager : MonoBehaviour
                 _otherPlayer[idx].SetCustomization(playerdata._custom);
             }
         }
+
+        foreach (var emote in _emoteCharacters)
+        {
+            emote.InitCharacter(teamdata[0]._teamColor);
+        }
     }
 
     void GetColor(Color team, Color enemy)
@@ -124,7 +145,7 @@ public class ResultManager : MonoBehaviour
     {
         while (_emotes.Count < 4)
         {
-            _emotes.Add((EmoteState)Random.Range(0,(int)EmoteState.Count));
+            _emotes.Add((EmoteState)Random.Range(1,(int)EmoteState.Count));
         }
     }
 
@@ -199,6 +220,11 @@ public class ResultManager : MonoBehaviour
         _uiAnimator.SetTrigger("OpenScoreWnd");
     }
 
+    public void OpenSceneSelect()
+    {
+        _uiAnimator.SetTrigger("OpenSceneSelect");
+    }
+
     #endregion[Timeline]
 
 
@@ -223,11 +249,43 @@ public class ResultManager : MonoBehaviour
 
     }
 
-   
+    void FadeOutBGM()
+    {
+        if (_isResultSceneEnd && !_wasResultSceneEnd)
+        {
+            GameSoundManager.instance._ResultBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._ResultBGMDESC._volum, 0, _resultFadeSpeed * Time.deltaTime);
+
+            if (GameSoundManager.instance._ResultBGMDESC._volum <= 0)
+            {
+                _wasResultSceneEnd = true;
+                GameSoundManager.instance._ResultBGMDESC._volum = 0.7f;
+                GameSoundManager.instance._ResultBGMDESC._stop();
+            }
+        }
+    }
 
     public void StartTimeline()
     {
         _resultTimeline.Play();
+    }
+
+    public void NetworkShutdown()
+    {
+        FindFirstObjectByType<NetworkRunner>()?.Shutdown();
+    }
+
+    public void ReturnToStartScene()
+    {
+        NetworkShutdown();
+        _isResultSceneEnd = true;
+        WipeTransitionManager.instance.LoadScene(SceneState.StartScene);
+    }
+
+    public void ReturnToLobby()
+    {
+        NetworkShutdown();
+        _isResultSceneEnd = true;
+        WipeTransitionManager.instance.LoadScene(SceneState.LobbyScene);
     }
 
 }

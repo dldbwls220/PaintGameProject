@@ -13,10 +13,6 @@ public class GridManager : MonoBehaviour
     [Header("Gizzmos Setting")]
     [SerializeField] bool _displayGizzmos;
 
-    [Header("Debug")]
-    [SerializeField] KeyCode _debugCheckColorKey = KeyCode.F9;
-    [SerializeField] int _nodesPerFrame = 50;
-
     Node[,] _grid;
     Coroutine _checkRoutine;
 
@@ -125,35 +121,6 @@ public class GridManager : MonoBehaviour
             colorRateDic[kv.Key] = totalCount > 0 ? (float)kv.Value / totalCount : 0f;
 
         return colorRateDic;
-    }
-
-    IEnumerator CheckPaintableColorRoutine()
-    {
-        IsChecking = true;
-
-        if (_grid != null)
-        {
-            int count = 0;
-            foreach (Node node in _grid)
-            {
-                node.CheckNodePosColor(_paintableMask);
-                count++;
-                if (count % _nodesPerFrame == 0)
-                    yield return null;
-            }
-        }
-
-        IsChecking = false;
-        _checkRoutine = null;
-        OnCheckComplete?.Invoke();
-    }
-
-    void Update()
-    {
-        //if (Input.GetKeyDown(_debugCheckColorKey))
-        //{
-        //    CheckPaintableColor();
-        //}
     }
 
     private void OnDrawGizmos()

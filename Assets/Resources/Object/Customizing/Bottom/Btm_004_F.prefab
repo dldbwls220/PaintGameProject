@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3428121247579287477}
   - component: {fileID: 8678965942416616953}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Btm_004_F__M_Btm_004_F
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3726089802539647493}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Skl_Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1045916135908222992}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Spine_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8776165830786097347}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_Assist_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,7 +202,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2927067383527146828}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_1_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,7 +234,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1956877914987624773}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Waist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,7 +267,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4489216753367559281}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,7 +299,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2454631707427698590}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_Assist_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +330,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2884297689081688035}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg_1_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,7 +362,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3540813212777351705}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Btm_004_F
   m_TagString: Untagged
   m_Icon: {fileID: 0}

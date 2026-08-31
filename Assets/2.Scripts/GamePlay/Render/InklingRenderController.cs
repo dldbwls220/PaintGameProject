@@ -40,6 +40,7 @@ public class InklingRenderController : MonoBehaviour
         public bool isSlowed;
         public bool isAlive;
         public bool isRespawning;
+        public bool suppressRender;
         public bool isWallClimb;
         public float layerWeight;
         public Vector3 localMoveVelocity;
@@ -146,7 +147,7 @@ public class InklingRenderController : MonoBehaviour
 
     void UpdateFormRender(in RenderState s)
     {
-        if (!s.isAlive)
+        if (!s.isAlive || s.suppressRender)
         {
             SwitchRender(FormState.Inkling, false);
             SwitchRender(FormState.Half, false);

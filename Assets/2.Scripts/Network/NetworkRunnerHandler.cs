@@ -15,9 +15,11 @@ public class NetworkRunnerHandler : MonoBehaviour
     [SerializeField] GameObject _connectionWnd;
     [SerializeField] AnimationClip _closeConnectionClip;
     [SerializeField] GameObject[] _fadeWhileConnecting;
+    [SerializeField] float _minConnectionWndSeconds = 0.5f;
 
     NetworkRunner _networkRunner;
     float[] _fadeOriginalAlpha;
+    float _connectionWndShownTime;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,6 +28,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         {
             _connectionWnd.SetActive(true);
         }
+
+        _connectionWndShownTime = Time.unscaledTime;
 
         HideFadeGroups();
 
@@ -39,11 +43,24 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     void OnConnected(NetworkRunner runner)
     {
+        StartCoroutine(HandleConnected());
+    }
+
+    IEnumerator HandleConnected()
+    {
+        // 재접속처럼 연결이 매우 빠르게 끝날 때 연결창이 한 프레임만 떴다 사라지지 않도록
+        // 최소 표시 시간을 보장한다
+        float elapsed = Time.unscaledTime - _connectionWndShownTime;
+        if (elapsed < _minConnectionWndSeconds)
+        {
+            yield return new WaitForSecondsRealtime(_minConnectionWndSeconds - elapsed);
+        }
+
         RestoreFadeGroups();
 
-        if (_connectionWnd == null) return;
+        if (_connectionWnd == null) yield break;
 
-        StartCoroutine(CloseConnectionWnd());
+        yield return CloseConnectionWnd();
     }
 
     void HideFadeGroups()

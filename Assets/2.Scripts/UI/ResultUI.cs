@@ -269,6 +269,10 @@ public class ResultUI : MonoBehaviour
 
     public void InstantiateScoreBar(List<PlayerData> teamData, List<PlayerData> enemyData)
     {
+        // 중복 호출 시 스코어바가 누적되지 않도록 기존 항목을 먼저 제거한다.
+        ClearScoreBar(_teamScoreContent.transform);
+        ClearScoreBar(_enemyScoreContent.transform);
+
         if (teamData.Count > 0)
         {
             foreach (PlayerData playerData in teamData)
@@ -289,6 +293,14 @@ public class ResultUI : MonoBehaviour
 
                 ui.InitScoreBar(playerData._kills, playerData._death, playerData._score, playerData.DisplayName, playerData._teamColor);
             }
+        }
+    }
+
+    void ClearScoreBar(Transform content)
+    {
+        for (int i = content.childCount - 1; i >= 0; i--)
+        {
+            Destroy(content.GetChild(i).gameObject);
         }
     }
 

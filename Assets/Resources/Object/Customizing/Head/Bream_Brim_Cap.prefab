@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1901381640009710198}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Bream_Brim_Cap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7897106968148679138}
   - component: {fileID: 7462475809952792472}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_COP110__M_COP110sticker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2850474818690257512}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3688004920545859894}
   - component: {fileID: 585753124034944988}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_COP110__M_COP110
   m_TagString: Untagged
   m_Icon: {fileID: 0}

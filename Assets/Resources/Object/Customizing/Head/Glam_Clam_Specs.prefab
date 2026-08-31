@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3731951017577125766}
   - component: {fileID: 5820127609645243790}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_EYE028_1__M_EYE028
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7671515541876194524}
   - component: {fileID: 2312454207144604721}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_EYE028_1__M_EYE028_sunglasses
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1143510555986803388}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6984611401212935137}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Glam_Clam_Specs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2524917988440118026}
   - component: {fileID: 5061305592701519393}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hed_EYE028_1__M_EYE028_lens
   m_TagString: Untagged
   m_Icon: {fileID: 0}

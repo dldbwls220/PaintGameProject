@@ -42,6 +42,7 @@ public class GameManager : NetworkBehaviour
     bool _introFadeOutComplete;
     bool _wasGameStart;
    
+
     public bool _nowTeamCam { get; set; }
 
     [Networked]
@@ -67,9 +68,9 @@ public class GameManager : NetworkBehaviour
     [Networked] float _introStartTime { get; set; }
 
     bool _wasResultStarted;
+    bool _resultSequenceStarted;
 
     public MusicType musicType { get; private set; }
-
     public static GameManager _instance => _uniqueinstance;
 
     void Awake()
@@ -165,6 +166,13 @@ public class GameManager : NetworkBehaviour
         if (GameTime.RemainingTime(Runner) <= 61)
         {
             GameSoundManager.instance._GameBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._GameBGMDESC._volum, 0, _gameBGMFadeSpeed * Time.deltaTime);
+
+            if (GameSoundManager.instance._GameBGMDESC._volum == 0)
+            {
+                GameSoundManager.instance._GameBGMDESC._stop();
+                GameSoundManager.instance._GameBGMDESC._volum = 0.7f;
+            }
+
             GameSoundManager.instance._NowOrNeverDESC._unpause();
             _uiManager.OpenLastMinLeftWnd();
         }
@@ -174,8 +182,9 @@ public class GameManager : NetworkBehaviour
             _uiManager.OpenCountDownWnd();
         }
 
-        if (GameTime.RemainingTime(Runner) <= 1 && !_gameEnd)
+        if (GameTime.RemainingTime(Runner) <= 1 && !_resultSequenceStarted)
         {
+            _resultSequenceStarted = true;
             _gameEnd = true;
 
             GameSoundManager.instance.PlayerSFX(PlayerSFXName.whistleCmp00);
@@ -373,7 +382,11 @@ public class GameManager : NetworkBehaviour
             GameSoundManager.instance._UiBGMDESC._volum = Mathf.MoveTowards(GameSoundManager.instance._UiBGMDESC._volum, 0, _introFadeSpeed * Time.deltaTime);
 
             if (GameSoundManager.instance._UiBGMDESC._volum <= 0)
+            {
                 _introFadeOutComplete = true;
+                GameSoundManager.instance._UiBGMDESC._volum = 1;
+                GameSoundManager.instance._UiBGMDESC._stop();
+            }
         }
     }
 
@@ -446,8 +459,8 @@ public class GameManager : NetworkBehaviour
 
     void CreatGrid()
     {
-        if (WorldInkZoneManager.instance != null)
-            _gridManager.CreateGride(WorldInkZoneManager.instance.XZWorldSize());
+        if (WorldInkZoneManager._instance != null)
+            _gridManager.CreateGride(WorldInkZoneManager._instance.XZWorldSize());
     }
 
     void SortPlayerScore()

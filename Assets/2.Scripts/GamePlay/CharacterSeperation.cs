@@ -19,6 +19,9 @@ public class CharacterSeperation : MonoBehaviour
             NetworkInklingMovement other = hit.GetComponentInParent<NetworkInklingMovement>();
             if (other == null || other == self) continue;
 
+            // 죽은 캐릭터는 밀어내기 대상에서 제외 (살아있는 쪽이 시체에 밀리지 않도록)
+            if (!other._isAlive) continue;
+
             Vector3 offset = selfPosition - other.transform.position;
             offset.y = 0f;
             float distance = offset.magnitude;

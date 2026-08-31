@@ -45,8 +45,10 @@ public class InkZone
     public RenderTexture inkTexture;
 }
 
-public class WorldInkZoneManager : Singleton<WorldInkZoneManager>
+public class WorldInkZoneManager : MonoBehaviour
 {
+    static WorldInkZoneManager _uniqueinstance;
+
     [Header("Zone 목록")]
     public List<InkZone> _zones = new List<InkZone>();
 
@@ -66,9 +68,14 @@ public class WorldInkZoneManager : Singleton<WorldInkZoneManager>
     static readonly int _brushHardnessID = Shader.PropertyToID("_BrushHardness");
     static readonly int _aspectRatioID   = Shader.PropertyToID("_AspectRatio");
 
-    public override void Awake()
+    public static WorldInkZoneManager _instance => _uniqueinstance;
+
+    
+
+    void Awake()
     {
-        base.Awake();
+        _uniqueinstance = this;
+
         _brushMaterial = new Material(_brushShader);
         foreach (InkZone zone in _zones)
         {

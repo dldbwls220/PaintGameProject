@@ -199,6 +199,13 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
             GameSoundManager.instance.UIBGM(UIBGMName.Dubble_Bath);
             FadeSound(true);
         }
+
+        if (_gameSceneState == SceneState.StartScene)
+        {
+            GameSoundManager.instance.UIBGM(UIBGMName.C_Side_Splattack);
+            FadeSound(true);
+        }
+
         // Port_Mackerel_GameScene의 경우 GameManager.StartIntroIfNeeded()가
         // OpeningBGM 클립을 실제로 세팅한 직후에 볼륨을 복원한다.
         // 여기서 미리 볼륨을 올리면 아직 남아있는 로비 BGM 클립이 잠깐 풀볼륨으로 재생되는 문제가 있었다.

@@ -115186,7 +115186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -307951,6 +307951,7 @@ MonoBehaviour:
   _connectionWnd: {fileID: 0}
   _closeConnectionClip: {fileID: 0}
   _fadeWhileConnecting: []
+  _minConnectionWndSeconds: 0.5
 --- !u!4 &1286591841
 Transform:
   m_ObjectHideFlags: 0
@@ -424084,7 +424085,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _playerPrefab: {fileID: 4471312381918550399, guid: 98b99b743a8647d43a00c05d6d68afbe, type: 3}
   _gridManager: {fileID: 2067567333}
-  _gameDuration: 20
+  _gameDuration: 180
   _respawnTime: 9
   _teamColors1:
   - {r: 0.82745105, g: 0.9960785, b: 0.24313727, a: 1}
@@ -424203,8 +424204,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   _displayGizzmos: 0
-  _debugCheckColorKey: 290
-  _nodesPerFrame: 100
 --- !u!1 &2075853213
 GameObject:
   m_ObjectHideFlags: 0

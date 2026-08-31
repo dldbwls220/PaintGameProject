@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2364904735365126202}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Head_Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 862890538871649653}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hair_1_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 443904718269994363}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Nape_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5163129911615477294}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Z_Hair_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 372941374328515223}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Nape_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2590069430951025806}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Back_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,7 +203,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8354427361275022687}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hair_2_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2843350789964602620}
   - component: {fileID: 1810143519554567756}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Har_SQD002_F1__TeamE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -335,7 +335,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6411658612120978057}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Z_Nape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,7 +366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 48876202030256371}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hair_2_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,7 +398,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5002917303580354531}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Har_SQD002_F_TeamE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -431,7 +431,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2545247156566822413}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Z_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -462,7 +462,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8384686219187015690}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Z_Hair_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -493,7 +493,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7810211500010217254}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hair_1_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,7 +525,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3406307599731823366}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hair_All
   m_TagString: Untagged
   m_Icon: {fileID: 0}
