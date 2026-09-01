@@ -116,4 +116,11 @@ namespace DefineStructure
             _bottom = BottomState.Btm_000_F
         };
     }
+
+    [System.Serializable]
+    public struct MapRootEntry
+    {
+        public MapState _map;
+        public GameObject _root;
+    }
 }

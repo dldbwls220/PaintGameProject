@@ -10,27 +10,43 @@ using UnityEngine.SceneManagement;
 public class GameManager : NetworkBehaviour
 {
     static GameManager _uniqueinstance;
+
+    [SerializeField] MapRootEntry[] _mapRoots;
+
     [Header("Class Reference")]
     [SerializeField] NetworkInklingMovement _playerPrefab;
     [SerializeField] GridManager _gridManager;
+
     [Header("Gameplay Setting")]
     [SerializeField] float _gameDuration = 180f;
     [SerializeField] float _respawnTime = 9f;
+
     [Header("Team Colors")]
     [SerializeField] Color[] _teamColors1;
     [SerializeField] Color[] _teamColors2;
+
     [Header("Resources")]
     [SerializeField] GameObject _gameUIManager;
     [SerializeField] SpawnPlatform[] _spawnPlatforms;
+    [SerializeField] GameObject _spawnPlatformTeam1;
+    [SerializeField] GameObject _spawnPlatformTeam2;
     [SerializeField] GameObject _spawnRoot1;
     [SerializeField] GameObject _spawnRoot2;
+
     [Header("Timeline")]
     [SerializeField] PlayableDirector _playableDirector;
+
     [Header("GameSoundSetting")]
     [SerializeField] float _introFadeSpeed = 0.3f;
     [SerializeField] float _gameBGMFadeSpeed = 0.5f;
+
     [Header("Camera")]
     [SerializeField] Camera _mainCamera;
+    [SerializeField] GameObject _team1Dolly;
+    [SerializeField] GameObject _team2Dolly;
+    [SerializeField] GameObject _team1Fix;
+    [SerializeField] GameObject _team2Fix;
+
     OpeningBGMName _openingName;
 
     int _spawnCount;
@@ -80,6 +96,19 @@ public class GameManager : NetworkBehaviour
 
     void Start()
     {
+        MapState map = WipeTransitionManager.instance._mapState;
+        foreach (var e in _mapRoots)
+        {
+            if (e._map == map)
+            {
+                e._root.SetActive(true);
+                SpawnSPObj(e._root);
+            }
+
+        }
+
+        SetCameraPos();
+
         GameObject ui = Instantiate(_gameUIManager);
         _uiManager = ui.GetComponentInChildren<GameUIManager>();
         _uiManager.InitUI();
@@ -200,6 +229,37 @@ public class GameManager : NetworkBehaviour
 
             _wasResultStarted = true;
         }
+    }
+
+    void SpawnSPObj(GameObject root)
+    {
+        GameObject prefabTeam1 = Resources.Load<GameObject>("Object/RespawnPlatform_Team1");
+        GameObject prefabTeam2 = Resources.Load<GameObject>("Object/RespawnPlatform_Team2");
+
+        if (prefabTeam1 == null || prefabTeam2 == null)
+        {
+            Debug.LogError("SpawnSPObj: RespawnPlatform 프리팹을 Resources에서 찾지 못했습니다.");
+            return;
+        }
+
+        _spawnPlatforms = new SpawnPlatform[2];
+
+        _spawnPlatformTeam1 = Instantiate(prefabTeam1, root.transform.GetChild(0));
+        _spawnRoot1 = _spawnPlatformTeam1.transform.GetChild(1).gameObject;
+        _spawnPlatforms[0] = _spawnPlatformTeam1.GetComponent<SpawnPlatform>();
+
+        _spawnPlatformTeam2 = Instantiate(prefabTeam2, root.transform.GetChild(1));
+        _spawnRoot2 = _spawnPlatformTeam2.transform.GetChild(1).gameObject;
+        _spawnPlatforms[1] = _spawnPlatformTeam2.GetComponent<SpawnPlatform>();
+    }
+
+    void SetCameraPos()
+    {
+        _team1Dolly.transform.SetParent(_spawnPlatformTeam1.transform.GetChild((int)CameraRootState.Dolly), false);
+        _team1Fix.transform.SetParent(_spawnPlatformTeam1.transform.GetChild((int)CameraRootState.Fixed), false);
+
+        _team2Dolly.transform.SetParent(_spawnPlatformTeam2.transform.GetChild((int)CameraRootState.Dolly), false);
+        _team2Fix.transform.SetParent(_spawnPlatformTeam2.transform.GetChild((int)CameraRootState.Fixed), false);
     }
 
     // 호스트/클라이언트가 각자 로컬 시점(Awake)에 재생을 시작하는 대신,

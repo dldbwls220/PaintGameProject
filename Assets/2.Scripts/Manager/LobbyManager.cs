@@ -7,6 +7,8 @@ public class LobbyManager : NetworkBehaviour
 {
     static LobbyManager _uniqueinstance;
 
+
+    public MapState _selectedMap = MapState.Port_Mackerel;
     [SerializeField] SceneState _gameSceneState = SceneState.LobbyScene;
     [SerializeField] LobbyUI _UI;
     [SerializeField] float _startDelay = 60f;
@@ -132,13 +134,13 @@ public class LobbyManager : NetworkBehaviour
 
     public void ForceStart()
     {
-        RPC_StartWipeTransition(_gameSceneState);
+        RPC_StartWipeTransition(_gameSceneState, _selectedMap);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    void RPC_StartWipeTransition(SceneState state)
+    void RPC_StartWipeTransition(SceneState state, MapState mapState)
     {
-        WipeTransitionManager.instance.LoadScene(state);
+        WipeTransitionManager.instance.LoadScene(state, mapState);
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)

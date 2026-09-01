@@ -371,6 +371,23 @@ namespace DefineEnum
 
     #endregion[팀]
 
+    #region[맵]
+
+    public enum MapState
+    {
+        Port_Mackerel,
+
+        Count
+    }
+
+    public enum CameraRootState
+    {
+        Fixed = 2,
+        Dolly = 3
+    }
+
+    #endregion[맵]
+
     #region[씬]
 
     public enum SceneState

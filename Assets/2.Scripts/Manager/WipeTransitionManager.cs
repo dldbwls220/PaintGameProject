@@ -21,6 +21,9 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
     [Header("Fade Sound")]
     [SerializeField] float _fadeSpeed = 2f;
 
+    [Header("Gameplay Map")]
+    [SerializeField] public MapState _mapState;
+
     NetworkRunner _networkrunner;
     bool _startRequested;
     bool _isCustomizeSceneLoaded;
@@ -37,10 +40,12 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         StartCoroutine(StartSceneAnim());
     }
 
-    public void LoadScene(SceneState state)
+    public void LoadScene(SceneState state, MapState mapstate = MapState.Port_Mackerel)
     {
         if (_startRequested) return;
         _startRequested = true;
+
+        _mapState = mapstate;
 
         _gameSceneState = state;
         StartCoroutine(LoadingScene());
