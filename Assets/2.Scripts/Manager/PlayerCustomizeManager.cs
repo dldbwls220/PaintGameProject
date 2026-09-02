@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
 {
+    //커스터마이징
     GameObject _emoteCharacterPrefab;
     PlayerCustomization _customization;
     PlayerData _data;
-
     public PlayerCustomization Customization => _customization;
     public PlayerData Data => _data;
+
+    //마우스 감도
+    public float _sensitivity;
+    public float _mouseSensitivity => _sensitivity;
 
     public void initDefaultcustom()
     {
@@ -17,7 +21,12 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
 
         _customization = PlayerCustomization.Default;
         LoadNInitCustomCharacter();
+
+        _sensitivity = 2;
     }
+
+    #region[커스터마이징]
+
 
     public void InstantiateCharacter(Transform pos)
     {
@@ -77,4 +86,15 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
         data._nickName = name;
         _data = data;
     }
+
+    #endregion[커스터마이징]
+
+    #region[마우스 감도]
+    
+    public void SetSensitivity(float rate)
+    {
+        _sensitivity = rate;
+    }
+
+    #endregion[마우스 감도]
 }

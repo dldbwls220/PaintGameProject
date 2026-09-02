@@ -22,6 +22,11 @@ public class TPSCamera : MonoBehaviour
 
     private void Start()
     {
+        if (PlayerCustomizeManager.instance != null)
+        {
+
+        }
+
         //initCam();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

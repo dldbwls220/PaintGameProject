@@ -1,12 +1,11 @@
 using DefineEnum;
-using System.Collections;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StartUIManager : MonoBehaviour
 {
     [SerializeField] GameObject[] _selectedWnds;
+    [SerializeField] SettingUI _settingUI;
 
     private void Start()
     {
@@ -14,6 +13,8 @@ public class StartUIManager : MonoBehaviour
         {
             wnd.SetActive(false);
         }
+        _settingUI.InitSliderValue();
+        _settingUI.CloseWnd();
     }
 
     public void Update()
@@ -71,6 +72,11 @@ public class StartUIManager : MonoBehaviour
         WipeTransitionManager.instance.OpenCustomizationScene();
     }
 
+    public void OpenSetting()
+    {
+        _settingUI.OpenWnd();
+    }
+
    public void PlayClickSound()
     {
         GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00);
@@ -78,7 +84,8 @@ public class StartUIManager : MonoBehaviour
 
     public void CloseCustomization()
     {
-        WipeTransitionManager.instance.CloseCustomizationScene();
+        if (WipeTransitionManager.instance != null && WipeTransitionManager.instance.IsCustomizeOpen)
+            WipeTransitionManager.instance.CloseCustomizationScene();
     }
 
     public void EndGame()

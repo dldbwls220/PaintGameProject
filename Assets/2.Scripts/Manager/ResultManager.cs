@@ -40,6 +40,7 @@ public class ResultManager : MonoBehaviour
 
     PlayerRef _localPlayer;
     ResultBGM bgm;
+    ResultState _resultState;
 
     public float _teamRate { get; private set; }
     public float _enemyRate { get; private set; }
@@ -75,6 +76,8 @@ public class ResultManager : MonoBehaviour
 
     public void InitResultResources(Color team, Color enemy, float teamRate, float enemyRate, ResultState teamState, ResultState enemyState)
     {
+        _resultState = teamState;
+
         GetColor(team, enemy);
         GetTargetValueRate(teamRate, enemyRate);
         InitJudge(team, enemy, teamState, enemyState);
@@ -162,7 +165,7 @@ public class ResultManager : MonoBehaviour
         
         while (_emotes.Count < 4)
         {
-            EmoteState emoteState = state == ResultState.Win ? (EmoteState)Random.Range(1, (int)EmoteState.Count) : EmoteState.Loose;
+            EmoteState emoteState = (EmoteState)Random.Range(1, (int)EmoteState.Count);
 
             _emotes.Add(emoteState);
         }
@@ -205,7 +208,9 @@ public class ResultManager : MonoBehaviour
         int idx = 0;
         foreach (var emote in _emotes)
         {
-            _emoteAnims[idx++].SetInteger("EmoteState", (int)emote);
+            int emoteidx = _resultState == ResultState.Win ? (int)emote : (int)EmoteState.Loose;
+
+            _emoteAnims[idx++].SetInteger("EmoteState", emoteidx);
         }
     }
 

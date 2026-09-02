@@ -29,6 +29,8 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
     bool _isCustomizeSceneLoaded;
     bool _isCustomizeSceneLoading;
 
+    public bool IsCustomizeOpen => _isCustomizeSceneLoaded;
+
     public override void Awake()
     {
         base.Awake();
