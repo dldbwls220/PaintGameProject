@@ -24119,7 +24119,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &152988850
 Transform:
   m_ObjectHideFlags: 0
@@ -260242,607 +260242,610 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f50fff81209f1914b812c89b6895091a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldInkZoneManager
-  _zones:
-  - name: Floor1
-    axis: 0
-    offset: {x: -45, y: -120}
-    sizeU: 90
-    sizeV: 240
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 0.008930564, b: 1, a: 1}
-    useHeightFilter: 0
-    heightMin: -1
-    heightMax: 2.04
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 0
-  - name: Floor2
-    axis: 0
-    offset: {x: -45, y: -120}
-    sizeU: 90
-    sizeV: 240
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.77467656, a: 1}
-    useHeightFilter: 0
-    heightMin: 2.5
-    heightMax: 6
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward1
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward2
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward3
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward4
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward5
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward6
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward7
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward8
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward9
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward10
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward11
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward12
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward13
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Forward14
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward1
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward2
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward3
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward4
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward5
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward6
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward7
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward8
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward9
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward10
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward11
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward12
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward13
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Backward14
-    axis: 1
-    offset: {x: -45, y: -20}
-    sizeU: 90
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left1
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left2
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left3
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left4
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left5
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left6
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right1
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right2
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right3
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right4
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right5
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right6
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left7
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Left8
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right7
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
-  - name: Right8
-    axis: 2
-    offset: {x: -105, y: -20}
-    sizeU: 210
-    sizeV: 40
-    textureSize: 2048
-    gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
-    useHeightFilter: 0
-    heightMin: 0
-    heightMax: 0
-    useDepthFilter: 0
-    depthMin: 0
-    depthMax: 10
+  _maps:
+  - state: 0
+    zones:
+    - name: Floor1
+      axis: 0
+      offset: {x: -45, y: -120}
+      sizeU: 90
+      sizeV: 240
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 0.008930564, b: 1, a: 1}
+      useHeightFilter: 0
+      heightMin: -1
+      heightMax: 2.04
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 0
+    - name: Floor2
+      axis: 0
+      offset: {x: -45, y: -120}
+      sizeU: 90
+      sizeV: 240
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.77467656, a: 1}
+      useHeightFilter: 0
+      heightMin: 2.5
+      heightMax: 6
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward1
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward2
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward3
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward4
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward5
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward6
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward7
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward8
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward9
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward10
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward11
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward12
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward13
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Forward14
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward1
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward2
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward3
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward4
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward5
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward6
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward7
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward8
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward9
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward10
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward11
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward12
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward13
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Backward14
+      axis: 1
+      offset: {x: -45, y: -20}
+      sizeU: 90
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0.17254902, g: 0.3647059, b: 0.5294118, a: 0}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left1
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left2
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left3
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left4
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left5
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left6
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right1
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right2
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right3
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right4
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right5
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right6
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left7
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Left8
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right7
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+    - name: Right8
+      axis: 2
+      offset: {x: -105, y: -20}
+      sizeU: 210
+      sizeV: 40
+      textureSize: 2048
+      gizmoColor: {r: 0, g: 1, b: 0.07514197, a: 1}
+      useHeightFilter: 0
+      heightMin: 0
+      heightMax: 0
+      useDepthFilter: 0
+      depthMin: 0
+      depthMax: 10
+  _activeMap: 0
   _brushShader: {fileID: 4800000, guid: 100ed71a7b2554149890d4cdec73cb7b, type: 3}
-  _offXZGizzmo: 1
+  _offXZGizzmo: 0
   _offXYGizzmo: 0
   _offZYGizzmo: 0
 --- !u!43 &1169491488

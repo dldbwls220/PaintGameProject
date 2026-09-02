@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using DefineEnum;
 using System.Collections.Generic;
 
 public enum ZoneAxis { XZ, XY, ZY }
@@ -45,12 +46,25 @@ public class InkZone
     public RenderTexture inkTexture;
 }
 
+[System.Serializable]
+public class MapInkZones
+{
+    [Tooltip("이 Zone 목록이 적용될 맵")]
+    public MapState state;
+
+    [Tooltip("이 맵에서 사용할 Zone 목록")]
+    public List<InkZone> zones = new List<InkZone>();
+}
+
 public class WorldInkZoneManager : MonoBehaviour
 {
     static WorldInkZoneManager _uniqueinstance;
 
-    [Header("Zone 목록")]
-    public List<InkZone> _zones = new List<InkZone>();
+    [Header("맵별 Zone 목록")]
+    public List<MapInkZones> _maps = new List<MapInkZones>();
+
+    [Tooltip("현재 활성화된 맵")]
+    public MapState _activeMap = MapState.Port_Mackerel;
 
     [Header("셰이더")]
     public Shader _brushShader;
@@ -70,27 +84,89 @@ public class WorldInkZoneManager : MonoBehaviour
 
     public static WorldInkZoneManager _instance => _uniqueinstance;
 
-    
+    static readonly List<InkZone> _emptyZones = new List<InkZone>();
+
+    /// <summary>
+    /// 현재 활성 맵의 Zone 목록. _activeMap에 해당하는 항목이 없으면 빈 목록을 반환합니다.
+    /// 에디트 모드(기즈모)와 런타임 모두에서 사용됩니다.
+    /// </summary>
+    List<InkZone> ActiveZones => GetMapZones(_activeMap) ?? _emptyZones;
+
+    /// <summary>
+    /// 주어진 맵의 Zone 목록을 반환합니다. 항목이 없으면 null.
+    /// </summary>
+    public List<InkZone> GetMapZones(MapState map)
+    {
+        if (_maps == null) return null;
+        foreach (MapInkZones entry in _maps)
+        {
+            if (entry != null && entry.state == map)
+                return entry.zones;
+        }
+        return null;
+    }
 
     void Awake()
     {
         _uniqueinstance = this;
 
+        // 전환 매니저가 선택한 맵이 있으면 그것을 우선 사용 (없으면 인스펙터 설정값 유지)
+        if (WipeTransitionManager.isInstanceAlive)
+            _activeMap = WipeTransitionManager.instance._mapState;
+
         _brushMaterial = new Material(_brushShader);
-        foreach (InkZone zone in _zones)
+        CreateZoneTextures(ActiveZones);
+        Debug.Log($"[WorldInkZoneManager] 맵 \"{_activeMap}\" Zone {ActiveZones.Count}개 초기화 완료");
+    }
+
+    static void CreateZoneTextures(List<InkZone> zones)
+    {
+        foreach (InkZone zone in zones)
         {
             zone.inkTexture            = new RenderTexture(zone.textureSize, zone.textureSize, 0, RenderTextureFormat.ARGB32);
             zone.inkTexture.filterMode = FilterMode.Bilinear;
             zone.inkTexture.wrapMode   = TextureWrapMode.Clamp;
             zone.inkTexture.Create();
         }
-        Debug.Log($"[WorldInkZoneManager] Zone {_zones.Count}개 초기화 완료");
+    }
+
+    static void ReleaseZoneTextures(List<InkZone> zones)
+    {
+        if (zones == null) return;
+        foreach (InkZone zone in zones)
+        {
+            if (zone.inkTexture != null)
+            {
+                zone.inkTexture.Release();
+                zone.inkTexture = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 런타임에 활성 맵을 전환합니다. 이전 맵의 텍스처를 해제하고 새 맵 텍스처를 생성합니다.
+    /// Receiver의 _zoneIndex는 전환된 맵의 Zone 순서를 기준으로 다시 유효해야 합니다.
+    /// </summary>
+    public void SwitchMap(MapState map)
+    {
+        if (GetMapZones(map) == null)
+        {
+            Debug.LogError($"[WorldInkZoneManager] \"{map}\" 맵의 Zone 목록이 _maps에 없습니다.");
+            return;
+        }
+        if (map == _activeMap && ActiveZones.Count > 0 && ActiveZones[0].inkTexture != null)
+            return;
+
+        ReleaseZoneTextures(ActiveZones);
+        _activeMap = map;
+        CreateZoneTextures(ActiveZones);
+        Debug.Log($"[WorldInkZoneManager] 맵 전환: \"{map}\" (Zone {ActiveZones.Count}개)");
     }
 
     public void Paint(int zoneIndex, Vector3 hitPoint, Color inkColor, float radius = 1f, float hardness = 0.8f)
     {
         if (!IsValidIndex(zoneIndex)) return;
-        InkZone zone = _zones[zoneIndex];
+        InkZone zone = ActiveZones[zoneIndex];
         float u, v;
         GetUV(zone, hitPoint, out u, out v);
         if (u < 0f || u > 1f || v < 0f || v > 1f)
@@ -147,10 +223,12 @@ public class WorldInkZoneManager : MonoBehaviour
         else if (absN.x >= absN.z)                       targetAxis = ZoneAxis.ZY;
         else                                             targetAxis = ZoneAxis.XY;
 
+        List<InkZone> zones = ActiveZones;
+
         // 필터 켜진 Zone 우선
-        for (int i = 0; i < _zones.Count; i++)
+        for (int i = 0; i < zones.Count; i++)
         {
-            InkZone z = _zones[i];
+            InkZone z = zones[i];
             if (z.axis != targetAxis) continue;
             if (targetAxis == ZoneAxis.XZ)
             {
@@ -173,9 +251,9 @@ public class WorldInkZoneManager : MonoBehaviour
         }
 
         // 필터 없는 Zone 폴백
-        for (int i = 0; i < _zones.Count; i++)
+        for (int i = 0; i < zones.Count; i++)
         {
-            InkZone z = _zones[i];
+            InkZone z = zones[i];
             if (z.axis != targetAxis) continue;
             if (z.useHeightFilter || z.useDepthFilter) continue;
             float u, v;
@@ -210,19 +288,19 @@ public class WorldInkZoneManager : MonoBehaviour
     public RenderTexture GetInkTexture(int zoneIndex)
     {
         if (!IsValidIndex(zoneIndex)) return null;
-        return _zones[zoneIndex].inkTexture;
+        return ActiveZones[zoneIndex].inkTexture;
     }
 
     public InkZone GetZone(int zoneIndex)
     {
         if (!IsValidIndex(zoneIndex)) return null;
-        return _zones[zoneIndex];
+        return ActiveZones[zoneIndex];
     }
 
     public Color CheckPaintColor(int zoneIndex, Vector3 hitPoint)
     {
         if (!IsValidIndex(zoneIndex)) return Color.clear;
-        InkZone zone = _zones[zoneIndex];
+        InkZone zone = ActiveZones[zoneIndex];
         float u, v;
         GetUV(zone, hitPoint, out u, out v);
         if (u < 0f || u > 1f || v < 0f || v > 1f) return Color.clear;
@@ -243,7 +321,7 @@ public class WorldInkZoneManager : MonoBehaviour
     {
         Vector2 vector = new Vector2();
 
-        foreach (var zone in _zones)
+        foreach (var zone in ActiveZones)
         {
             if (zone.axis == ZoneAxis.XZ)
             {
@@ -257,9 +335,9 @@ public class WorldInkZoneManager : MonoBehaviour
 
     bool IsValidIndex(int index)
     {
-        if (index < 0 || index >= _zones.Count)
+        if (index < 0 || index >= ActiveZones.Count)
         {
-            Debug.LogError($"[WorldInkZoneManager] 잘못된 Zone 번호: {index} (총 {_zones.Count}개)");
+            Debug.LogError($"[WorldInkZoneManager] 잘못된 Zone 번호: {index} (총 {ActiveZones.Count}개)");
             return false;
         }
         return true;
@@ -267,8 +345,9 @@ public class WorldInkZoneManager : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (_zones == null) return;
-        foreach (InkZone zone in _zones)
+        List<InkZone> zones = ActiveZones;
+        if (zones == null) return;
+        foreach (InkZone zone in zones)
         {
             if(!_offXYGizzmo && zone.axis == ZoneAxis.XY) { continue; }
             if (!_offXZGizzmo && zone.axis == ZoneAxis.XZ) { continue; }
@@ -307,11 +386,7 @@ public class WorldInkZoneManager : MonoBehaviour
 
     void OnDisable()
     {
-        foreach (InkZone zone in _zones)
-        {
-            if (zone.inkTexture != null)
-                zone.inkTexture.Release();
-        }
+        ReleaseZoneTextures(ActiveZones);
     }
 }
 

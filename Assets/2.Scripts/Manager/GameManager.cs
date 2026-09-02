@@ -109,6 +109,10 @@ public class GameManager : NetworkBehaviour
 
         }
 
+        // 활성화된 맵에 맞춰 해당 맵의 Ink Zone 텍스처 활성화
+        if (WorldInkZoneManager._instance != null)
+            WorldInkZoneManager._instance.SwitchMap(map);
+
         SetCameraPos();
 
         GameObject ui = Instantiate(_gameUIManager);

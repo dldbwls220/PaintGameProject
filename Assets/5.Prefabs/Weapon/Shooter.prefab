@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7202175888386743486}
   - component: {fileID: 28994473086352904}
   m_Layer: 0
-  m_Name: Tank_low__M_Bottle
+  m_Name: Tank_low__M_Bottle_TeamC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,6 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6698831025030805043}
   - component: {fileID: 4364227590561937203}
+  - component: {fileID: 6890333312438179399}
   m_Layer: 0
   m_Name: Shooter
   m_TagString: Untagged
@@ -223,6 +224,25 @@ MonoBehaviour:
   _maxDistance: 8.7
   _shootSound: {fileID: 3808967891651108076}
   _emptySound: {fileID: 0}
+--- !u!114 &6890333312438179399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4754760470850750965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 605213396
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 4364227590561937203}
+  ForceRemoteRenderTimeframe: 0
 --- !u!1 &7535895926553821331
 GameObject:
   m_ObjectHideFlags: 0
