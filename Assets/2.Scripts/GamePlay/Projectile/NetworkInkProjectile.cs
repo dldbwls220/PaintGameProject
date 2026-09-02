@@ -35,6 +35,10 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Header("Scoreing")]
     [SerializeField] int _paintScore = 1;
 
+    [Header("Mask")]
+    [SerializeField] LayerMask _playerMask;
+    [SerializeField] LayerMask _worldMask;
+
     [Networked] InkProjectileData _data { get; set; }
     [Networked] Color _inkColor { get; set; }
     [Networked] int _finishedTick { get; set; }
@@ -110,26 +114,49 @@ public class NetworkInkProjectile : NetworkBehaviour
         {
             if (HasStateAuthority)
             {
-                // lHit.Hitbox는 IncludePhysX 옵션 때문에 같은 캐릭터를 맞혀도 PhysX 경로로 판정되면 null이 될 수 있어
-                // (Fusion 문서: "Hitbox is null in case the hit was on PhysX"), Hitbox 유무 대신 GameObject로 대상을 판별한다.
-                var hitOwner = lHit.GameObject != null ? lHit.GameObject.GetComponentInParent<NetworkInklingMovement>() : null;
+                bool hitPlayer = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit pHit, _playerMask, HitOptions.None);
 
-                if (hitOwner != null)
+                bool hitWorld = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit wHit, _worldMask, HitOptions.IncludePhysX);
+
+
+                if (hitPlayer && (!hitWorld || pHit.Distance <= wHit.Distance))
                 {
-                    if (hitOwner._teamIndex == _shooterTeam)
+                    var hitowner = pHit.Hitbox != null
+                        ? pHit.Hitbox.GetComponentInParent<NetworkInklingMovement>()
+                        : null;
+
+                    if (hitowner != null && hitowner._teamIndex != _shooterTeam)
                     {
-                        Debug.Log($"[InkProjectile] 아군입니다 (target={lHit.GameObject.name}, teamIndex={hitOwner._teamIndex}, shooterTeam={_shooterTeam})");
-
-                        return; // 아군이면 이번 틱은 무시 (필요하면 관통 처리)
+                        OnHit(pHit.Point, pHit.Normal, true, pHit.Hitbox.gameObject.layer);
+                        ApplyDamage(hitowner);
                     }
-
-                    OnHit(lHit.Point, lHit.Normal, true, lHit.GameObject.layer);
-                    ApplyDamage(hitOwner);
+                    // 아군이면 관통
                 }
-                else
+                else if (hitWorld)
                 {
-                    OnHit(lHit.Point, lHit.Normal, false, lHit.GameObject.layer);
+                    OnHit(wHit.Point, wHit.Normal, false, wHit.GameObject.layer);
                 }
+
+                //// lHit.Hitbox는 IncludePhysX 옵션 때문에 같은 캐릭터를 맞혀도 PhysX 경로로 판정되면 null이 될 수 있어
+                //// (Fusion 문서: "Hitbox is null in case the hit was on PhysX"), Hitbox 유무 대신 GameObject로 대상을 판별한다.
+                //var hitOwner = lHit.GameObject != null ? lHit.GameObject.GetComponentInParent<NetworkInklingMovement>() : null;
+
+                //if (hitOwner != null)
+                //{
+                //    if (hitOwner._teamIndex == _shooterTeam)
+                //    {
+                //        Debug.Log($"[InkProjectile] 아군입니다 (target={lHit.GameObject.name}, teamIndex={hitOwner._teamIndex}, shooterTeam={_shooterTeam})");
+
+                //        return; // 아군이면 이번 틱은 무시 (필요하면 관통 처리)
+                //    }
+
+                //    OnHit(lHit.Point, lHit.Normal, true, lHit.GameObject.layer);
+                //    ApplyDamage(hitOwner);
+                //}
+                //else
+                //{
+                //    OnHit(lHit.Point, lHit.Normal, false, lHit.GameObject.layer);
+                //}
             }
         }
 
@@ -208,7 +235,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         Quaternion boxRotation = Quaternion.LookRotation(dir);
 
         // 플레이어는 Fusion Hitbox로 판정되므로 일반 Physics.OverlapBox로는 감지되지 않는다
-        Runner.LagCompensation.OverlapBox(boxCenter, _passBoxExtents, boxRotation, Object.InputAuthority, _passHits, _passMask, HitOptions.IncludePhysX);
+        Runner.LagCompensation.OverlapBox(boxCenter, _passBoxExtents, boxRotation, Object.InputAuthority, _passHits, _playerMask);
 
         foreach (var hit in _passHits)
         {

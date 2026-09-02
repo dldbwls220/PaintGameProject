@@ -35,6 +35,8 @@ public class GameManager : NetworkBehaviour
 
     [Header("Timeline")]
     [SerializeField] PlayableDirector _playableDirector;
+    [SerializeField] PlayableAsset _introTeam1;
+    [SerializeField] PlayableAsset _introTeam2;
 
     [Header("GameSoundSetting")]
     [SerializeField] float _introFadeSpeed = 0.3f;
@@ -57,7 +59,7 @@ public class GameManager : NetworkBehaviour
     bool _isIntroBGMEnd;
     bool _introFadeOutComplete;
     bool _wasGameStart;
-   
+    bool _introDirectorResolved;
 
     public bool _nowTeamCam { get; set; }
 
@@ -269,6 +271,9 @@ public class GameManager : NetworkBehaviour
     {
         if (_introPlaying || !_introStarted) return;
 
+        ResolveIntroDirector();
+        if (!_introDirectorResolved) return;
+
         GameSoundManager.instance.OpeningBGM(_openingName);
         GameSoundManager.instance._UiBGMDESC._volum = 1;
 
@@ -286,6 +291,15 @@ public class GameManager : NetworkBehaviour
 
         _playableDirector.time = elapsed;
         _playableDirector.Play();
+    }
+
+    void ResolveIntroDirector()
+    {
+        if(_introDirectorResolved) return;
+        if (!PlayerData.TryGet(Runner.LocalPlayer, out var d)) return;
+
+        _playableDirector.playableAsset = (d._teamIndex == 1) ? _introTeam1 : _introTeam2;
+        _introDirectorResolved = true;
     }
 
     // 서버(Spawner.OnPlayerJoined)에서만 호출됨: 해당 플레이어의 PlayerData를 먼저 등록한 뒤 캐릭터를 스폰한다

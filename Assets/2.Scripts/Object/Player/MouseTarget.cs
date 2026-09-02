@@ -19,6 +19,8 @@ public class MouseTarget : MonoBehaviour
     bool _enemyHit;
     bool _hitAnything;
 
+    static readonly RaycastHit[] _muzzleHitBuffer = new RaycastHit[16];
+
     public bool _eHit { get { return _enemyHit; } }
     public bool _hA { get { return _hitAnything; } }
 
@@ -73,19 +75,45 @@ public class MouseTarget : MonoBehaviour
         Vector3 toDesired = desiredPosition - muzzlePosition;
         float distanceToDesired = toDesired.magnitude;
 
-        if (distanceToDesired > _muzzleSkinDistance &&
-            Physics.Raycast(muzzlePosition, toDesired / distanceToDesired, out RaycastHit muzzleHit, distanceToDesired, _obstacleLayer) &&
-            muzzleHit.distance > _muzzleSkinDistance)
+        bool muzzleBlocked = false;
+        RaycastHit muzzleHit = default;
+        NetworkInklingMovement muzzleOwner = null;
+
+        if (distanceToDesired > _muzzleSkinDistance)
         {
-            var hitOwner = muzzleHit.collider.gameObject.GetComponentInParent<NetworkInklingMovement>();
-            bool isFriendly = hitOwner != null && hitOwner._teamIndex == _teamIdx;
+            Vector3 muzzleDir = toDesired / distanceToDesired;
+            int hitCount = Physics.RaycastNonAlloc(muzzlePosition, muzzleDir, _muzzleHitBuffer, distanceToDesired, _obstacleLayer);
+
+            float nearest = float.MaxValue;
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit h = _muzzleHitBuffer[i];
+                if (h.distance <= _muzzleSkinDistance) continue;
+
+                var owner = h.collider.gameObject.GetComponentInParent<NetworkInklingMovement>();
+
+                // 죽은 플레이어의 콜라이더는 조준/총구 차단 판정에서 완전히 무시하고 통과시킨다
+                if (owner != null && !owner._isAlive) continue;
+
+                if (h.distance < nearest)
+                {
+                    nearest = h.distance;
+                    muzzleHit = h;
+                    muzzleOwner = owner;
+                    muzzleBlocked = true;
+                }
+            }
+        }
+
+        if (muzzleBlocked)
+        {
+            bool isFriendly = muzzleOwner != null && muzzleOwner._teamIndex == _teamIdx;
 
             _hitAnything = true;
-            _enemyHit = hitOwner != null && !isFriendly;
+            _enemyHit = muzzleOwner != null && !isFriendly;
 
             if (!isFriendly)
                 desiredPosition = muzzleHit.point;
-
         }
         else
         {

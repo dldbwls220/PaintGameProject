@@ -424221,6 +424221,8 @@ MonoBehaviour:
   _spawnRoot1: {fileID: 0}
   _spawnRoot2: {fileID: 0}
   _playableDirector: {fileID: 1339369573}
+  _introTeam1: {fileID: 11400000, guid: 5259ab1a5cd782148b54670e2edefa96, type: 2}
+  _introTeam2: {fileID: 11400000, guid: 09f43f8b523deb74a93200f01a61691b, type: 2}
   _introFadeSpeed: 0.3
   _gameBGMFadeSpeed: 0.8
   _mainCamera: {fileID: 1029450984}

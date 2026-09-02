@@ -374,6 +374,13 @@ MonoBehaviour:
   _hitVolume: 1
   _splashVolume: 0.1
   _sfx3D: {fileID: 2508147563772553319}
+  _paintScore: 1
+  _playerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _worldMask:
+    serializedVersion: 2
+    m_Bits: 3584
 --- !u!114 &-8632199437834742506
 MonoBehaviour:
   m_ObjectHideFlags: 0
