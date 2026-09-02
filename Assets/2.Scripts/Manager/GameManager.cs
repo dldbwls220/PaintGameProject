@@ -330,9 +330,10 @@ public class GameManager : NetworkBehaviour
         Quaternion spawnRot = teamIndex == 1 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
 
         runner.Spawn(_playerPrefab, spawnPos, spawnRot, player,
-            onBeforeSpawned: (_, obj) =>
+            onBeforeSpawned: (r, obj) =>
             {
                 obj.GetComponent<NetworkPlayer>().SetSpawnIndex(spawnIndex);
+                r.SetPlayerObject(player, obj);
             });
     }
 

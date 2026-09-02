@@ -1,12 +1,24 @@
-using UnityEngine;
 using Cinemachine;
+using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class TPSCamera : MonoBehaviour
 {
     [SerializeField] NetworkInklingMovement _inkling;
+    [SerializeField]CinemachineVirtualCamera _killCam;
 
+    [SerializeField] float _cameraMoveSpeed = 0.25f;
+
+    const int _killCamOn = 20, _killCamOff = 0;
     CinemachineFreeLook _freeLook;
+    CinemachineBrain _brain;
+
     bool _lookInputEnabled = true;
+
+    private void Awake()
+    {
+        _brain = Camera.main.GetComponent<CinemachineBrain>();
+    }
 
     private void Start()
     {
@@ -26,6 +38,30 @@ public class TPSCamera : MonoBehaviour
         {
             SetLookInputEnabled(introFinished);
         }
+    }
+
+    public void EnableKillCam(Transform killer)
+    {
+        if (killer == null) return;
+        _killCam.Follow = killer;
+        _killCam.LookAt = killer;
+
+        // 킬러 쪽으로 빠르게 날아감
+        _brain.m_DefaultBlend =
+            new CinemachineBlendDefinition(CinemachineBlendDefinition.Style.EaseOut, _cameraMoveSpeed);
+
+        _killCam.Priority = _killCamOn;
+        SetLookInputEnabled(false);
+    }
+
+    public void DisableKillCam()
+    {
+        // 리스폰 시 즉시 컷
+        _brain.m_DefaultBlend =
+            new CinemachineBlendDefinition(CinemachineBlendDefinition.Style.Cut, 0f);
+
+        _killCam.Priority = _killCamOff;
+        _killCam.Follow = _killCam.LookAt = null;
     }
 
     void SetLookInputEnabled(bool enabled)

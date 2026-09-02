@@ -2,10 +2,12 @@ using DefineEnum;
 using DefineStructure;
 using Fusion;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class ResultManager : MonoBehaviour
 {
@@ -29,6 +31,8 @@ public class ResultManager : MonoBehaviour
     [SerializeField] CharacterClothChanger[] _otherPlayer;
     [SerializeField] CharacterClothChanger _mePlayer;
     [SerializeField] EmoteCharacter[] _emoteCharacters;
+    [SerializeField] TextMeshProUGUI[] _otherNickname;
+    [SerializeField] TextMeshProUGUI _meNickname;
     [Header("Scene Select Timer")]
     [SerializeField] float _sceneChooseTimer = 30f;
     [Header("BGM Setting")]
@@ -75,7 +79,7 @@ public class ResultManager : MonoBehaviour
         GetTargetValueRate(teamRate, enemyRate);
         InitJudge(team, enemy, teamState, enemyState);
         _resultUI.InitSocreBoard(team, enemy, teamState);
-        ChooseEmote();
+        ChooseEmote(teamState);
 
         _myState = teamState;
         SetMusic();
@@ -85,7 +89,7 @@ public class ResultManager : MonoBehaviour
     {
         _localPlayer = player;
         InstantiateScoreBar(teamdata, enemydata);
-        SetClothes(teamdata);
+        SetPlayer(teamdata);
     }
 
 
@@ -100,7 +104,7 @@ public class ResultManager : MonoBehaviour
         _resultUI.InstantiateScoreBar(teamdata, enemydata);
     }
 
-    void SetClothes(List<PlayerData> teamdata)
+    void SetPlayer(List<PlayerData> teamdata)
     {
         int idx = 0;
 
@@ -109,11 +113,23 @@ public class ResultManager : MonoBehaviour
             if (playerdata._self == _localPlayer)
             {
                 _mePlayer.SetCustomization(playerdata._custom);
+                _meNickname.text = playerdata.DisplayName;
             }
             else
             {
-                _otherPlayer[idx].SetCustomization(playerdata._custom);
+                _otherPlayer[idx++].SetCustomization(playerdata._custom);
+                _otherNickname[idx].text = playerdata.DisplayName;
             }
+        }
+
+        for (int i = 0; i < _otherPlayer.Length; i++)
+        {
+            if (i < idx) continue;
+
+            _otherPlayer[i].gameObject.SetActive(false);
+            _otherNickname[i].text = null;
+            Image image = _otherNickname[i].transform.GetComponentInParent<Image>();
+            image.color = Color.clear;
         }
 
         foreach (var emote in _emoteCharacters)
@@ -141,11 +157,14 @@ public class ResultManager : MonoBehaviour
         _JudgeJr.InitJudge(enemy, enemyState);
     }
 
-    void ChooseEmote()
+    void ChooseEmote(ResultState state)
     {
+        
         while (_emotes.Count < 4)
         {
-            _emotes.Add((EmoteState)Random.Range(1,(int)EmoteState.Count));
+            EmoteState emoteState = state == ResultState.Win ? (EmoteState)Random.Range(1, (int)EmoteState.Count) : EmoteState.Loose;
+
+            _emotes.Add(emoteState);
         }
     }
 

@@ -23,6 +23,8 @@ public class Health : NetworkBehaviour
     [SerializeField] Image _killedImage;
     [SerializeField] Image _asssitImage;
     [SerializeField] Image _deathImage;
+    [SerializeField] float _beatenWndDelay = 1.5f;
+
 
     [Header("Death Splash Setting")]
     [SerializeField] float _radius = 1.5f;
@@ -40,9 +42,13 @@ public class Health : NetworkBehaviour
     [SerializeField] AudioSource _voiceSFX3D;
     [SerializeField] AudioSource _otherSFX3D;
 
+    [Header("Camera")]
+    [SerializeField] TPSCamera _localCamera;
+
     public bool _isAlive => _currentHealth > 0;
     public bool _isFull => _currentHealth >= _maxHealth;
     public bool _isHit;
+    bool _beatenWndOpened;
     bool _wasAlive = true;
     float _prevHealth;
     Color _inkColor = Color.white;
@@ -55,6 +61,9 @@ public class Health : NetworkBehaviour
     [Networked] TickTimer _healthTimer { get; set; }
     [Networked] TickTimer _preRespawnTimer { get; set; }
     [Networked] TickTimer _respawningTimer { get; set; }
+    [Networked] TickTimer _beatenWndTimer { get; set; }
+
+
 
     [Networked] public NetworkBool _pendingRespawn { get; set; } = false;
     [Networked] public NetworkBool _nowRespawing { get; set; } = false;
@@ -117,9 +126,30 @@ public class Health : NetworkBehaviour
     {
         UpdateDeathIcons();
 
-        if (_isAlive && HasInputAuthority)
+        if (!HasInputAuthority) return;
+
+        if (_isAlive)
         {
             GameUIManager._instance.CloseBeatenWnd();
+            _localCamera.DisableKillCam();
+            _beatenWndOpened = false;
+        }
+        else if (!_beatenWndOpened && _beatenWndTimer.Expired(Runner))
+        {
+            PlayerRef killer = _lastAttackers[0];
+
+            string killerName = "";
+            if (GameManager._instance.PlayerData.TryGet(killer, out var killerData))
+            {
+                killerName = killerData.DisplayName.ToString();
+                if (Runner.TryGetPlayerObject(killer, out NetworkObject killerObj))
+                {
+                    _localCamera.EnableKillCam(killerObj.transform);
+                }
+            }
+
+            GameUIManager._instance.OpenBeatenWnd(killerName);
+            _beatenWndOpened = true;
         }
     }
 
@@ -168,10 +198,12 @@ public class Health : NetworkBehaviour
                 GameManager._instance.PlayerData.Set(Object.InputAuthority, data);
             }
 
-            if (GameManager._instance.PlayerData.TryGet(player, out var killerData))
-            {
-                RPC_OpenBeatenWnd(Object.InputAuthority, killerData.DisplayName);
-            }
+            //if (GameManager._instance.PlayerData.TryGet(player, out var killerData))
+            //{
+            //    RPC_OpenBeatenWnd(Object.InputAuthority, killerData.DisplayName);
+            //}
+
+            _beatenWndTimer = TickTimer.CreateFromSeconds(Runner, _beatenWndDelay);
 
             ExplodePaint();
             Respawn();

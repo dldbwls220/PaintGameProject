@@ -33536,6 +33536,11 @@ MonoBehaviour:
   - {fileID: 1031755241}
   - {fileID: 506718364}
   - {fileID: 1534045547}
+  _otherNickname:
+  - {fileID: 130223299}
+  - {fileID: 1999726056}
+  - {fileID: 999399229}
+  _meNickname: {fileID: 754761573}
   _sceneChooseTimer: 30
   _resultFadeSpeed: 1
 --- !u!4 &1764172225
@@ -39192,7 +39197,7 @@ MonoBehaviour:
   _winBG: {fileID: 2108985020}
   _loseBG: {fileID: 145443556}
   _winBGAlpha: 0.3
-  _fadeInSpeed: 0.8
+  _fadeInSpeed: 0.5
   _winStripe: {fileID: 1774834626}
 --- !u!95 &1950756422
 Animator:
