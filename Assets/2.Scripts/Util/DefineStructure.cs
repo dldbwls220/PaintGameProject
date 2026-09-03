@@ -3,6 +3,7 @@ using Fusion;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace DefineStructure
 {
@@ -66,13 +67,19 @@ namespace DefineStructure
             _player.clip = clip;
         }
 
-        public AudioPlayerDESC(AudioSource audioS, float vol, bool mute, bool loop = true)
+        public void _output(AudioMixerGroup mixer)
+        {
+            _player.outputAudioMixerGroup = mixer;
+        }
+
+        public AudioPlayerDESC(AudioSource audioS, float vol, bool mute, bool loop = true, AudioMixerGroup mixer = null)
         {
             _player = audioS;
             _player.playOnAwake = false;
             _player.volume = vol;
             _player.mute = mute;
             _player.loop = loop;
+            _player.outputAudioMixerGroup = mixer;
         }
     }
 
@@ -90,6 +97,10 @@ namespace DefineStructure
         public int _statisticPostion;
         public int _score;
         public float _myRespawnTime;
+        public float _mouseSensitivity;
+        public float _masterVolume;
+        public float _bgmVolume;
+        public float _sfxVolume;
         public bool _isAlive;
         public bool _isConnected;
         public PlayerCustomization _custom;

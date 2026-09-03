@@ -57,6 +57,13 @@ namespace DefineEnum
 
     #region[소리]
 
+    public enum MixerState
+    {
+        MasterMixer,
+        BGMMixer,
+        SFXMixer
+    }
+
     public enum UIBGMName
     {
         Boot_Screen,            //로딩

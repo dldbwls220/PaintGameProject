@@ -1,13 +1,22 @@
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using static UnityEngine.Rendering.DebugUI;
 
 public class TPSCamera : MonoBehaviour
 {
+    [Header("Class Reference")]
     [SerializeField] NetworkInklingMovement _inkling;
-    [SerializeField]CinemachineVirtualCamera _killCam;
+    [SerializeField] CinemachineVirtualCamera _killCam;
 
+    [Header("Camera setting")]
     [SerializeField] float _cameraMoveSpeed = 0.25f;
+
+    [Header("Mouse Sensitivity Setting")]
+    [SerializeField] float _baseXSpeed = 300f;
+    [SerializeField] float _baseYSpeed = 2;
+    float _sensitivity;
+
 
     const int _killCamOn = 20, _killCamOff = 0;
     CinemachineFreeLook _freeLook;
@@ -24,7 +33,7 @@ public class TPSCamera : MonoBehaviour
     {
         if (PlayerCustomizeManager.instance != null)
         {
-
+            _sensitivity = PlayerCustomizeManager.instance.ReturnSensitivity();
         }
 
         //initCam();
@@ -92,6 +101,9 @@ public class TPSCamera : MonoBehaviour
                 _freeLook.m_XAxis.Value = 0f;
            
             _freeLook.m_YAxis.Value = 0.5f;
+
+            _freeLook.m_XAxis.m_MaxSpeed = _baseXSpeed * _sensitivity;
+            _freeLook.m_YAxis.m_MaxSpeed = _baseYSpeed * _sensitivity;
         }
 
         _lookInputEnabled = enabled;

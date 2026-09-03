@@ -1,6 +1,7 @@
 using DefineEnum;
 using DefineStructure;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
 {
@@ -11,10 +12,6 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
     public PlayerCustomization Customization => _customization;
     public PlayerData Data => _data;
 
-    //마우스 감도
-    public float _sensitivity;
-    public float _mouseSensitivity => _sensitivity;
-
     public void initDefaultcustom()
     {
         if (_emoteCharacterPrefab != null) return;
@@ -22,7 +19,10 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
         _customization = PlayerCustomization.Default;
         LoadNInitCustomCharacter();
 
-        _sensitivity = 2;
+        SetSensitivity(2);
+        UpdateVolume(1, MixerState.MasterMixer);
+        UpdateVolume(1, MixerState.BGMMixer);
+        UpdateVolume(1, MixerState.SFXMixer);
     }
 
     #region[커스터마이징]
@@ -93,8 +93,53 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
     
     public void SetSensitivity(float rate)
     {
-        _sensitivity = rate;
+        _data._mouseSensitivity = rate;
+    }
+
+    public float ReturnSensitivity()
+    {
+        return _data._mouseSensitivity;
     }
 
     #endregion[마우스 감도]
+
+    #region[볼륨]
+
+    public void UpdateVolume(float volume, MixerState state)
+    {
+        switch (state)
+        {
+            case MixerState.MasterMixer:
+                _data._masterVolume = volume;
+                break;
+            case MixerState.BGMMixer:
+                _data._bgmVolume = volume;
+                break;
+            case MixerState.SFXMixer:
+                _data._sfxVolume = volume;
+                break;
+        }
+    }
+
+    public float ReturnVolume(MixerState state)
+    {
+        float volume = 0;
+
+        switch (state)
+        {
+            case MixerState.MasterMixer:
+                volume = _data._masterVolume;
+                break;
+            case MixerState.BGMMixer:
+                volume = _data._bgmVolume;
+                break;
+            case MixerState.SFXMixer:
+                volume = _data._sfxVolume;
+                break;
+        }
+
+        return volume;
+    }
+
+    #endregion[볼륨]
 }

@@ -14,6 +14,7 @@ public class StartUIManager : MonoBehaviour
             wnd.SetActive(false);
         }
         _settingUI.InitSliderValue();
+        _settingUI.OpenMouseSetting();
         _settingUI.CloseWnd();
     }
 

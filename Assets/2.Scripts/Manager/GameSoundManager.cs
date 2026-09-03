@@ -1,12 +1,15 @@
 using DefineEnum;
 using DefineStructure;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.Audio;
 
 public class GameSoundManager : Singleton<GameSoundManager>
 {
+    AudioMixer _audioMixerGroup;
+
+    const string Master_Volume = "MasterMixer";
+
     Dictionary<ProjectileSFX3DName, AudioClip> _projectileSFX3DDoc;
     Dictionary<ProjectileSFXName, AudioClip> _projectileSFXDoc;
 
@@ -78,6 +81,8 @@ public class GameSoundManager : Singleton<GameSoundManager>
     public void LoadAllSound()
     {
         if (_projectileSFX3DDoc.Count > 1) return;
+
+        SetAudioMixerGroup();
 
         string path = "Sound/SFX/";
 
@@ -424,4 +429,33 @@ public class GameSoundManager : Singleton<GameSoundManager>
         return source.volume;
     }
 
+    public void UpdateVolume(float value, MixerState state)
+    {
+        if(PlayerCustomizeManager.instance == null) return;
+
+        PlayerCustomizeManager.instance.UpdateVolume(value, state);
+    }
+
+    void SetAudioMixerGroup()
+    {
+        if (_audioMixerGroup != null) return;
+
+        AudioMixer mixer = Resources.Load<AudioMixer>("AudioMixer/MasterAudioMixer");
+
+        _audioMixerGroup = mixer;
+
+        AudioMixerGroup bgmGroup = mixer.FindMatchingGroups("BGM")[0];
+        AudioMixerGroup sfxGroup = mixer.FindMatchingGroups("SFX")[0];
+
+        _SFXDESC._output(sfxGroup);
+
+        _UiBGMDESC._output(bgmGroup);
+
+        _GameBGMDESC._output(bgmGroup);
+
+        _NowOrNeverDESC._output(bgmGroup);
+
+        _ResultBGMDESC._output(bgmGroup);
+
+    }
 }
