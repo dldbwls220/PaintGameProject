@@ -6,7 +6,7 @@ public class StartUIManager : MonoBehaviour
 {
     [SerializeField] GameObject[] _selectedWnds;
     [SerializeField] SettingUI _settingUI;
-
+    [SerializeField] DisplaySettingUI _displayUI;
     private void Start()
     {
         foreach (var wnd in _selectedWnds)
@@ -16,6 +16,8 @@ public class StartUIManager : MonoBehaviour
         _settingUI.InitSliderValue();
         _settingUI.OpenMouseSetting();
         _settingUI.CloseWnd();
+
+        _displayUI.InitDisplay();
     }
 
     public void Update()

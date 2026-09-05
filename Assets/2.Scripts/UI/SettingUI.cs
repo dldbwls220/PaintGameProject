@@ -25,7 +25,6 @@ public class SettingUI : MonoBehaviour
     [SerializeField] Image _volumeBtnImg;
     [SerializeField] Image _resolutionBtnImg;
 
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && gameObject.activeSelf)
