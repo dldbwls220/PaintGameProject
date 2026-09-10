@@ -1477,7 +1477,7 @@ Animation:
   m_Animations:
   - {fileID: 7400000, guid: e0e19e994668d364887ab39107c936c3, type: 2}
   m_WrapMode: 0
-  m_PlayAutomatically: 1
+  m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_UpdateMode: 0
   m_CullingType: 0
@@ -3423,7 +3423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.046614908, b: 0.5660378, a: 0.90588236}
+  m_Color: {r: 0, g: 0.046614908, b: 0.5660378, a: 0}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3933,6 +3933,7 @@ MonoBehaviour:
   - {fileID: 6772553671285457976}
   _textColor: {fileID: 2160592229059754240}
   _scoreText: {fileID: 4920935511283587984}
+  _wipeOutAnim: {fileID: 6574672934565929629}
 --- !u!111 &5578918071520002970
 Animation:
   m_ObjectHideFlags: 0
@@ -5228,8 +5229,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190335
-  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
+    rgba: 255
+  m_fontColor: {r: 1, g: 0, b: 0, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7725,8 +7726,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 16777215
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DefineEnum;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -41,6 +42,9 @@ public class GameUIManager : MonoBehaviour
 
     [Header("Score")]
     [SerializeField] TextMeshProUGUI _scoreText;
+
+    [Header("WipeOut")]
+    [SerializeField] Animation _wipeOutAnim;
 
     Queue<GameObject> _killLogQueue = new Queue<GameObject>();
 
@@ -109,6 +113,13 @@ public class GameUIManager : MonoBehaviour
         _teamStatusUI.DangerSign(true, false);
         _teamStatusUI.DangerSign(false, false);
         _score.SetActive(true);
+    }
+
+    // 잉크 비율 격차가 벌어진 팀에 위험 표시를 켠다 (로컬 플레이어 시점: my / enemy)
+    public void SetDangerSign(bool myTeamDanger, bool enemyTeamDanger)
+    {
+        _teamStatusUI.DangerSign(true, myTeamDanger);
+        _teamStatusUI.DangerSign(false, enemyTeamDanger);
     }
 
     // 로컬 플레이어(HasInputAuthority)가 스폰됐을 때 화면 전용(로컬) UI를 그 플레이어에 연결한다
@@ -191,6 +202,20 @@ public class GameUIManager : MonoBehaviour
     {
         _beatenInfoUI.BeatenNameTxt(killerName);
         _beatenInfoUI.OpenWnd();
+    }
+
+    public void PlayWipeOut()
+    {
+        _wipeOut.SetActive(true);
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.PlayerJoined);
+        _wipeOutAnim.Play();
+        CancelInvoke(nameof(CloseWipeOut));
+        Invoke(nameof(CloseWipeOut), _wipeOutAnim.clip.length);
+    }
+
+    void CloseWipeOut()
+    {
+        _wipeOut.SetActive(false);
     }
 
     public void CloseBeatenWnd()

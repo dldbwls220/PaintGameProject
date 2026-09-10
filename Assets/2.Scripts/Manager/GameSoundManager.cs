@@ -69,7 +69,7 @@ public class GameSoundManager : Singleton<GameSoundManager>
         _uibgmPlayer = gameObject.AddComponent<AudioSource>();
         _gamebgmPlayer = gameObject.AddComponent<AudioSource>();
         _nowOrNeverPlayer = gameObject.AddComponent<AudioSource>();
-        _resultPlayer = gameObject.GetComponent<AudioSource>();
+        _resultPlayer = gameObject.AddComponent<AudioSource>();
 
         _SFXDESC = new AudioPlayerDESC(_sfxPlayer, 1, false, false);
         _UiBGMDESC = new AudioPlayerDESC(_uibgmPlayer, 1, false, false);

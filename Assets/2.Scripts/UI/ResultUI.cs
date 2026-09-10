@@ -14,6 +14,8 @@ public class ResultUI : MonoBehaviour
     [SerializeField] Slider _badSlider;
     [SerializeField] float _slowSpeed;
     [SerializeField] float _fastSpeed;
+    [SerializeField] TextMeshProUGUI _goodRate;
+    [SerializeField] TextMeshProUGUI _enemyRate;
 
     [Header("Enemy Team Wave Scroll")]
     [SerializeField] RectTransform[] _enemyFrontWaves;
@@ -223,6 +225,8 @@ public class ResultUI : MonoBehaviour
         _badSlider.value = Mathf.MoveTowards(_badSlider.value, 0.25f, _slowSpeed * Time.deltaTime);
 
         if(_goodSlider.value == 0.25f) _wasJudgingStart = true;
+
+        UpdateRateText(_goodSlider.value * 100, _badSlider.value * 100);
     }
 
     void FinalSliderValue()
@@ -241,10 +245,16 @@ public class ResultUI : MonoBehaviour
                 GameSoundManager.instance.PlayerSFX(PlayerSFXName.DeadSplash00);
                 PlaySparkParticle();
             }
-
-
             _wasJudgingEnd = true; 
         }
+
+        UpdateRateText((_goodSlider.value - 0.02f) * 100 , _badSlider.value * 100);
+    }
+
+    void UpdateRateText(float team, float enemy)
+    {
+        _goodRate.text = $"{team:00.0}%";
+        _enemyRate.text = $"{enemy:00.0}%";
     }
 
     public void InitSocreBoard(Color team, Color enemy, ResultState teamState)

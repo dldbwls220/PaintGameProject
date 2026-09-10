@@ -11,15 +11,27 @@
         [Header(Ink)]
         _WorldInkTex    ("잉크 텍스처 (자동연결)",      2D)          = "black" {}
         _InkNormalMap   ("잉크 노말맵",                 2D)          = "bump"  {}
-        _InkNormalStr   ("잉크 노말 강도",              Range(0, 2)) = 1.0
-        _InkNormalTiling("잉크 노말 타일링",            Float)       = 4.0
-        _InkSmoothness  ("잉크 스무스니스",             Range(0, 1)) = 0.85
+        _InkNormalStr   ("잉크 노말 강도",              Range(0, 2)) = 0.35
+        _InkNormalTiling("잉크 노말 타일링",            Float)       = 5.0
+        _InkSmoothness  ("잉크 스무스니스",             Range(0, 1)) = 0.65
         _InkMetallic    ("잉크 메탈릭",                 Range(0, 1)) = 0.0
 
         [Header(Zone)]
         _ZoneOffset     ("Zone 시작 좌표",              Vector)      = (-50, -50, 0, 0)
         _ZoneSizeU      ("Zone 가로 크기",              Float)       = 100
         _ZoneSizeV      ("Zone 세로 크기",              Float)       = 100
+
+        [Header(Surface Options)]
+        [Enum(Opaque, 0, Transparent, 1)]
+        _Surface        ("표면 타입",                   Float)       = 0
+        [Toggle(_ALPHATEST_ON)]
+        _AlphaClip      ("알파 클립 사용",              Float)       = 0
+        _Cutoff         ("알파 클립 임계값",            Range(0, 1)) = 0.5
+        _Alpha          ("전체 불투명도",               Range(0, 1)) = 1.0
+
+        [HideInInspector] _SrcBlend  ("__src", Float) = 1
+        [HideInInspector] _DstBlend  ("__dst", Float) = 0
+        [HideInInspector] _ZWrite    ("__zw",  Float) = 1
 
         [HideInInspector]
         _ZoneAxis       ("Zone 투영 축",                Float)       = 0
@@ -39,9 +51,15 @@
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
 
+            Blend  [_SrcBlend] [_DstBlend]
+            ZWrite [_ZWrite]
+
             HLSLPROGRAM
             #pragma vertex   vert
             #pragma fragment frag
+
+            #pragma shader_feature_local _ALPHATEST_ON
+            #pragma shader_feature_local _SURFACE_TYPE_TRANSPARENT
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
@@ -68,6 +86,13 @@
                 float  _InkNormalTiling;
                 float  _InkSmoothness;
                 float  _InkMetallic;
+                float  _Surface;
+                float  _AlphaClip;
+                float  _Cutoff;
+                float  _Alpha;
+                float  _SrcBlend;
+                float  _DstBlend;
+                float  _ZWrite;
             CBUFFER_END
 
             struct Attributes
@@ -146,6 +171,11 @@
                 half3 normalWS   = normalize(lerp(baseNormalWS, inkNormalWS, ink));
                 half  smoothness = lerp(_Smoothness,   _InkSmoothness,  ink);
                 half  metallic   = lerp(_Metallic,     _InkMetallic,    ink);
+                half  alpha      = _Alpha;
+
+            #if defined(_ALPHATEST_ON)
+                clip(alpha - _Cutoff);
+            #endif
 
                 InputData lightingInput       = (InputData)0;
                 lightingInput.positionWS      = pos;
@@ -161,10 +191,16 @@
                 surfaceData.metallic          = metallic;
                 surfaceData.smoothness        = smoothness;
                 surfaceData.occlusion         = 1;
-                surfaceData.alpha             = 1;
+                surfaceData.alpha             = alpha;
 
                 half4 finalColor = UniversalFragmentPBR(lightingInput, surfaceData);
                 finalColor.rgb   = MixFog(finalColor.rgb, lightingInput.fogCoord);
+
+            #if defined(_SURFACE_TYPE_TRANSPARENT)
+                finalColor.a = alpha;
+            #else
+                finalColor.a = 1.0;
+            #endif
 
                 return finalColor;
             }
@@ -189,4 +225,6 @@
             ENDHLSL
         }
     }
+
+    CustomEditor "WorldInkDisplayZoneGUI"
 }

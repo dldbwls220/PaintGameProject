@@ -24,6 +24,7 @@ public class SliderTrigger : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public void OnPointerUp(PointerEventData e)
     {
         _dragging = false;
+        GameSoundManager.instance.PlayerSFX(DefineEnum.PlayerSFXName.UI_Decide00);
         _handler.gameObject.SetActive(false);
     }
 

@@ -48,25 +48,23 @@ public class DisplaySettingUI : MonoBehaviour
 
         _resolutionDropDown.options.Clear();
 
-        int optionNum = 0;
-
         foreach (Resolution resolution in _resolutions)
         {
             TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
 
             option.text = resolution.width + " x " + resolution.height;
             _resolutionDropDown.options.Add(option);
-
-            if (resolution.width == Screen.width && resolution.height == Screen.height)
-            {
-                _resolutionDropDown.value = optionNum;
-            }
-            optionNum++;
         }
+    }
 
+    public void InitDisplayOption()
+    {
+        GetCurrentResolution();
+
+        _currResolution = _resolutions[_selectResolution];
+
+        _resolutionDropDown.SetValueWithoutNotify(_selectResolution);
         _resolutionDropDown.RefreshShownValue();
-
-        _currResolution = _resolutions[1];
 
         SetDisplayMode(_isFullScreen);
         SelectedButtonColor();
@@ -126,6 +124,20 @@ public class DisplaySettingUI : MonoBehaviour
         {
             _fsMode.color = _originColor;
             _wMode.color = _selectedColor;
+        }
+    }
+
+    void GetCurrentResolution()
+    {
+        int idx = 0;
+
+        foreach (Resolution res in _resolutions)
+        {           
+            if (res.height == Screen.currentResolution.height && res.width == Screen.currentResolution.width)
+            {
+              _selectResolution = idx;
+            }
+            idx++;
         }
     }
 }

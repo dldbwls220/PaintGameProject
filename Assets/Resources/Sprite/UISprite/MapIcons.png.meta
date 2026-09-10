@@ -255,7 +255,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MapIcons_6
+      name: Port_Mackerel
       rect:
         serializedVersion: 2
         x: 1
@@ -299,7 +299,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MapIcons_8
+      name: Moray_Towers
       rect:
         serializedVersion: 2
         x: 387
@@ -548,10 +548,10 @@ TextureImporter:
       MapIcons_3: 1663407119
       MapIcons_4: 2103240399
       MapIcons_5: -411328410
-      MapIcons_6: 1005106735
       MapIcons_7: -1571393553
-      MapIcons_8: 2116334796
       MapIcons_9: -2117643231
+      Moray_Towers: 2116334796
+      Port_Mackerel: 1005106735
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

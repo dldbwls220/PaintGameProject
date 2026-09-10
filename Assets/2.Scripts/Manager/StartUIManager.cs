@@ -13,11 +13,12 @@ public class StartUIManager : MonoBehaviour
         {
             wnd.SetActive(false);
         }
-        _settingUI.InitSliderValue();
-        _settingUI.OpenMouseSetting();
+        _settingUI.InitSettingUI();
+        _settingUI.OpenMouseSetting(true);
         _settingUI.CloseWnd();
 
         _displayUI.InitDisplay();
+        _displayUI.InitDisplayOption();
     }
 
     public void Update()

@@ -25,6 +25,7 @@ public class SettingUI : MonoBehaviour
     [SerializeField] Image _volumeBtnImg;
     [SerializeField] Image _resolutionBtnImg;
 
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && gameObject.activeSelf)
@@ -33,7 +34,7 @@ public class SettingUI : MonoBehaviour
         }
     }
 
-    public void InitSliderValue()
+    public void InitSettingUI()
     {
         if(PlayerCustomizeManager.instance == null) return;
 
@@ -42,6 +43,7 @@ public class SettingUI : MonoBehaviour
         _masterSlider.value = PlayerCustomizeManager.instance.ReturnVolume(MixerState.MasterMixer);
         _bgmSlider.value = PlayerCustomizeManager.instance.ReturnVolume(MixerState.BGMMixer);
         _sfxSlider.value = PlayerCustomizeManager.instance.ReturnVolume(MixerState.SFXMixer);
+
     }
 
     public void SaveSensitivity()
@@ -69,7 +71,7 @@ public class SettingUI : MonoBehaviour
     public void OpenWnd()
     {
         gameObject.SetActive(true);
-        InitSliderValue();
+        InitSettingUI();
     }
 
     public void CloseWnd()
@@ -80,8 +82,10 @@ public class SettingUI : MonoBehaviour
 
     #region[EventSystem]
 
-    public void OpenMouseSetting()
+    public void OpenMouseSetting(bool isStart)
     {
+        if (_mouseWnd.activeSelf) return;
+
         _mouseWnd.SetActive(true);
         _volumeWnd.SetActive(false);
         _resoultionWnd.SetActive(false);
@@ -89,10 +93,15 @@ public class SettingUI : MonoBehaviour
         _mouseBtnImg.color = _selectedColor;
         _volumeBtnImg.color = Color.black;
         _resolutionBtnImg.color = Color.black;
+
+        if (!isStart)
+            GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00);
     }
 
     public void OpenVolumeSetting()
     {
+        if (_volumeWnd.activeSelf) return;
+
         _mouseWnd.SetActive(false);
         _volumeWnd.SetActive(true);
         _resoultionWnd.SetActive(false);
@@ -100,10 +109,14 @@ public class SettingUI : MonoBehaviour
         _mouseBtnImg.color = Color.black;
         _volumeBtnImg.color = _selectedColor;
         _resolutionBtnImg.color = Color.black;
+
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00);
     }
 
     public void OpenResoltuionSetting()
     {
+        if (_resoultionWnd.activeSelf) return;
+
         _mouseWnd.SetActive(false);
         _volumeWnd.SetActive(false);
         _resoultionWnd.SetActive(true);
@@ -111,6 +124,8 @@ public class SettingUI : MonoBehaviour
         _mouseBtnImg.color = Color.black;
         _volumeBtnImg.color = Color.black;
         _resolutionBtnImg.color = _selectedColor;
+
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00);
     }
 
     #endregion[EventSystem]

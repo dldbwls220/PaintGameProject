@@ -122,7 +122,7 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         }
 
         _networkrunner.SessionInfo.IsOpen = false;
-        _networkrunner.SessionInfo.IsVisible = false;
+        //_networkrunner.SessionInfo.IsVisible = false;
         _networkrunner.LoadScene(SceneRef.FromIndex((int)_gameSceneState));
     }
 

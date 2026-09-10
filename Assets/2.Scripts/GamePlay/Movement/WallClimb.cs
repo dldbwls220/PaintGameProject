@@ -40,7 +40,9 @@ public class WallClimb : MonoBehaviour
         {
             WorldInkZoneReceiver wir = _frontWallHit.collider.GetComponent<WorldInkZoneReceiver>();
 
-            if (wir != null)
+
+
+            if (wir != null && _frontWallHit.collider.CompareTag("Wall"))
             {
                 Color color = wir.CheckPaintColor(_frontWallHit);
 

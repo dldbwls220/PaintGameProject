@@ -16,6 +16,7 @@ public class ResourcePoolManager : Singleton<ResourcePoolManager>
         LoadShoesGear();
         LoadHairIcon();
         LoadEyebrowsIcon();
+        LoadMapIcon();
     }
 
     void LoadHeadGear()
@@ -66,6 +67,16 @@ public class ResourcePoolManager : Singleton<ResourcePoolManager>
             eyebrowsIcon.Add(imgs[i].name, imgs[i]);
 
         _allPoolDatas.Add(PoolDataType.EYEBROWSICONIMG, eyebrowsIcon);
+    }
+
+    void LoadMapIcon()
+    {
+        Dictionary<string, object> mapicon = new Dictionary<string, object>();
+        Sprite[] imgs = Resources.LoadAll<Sprite>("Sprite/UISprite/MapIcons");
+        for (int i = 0; i < imgs.Length; i++)
+            mapicon.Add(imgs[i].name, imgs[i]);
+
+        _allPoolDatas.Add(PoolDataType.MAPIMG, mapicon);
     }
 
     public T Get<T>(PoolDataType type, string index)

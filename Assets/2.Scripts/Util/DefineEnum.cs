@@ -383,8 +383,15 @@ namespace DefineEnum
     public enum MapState
     {
         Port_Mackerel,
+        Moray_Towers,
 
         Count
+    }
+
+    public enum KoreanName
+    {
+        호케_부두,
+        갈치_주차장
     }
 
     public enum CameraRootState
@@ -445,7 +452,8 @@ namespace DefineEnum
         CLOTHGEARIMG,
         SHOESGEARIMG,
         HAIRICONIMG,
-        EYEBROWSICONIMG
+        EYEBROWSICONIMG,
+        MAPIMG
     }
 
     public enum MusicType

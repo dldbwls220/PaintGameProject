@@ -49,6 +49,10 @@ public class GameManager : NetworkBehaviour
     [SerializeField] GameObject _team1Fix;
     [SerializeField] GameObject _team2Fix;
 
+    [Header("UI Setting")]
+    const float _dangerRateGap = 0.30f;
+
+
     OpeningBGMName _openingName;
 
     int _spawnCount;
@@ -84,9 +88,18 @@ public class GameManager : NetworkBehaviour
     [Networked] public NetworkBool _isResultStarted { get; set; }
     [Networked] NetworkBool _introStarted { get; set; }
     [Networked] float _introStartTime { get; set; }
+    [Networked] float _team1InkRate { get; set; }
+    [Networked] float _team2InkRate { get; set; }
+    [Networked] TickTimer _rateCalcTimer { get; set; }
 
     bool _wasResultStarted;
     bool _resultSequenceStarted;
+  
+    bool _wasMyTeamDanger;
+    bool _wasEnemyTeamDanger;
+
+    bool _wasTeam1Dead;
+    bool _wasTeam2Dead;
 
     public MusicType musicType { get; private set; }
     public static GameManager _instance => _uniqueinstance;
@@ -156,6 +169,8 @@ public class GameManager : NetworkBehaviour
             GameTime = TickTimer.CreateFromSeconds(Runner, _gameDuration);
         }
 
+        CalculateColorRate();
+
         //if(GameTime.RemainingTime(Runner) <= 1) { _gameEnd = true; }
     }
 
@@ -168,9 +183,17 @@ public class GameManager : NetworkBehaviour
 
         StartIntroIfNeeded();
         FadeOutBGM();
+        CheckTeamDeath();
+
 
         if (PlayerData.TryGet(Runner.LocalPlayer, out var d))
-            _uiManager.SetScore(d._score);
+        {
+                _uiManager.SetScore(d._score);
+            if (GameTime.RemainingTime(Runner) <= _gameDuration - 30)
+            {
+                UpdateDangerSign(d);
+            }
+        }
 
         try
         {
@@ -418,8 +441,8 @@ public class GameManager : NetworkBehaviour
         Color teamColor = data._teamColor;
         Color enemyColor = data._enemyColor;
 
-        float teamRate = GetCloseColorRate(_gridManager.GetColorRate(), teamColor);
-        float enemyRate = GetCloseColorRate(_gridManager.GetColorRate(), enemyColor);
+        float teamRate = data._teamIndex == 1 ? _team1InkRate : _team2InkRate;
+        float enemyRate = teamRate == _team1InkRate ? _team2InkRate : _team1InkRate;
 
 
         ResultState teamState = teamRate > enemyRate ? ResultState.Win : ResultState.Lose;
@@ -432,6 +455,45 @@ public class GameManager : NetworkBehaviour
 
         //_uiManager.EndFinishAnim();
         //ResultManager._instance.StartTimeline();
+    }
+
+    // 로컬 플레이어 시점에서 두 팀 잉크 비율을 비교해, 격차가 _dangerRateGap 이상이면
+    // 비율이 낮은 팀에 위험 표시를 켠다. 게임이 진행 중일 때만 표시한다.
+    void UpdateDangerSign(PlayerData localData)
+    {
+        bool myTeamDanger = false;
+        bool enemyTeamDanger = false;
+
+        if (_gameStart && !_gameEnd)
+        {
+            float myRate = localData._teamIndex == 1 ? _team1InkRate : _team2InkRate;
+            float enemyRate = localData._teamIndex == 1 ? _team2InkRate : _team1InkRate;
+            float gap = myRate - enemyRate;
+
+            if (gap <= -_dangerRateGap) myTeamDanger = true;
+            else if (gap >= _dangerRateGap) enemyTeamDanger = true;
+        }
+
+        if (myTeamDanger == _wasMyTeamDanger && enemyTeamDanger == _wasEnemyTeamDanger)
+            return;
+
+        _uiManager.SetDangerSign(myTeamDanger, enemyTeamDanger);
+        _wasMyTeamDanger = myTeamDanger;
+        _wasEnemyTeamDanger = enemyTeamDanger;
+    }
+
+    void CalculateColorRate()
+    {
+        if (_gameEnd) return;
+
+        if (_rateCalcTimer.ExpiredOrNotRunning(Runner))
+        {
+            _rateCalcTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
+
+            var rate = _gridManager.GetColorRate();
+            _team1InkRate = GetCloseColorRate(rate, _teamColors1[_inkIdx]);
+            _team2InkRate = GetCloseColorRate(rate, _teamColors2[_inkIdx]);
+        }
     }
 
     float GetCloseColorRate(Dictionary<Color , float > colorrate, Color color)
@@ -451,6 +513,39 @@ public class GameManager : NetworkBehaviour
         }
 
         return rate;
+    }
+
+    void CheckTeamDeath()
+    {
+        if(!_gameStart || _gameEnd) return;
+
+        bool team1Dead = true;
+        bool team2Dead = true;
+
+        foreach (var kv in PlayerData)
+        {
+            PlayerData data = kv.Value;
+
+            if (data._teamIndex == 1)
+            {
+                if (data._isAlive)
+                {
+                    team1Dead = false;
+                }
+            }
+            else
+            {
+                if (data._isAlive)
+                {
+                    team2Dead = false;
+                }
+            }
+        }
+
+        if (team1Dead && !_wasTeam1Dead) _uiManager.PlayWipeOut();
+        if (team2Dead && !_wasTeam2Dead) _uiManager.PlayWipeOut();
+        _wasTeam1Dead = team1Dead;
+        _wasTeam2Dead = team2Dead;
     }
 
     void FadeOutBGM()

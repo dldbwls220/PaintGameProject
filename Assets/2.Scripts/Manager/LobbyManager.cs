@@ -7,12 +7,12 @@ public class LobbyManager : NetworkBehaviour
 {
     static LobbyManager _uniqueinstance;
 
-
     public MapState _selectedMap = MapState.Port_Mackerel;
     [SerializeField] SceneState _gameSceneState = SceneState.LobbyScene;
     [SerializeField] LobbyUI _UI;
     [SerializeField] float _startDelay = 60f;
     [SerializeField] float _fullLobbyStartDelay = 30f;
+    [SerializeField] MapSelectUI _mapSelectUI;
 
     [Networked, Capacity(8)]
     public NetworkDictionary<PlayerRef, int> PlayerSlots => default;
@@ -24,6 +24,9 @@ public class LobbyManager : NetworkBehaviour
     [Networked] NetworkBool _isFull { get; set; }
 
     [Networked] NetworkBool _isWaiting { get; set; }
+    [Networked] public MapState _currentMap { get; set; } = MapState.Port_Mackerel;
+    MapState _shownMap = (MapState)(-1);
+
     bool _wasWaiting;
 
     readonly Dictionary<PlayerRef, int> _shownSlots = new();
@@ -42,7 +45,10 @@ public class LobbyManager : NetworkBehaviour
 
         var nickname = PlayerCustomizeManager.instance.Data._nickName;
         if (HasStateAuthority)
+        {
+            _currentMap = _selectedMap;
             PlayerNicknames.Set(Runner.LocalPlayer, nickname);
+        }
         else
             RPC_SubmitNickname(nickname);
     }
@@ -94,6 +100,7 @@ public class LobbyManager : NetworkBehaviour
         if (!HasStateAuthority)
         {
             _UI.CloseStartBtn();
+            _mapSelectUI.CloseButtons();
         }
 
         _UI.SetTimer(StartTimer.RemainingTime(Runner) ?? 0f);
@@ -102,7 +109,17 @@ public class LobbyManager : NetworkBehaviour
         {
             GameSoundManager.instance.PlayerSFX(PlayerSFXName.BattleStartBell, volume: 0.2f);
         }
+
         _wasWaiting = _isWaiting;
+
+        _mapSelectUI.ShowMap(_currentMap);
+
+        if (_shownMap != _currentMap)
+        {
+            if (_shownMap != (MapState)(-1))
+                GameSoundManager.instance.PlayerSFX(PlayerSFXName.CustomizeUI_Decide); // 모두가 클릭음 들음
+            _shownMap = _currentMap;
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -134,7 +151,7 @@ public class LobbyManager : NetworkBehaviour
 
     public void ForceStart()
     {
-        RPC_StartWipeTransition(_gameSceneState, _selectedMap);
+        RPC_StartWipeTransition(_gameSceneState, _currentMap);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -191,6 +208,35 @@ public class LobbyManager : NetworkBehaviour
     void RPC_SubmitNickname(NetworkString<_32> nickname, RpcInfo info = default)
     {
         PlayerNicknames.Set(info.Source, nickname);
+    }
+
+    public void OnClickNextMap()
+    {
+        if(HasStateAuthority)
+            _currentMap = Step(_currentMap, +1);
+        else
+            RPC_RequestChangeMap(+1);
+    }
+
+    public void OnClickBackMap()
+    {
+        if (HasStateAuthority)
+            _currentMap = Step(_currentMap, -1);
+        else
+            RPC_RequestChangeMap(-1);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    void RPC_RequestChangeMap(int dir)
+    {
+        _currentMap = Step(_currentMap, dir);
+    }
+
+    static MapState Step(MapState m, int dir)
+    {
+        int count = (int)MapState.Count;
+        int i = ((int)m + dir % count + count) % count;
+        return (MapState)i;
     }
 
     int GetNextFreeIndex()
