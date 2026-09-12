@@ -3952,7 +3952,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 1
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -8183,6 +8183,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkRunnerHandler
   _networkRunnerPrefab: {fileID: 4887530610097513526, guid: 7bd7119d6a52d1f4292c46e29fc1dae8, type: 3}
+  _sessionPrefix: PM_Room_
+  _maxPlayers: 8
+  _sessionListWaitSeconds: 2
+  _connectTimeoutSeconds: 15
+  _retryBaseDelay: 2
+  _retryMaxDelay: 10
+  _autoReturnOnFatal: 0
   _connectionWnd: {fileID: 1510323306}
   _closeConnectionClip: {fileID: 7400000, guid: 7121c7def6141f746a546b0d63158e48, type: 2}
   _fadeWhileConnecting:

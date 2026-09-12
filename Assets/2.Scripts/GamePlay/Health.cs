@@ -2,6 +2,7 @@ using DefineEnum;
 using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class Health : NetworkBehaviour
@@ -45,6 +46,12 @@ public class Health : NetworkBehaviour
     [Header("Camera")]
     [SerializeField] TPSCamera _localCamera;
 
+    [Header("Damage Screen")]
+    [SerializeField] FullScreenPassRendererFeature _damageScreenFeature;
+    [SerializeField] float _minRadius = 0.5f;
+    [SerializeField] float _maxRadius = 1f;
+    [SerializeField] Material _damageScreenMat;
+
     public bool _isAlive => _currentHealth > 0;
     public bool _isFull => _currentHealth >= _maxHealth;
     public bool _isHit;
@@ -81,6 +88,15 @@ public class Health : NetworkBehaviour
         _killedIcon.SetActive(false);
         _assistIcont.SetActive(false);
         _deathIcon.SetActive(false);
+
+        if (HasInputAuthority && _damageScreenFeature != null)
+        {
+            Material screenMat = new Material(_damageScreenMat);
+            _damageScreenFeature.passMaterial = _damageScreenMat;
+
+            _damageScreenMat.SetFloat("_Vignette_Smoothness", 0.3f);
+            _damageScreenMat.SetFloat("_Vignette_Darkening", 0.6f);
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -127,6 +143,13 @@ public class Health : NetworkBehaviour
         UpdateDeathIcons();
 
         if (!HasInputAuthority) return;
+
+        if (_damageScreenFeature != null)
+        {
+            float ratio = _currentHealth / _maxHealth;
+            _damageScreenMat.SetColor("_Tint", _inkColor);
+            _damageScreenMat.SetFloat("_Vignette_Radius", Mathf.Lerp(_minRadius, _maxRadius, ratio));
+        }
 
         if (_isAlive)
         {

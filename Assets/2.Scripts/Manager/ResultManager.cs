@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class ResultManager : MonoBehaviour
@@ -37,6 +38,11 @@ public class ResultManager : MonoBehaviour
     [SerializeField] float _sceneChooseTimer = 30f;
     [Header("BGM Setting")]
     [SerializeField] float _resultFadeSpeed = 0.3f;
+    [Header("Volume")]
+    [SerializeField] Volume _volume;
+    [SerializeField] float _maxVignetteIntensity = 0.4f;
+    [SerializeField] float _intensitySpeed = 0.3f;
+    Vignette _vignette;
 
     PlayerRef _localPlayer;
     ResultBGM bgm;
@@ -50,8 +56,9 @@ public class ResultManager : MonoBehaviour
 
     bool _isResultSceneEnd;
     bool _wasResultSceneEnd;
+    bool _isVignetteUp;
 
-    ResultState _myState;
+   ResultState _myState;
 
     HashSet<EmoteState> _emotes;
 
@@ -63,6 +70,7 @@ public class ResultManager : MonoBehaviour
     private void Update()
     {
         FadeOutBGM();
+        VignetteIntensityUp();
     }
 
     public void InitResultScene()
@@ -72,7 +80,14 @@ public class ResultManager : MonoBehaviour
         _emotes = new HashSet<EmoteState>();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        _volume.profile = Instantiate(_volume.sharedProfile);
+
+        if (!_volume.profile.TryGet(out _vignette))
+            Debug.LogError("Volume Profile에 Vignette 오버라이드가 없습니다.");
+
+        _vignette.intensity.value = 0;
     }
+
 
     public void InitResultResources(Color team, Color enemy, float teamRate, float enemyRate, ResultState teamState, ResultState enemyState)
     {
@@ -171,6 +186,14 @@ public class ResultManager : MonoBehaviour
         }
     }
 
+    void VignetteIntensityUp()
+    {
+        if (_isVignetteUp)
+        {
+            _vignette.intensity.Override(Mathf.MoveTowards(_vignette.intensity.value, _maxVignetteIntensity, _intensitySpeed * Time.deltaTime));
+        }
+    }
+
 
     #region[Timeline]
     public void JudgeNJudgeJrAppear()
@@ -218,6 +241,8 @@ public class ResultManager : MonoBehaviour
     {
         _characterAnimator.SetTrigger("CharacterAppear");
         _uiAnimator.SetTrigger("UserNameUIAppear");
+
+        _isVignetteUp = true;
     }
    
     public void OpenResultBG()

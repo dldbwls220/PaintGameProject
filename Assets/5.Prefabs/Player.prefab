@@ -10911,6 +10911,10 @@ MonoBehaviour:
   _voiceSFX3D: {fileID: 8732085913511773130}
   _otherSFX3D: {fileID: 3750296599770101385}
   _localCamera: {fileID: 6359762694976922568}
+  _damageScreenFeature: {fileID: 5246463173124061316, guid: d4ba28bf5d35a5f4b825a2be1210e97e, type: 2}
+  _minRadius: 0.5
+  _maxRadius: 1
+  _damageScreenMat: {fileID: 2100000, guid: 50df62b4e8ffc7f449298809e8f6f276, type: 2}
   _isHit: 0
   __currentHealth: 0
   __pendingRespawn:
@@ -11680,11 +11684,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.99145246
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.13046853
       objectReference: {fileID: 0}
     - target: {fileID: 1808109161452371435, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.y
@@ -11828,19 +11832,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9880629
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.15374488
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.009589106
       objectReference: {fileID: 0}
     - target: {fileID: 6687118209093717827, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.001492087
       objectReference: {fileID: 0}
     - target: {fileID: 6811113246019593056, guid: f2735263a128d90499c6e21e2c07082a, type: 3}
       propertyPath: m_Damping
