@@ -13,6 +13,7 @@ public class LobbyManager : NetworkBehaviour
     [SerializeField] float _startDelay = 60f;
     [SerializeField] float _fullLobbyStartDelay = 30f;
     [SerializeField] MapSelectUI _mapSelectUI;
+    [SerializeField] NetworkRunnerHandler _nrh;
 
     [Networked, Capacity(8)]
     public NetworkDictionary<PlayerRef, int> PlayerSlots => default;
@@ -120,6 +121,8 @@ public class LobbyManager : NetworkBehaviour
                 GameSoundManager.instance.PlayerSFX(PlayerSFXName.CustomizeUI_Decide); // 모두가 클릭음 들음
             _shownMap = _currentMap;
         }
+
+        
     }
 
     public override void FixedUpdateNetwork()
@@ -128,13 +131,13 @@ public class LobbyManager : NetworkBehaviour
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                if (_UI.PressStart(true))
+                if (_UI.PressStart(true, Runner.DeltaTime))
                 {
                     ForceStart();
                 }
             }
             else
-                _UI.PressStart(false);
+                _UI.PressStart(false, Runner.DeltaTime);
 
             if (StartTimer.Expired(Runner))
             {
@@ -147,6 +150,23 @@ public class LobbyManager : NetworkBehaviour
         {
             _isWaiting = false;
         }
+    }
+
+    // 나가기는 네트워크 시뮬레이션과 무관한 로컬 동작.
+    // FixedUpdateNetwork는 State/Input Authority가 없는 클라이언트(순수 프록시)에서는 호출되지 않으므로
+    // 매 피어에서 항상 도는 일반 Update에서 처리한다.
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            if (_UI.PressBack(true, Time.deltaTime))
+            {
+                _nrh.BackToTitle();
+                Debug.Log("is pressed");
+            }
+        }
+        else
+            _UI.PressBack(false, Time.deltaTime);
     }
 
     public void ForceStart()

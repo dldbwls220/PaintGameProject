@@ -11,6 +11,9 @@ public class LobbyUI : MonoBehaviour
     [Header("Start Button")]
     [SerializeField] GameStartBtnUI _btn;
 
+    [Header("Back Button")]
+    [SerializeField] BackButtonUI _btnBack;
+
     [Header("Start Timer")]
     [SerializeField] TextMeshProUGUI _timer;
 
@@ -40,15 +43,21 @@ public class LobbyUI : MonoBehaviour
         _players[idx].PlayerExit();
     }
 
-    public bool PressStart(bool nowPress)
+    public bool PressStart(bool nowPress, float deltaTime)
     {
-        return _btn.PressFillSlide(nowPress);
+        return _btn.PressFillSlide(nowPress, deltaTime);
+    }
+
+    public bool PressBack(bool nowPress, float deltaTime)
+    {
+        return _btnBack.PressFillSlide(nowPress, deltaTime);
     }
 
     public void CloseStartBtn()
     {
         _btn.CloseWnd();
     }
+
 
     public void SetTimer(float time)
     {

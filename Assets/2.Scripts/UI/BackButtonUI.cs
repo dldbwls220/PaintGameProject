@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameStartBtnUI : MonoBehaviour
+public class BackButtonUI : MonoBehaviour
 {
     [SerializeField] Image _sliderFrame;
     [SerializeField] float _fillSpeed;
@@ -15,6 +15,8 @@ public class GameStartBtnUI : MonoBehaviour
         if (nowPress)
         {
             _sliderFrame.fillAmount = Mathf.MoveTowards(_sliderFrame.fillAmount, 1, fillSpeed * deltaTime);
+
+            Debug.Log("now filling");
         }
         else
         {
