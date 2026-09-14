@@ -96,6 +96,7 @@ namespace DefineStructure
         public int _lastKillTick;
         public int _statisticPostion;
         public int _score;
+        public int _resolutionIdx;
         public float _myRespawnTime;
         public float _mouseSensitivity;
         public float _masterVolume;
@@ -103,6 +104,7 @@ namespace DefineStructure
         public float _sfxVolume;
         public bool _isAlive;
         public bool _isConnected;
+        public bool _fullScreen;
         public PlayerCustomization _custom;
 
         public string DisplayName => _nickName.Length == 0 ? "잉클링" : _nickName.Value;

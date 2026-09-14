@@ -23,6 +23,8 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
         UpdateVolume(1, MixerState.MasterMixer);
         UpdateVolume(1, MixerState.BGMMixer);
         UpdateVolume(1, MixerState.SFXMixer);
+        SetResolutionIdx(-1);
+        SetFullScreen(false);
     }
 
     #region[커스터마이징]
@@ -142,4 +144,28 @@ public class PlayerCustomizeManager : Singleton<PlayerCustomizeManager>
     }
 
     #endregion[볼륨]
+
+    #region[해상도]
+
+    public int GetResolutionIdx()
+    {
+        return _data._resolutionIdx;
+    }
+
+    public void SetResolutionIdx(int idx)
+    {
+        _data._resolutionIdx = idx;
+    }
+
+    public bool GetFullScreen()
+    {
+        return _data._fullScreen;
+    }
+
+    public void SetFullScreen(bool isFullScreen)
+    {
+        _data._fullScreen = isFullScreen;
+    }
+
+    #endregion[해상도]
 }

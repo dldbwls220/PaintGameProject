@@ -59,14 +59,20 @@ public class DisplaySettingUI : MonoBehaviour
 
     public void InitDisplayOption()
     {
-        GetCurrentResolution();
+        if (PlayerCustomizeManager.instance != null && PlayerCustomizeManager.instance.GetResolutionIdx() < 0)
+        {
+            GetCurrentResolution();
+        }
+        else if (PlayerCustomizeManager.instance.GetResolutionIdx() >= 0)
+        {
+            _selectResolution = PlayerCustomizeManager.instance.GetResolutionIdx();
+        }
 
         _currResolution = _resolutions[_selectResolution];
-
         _resolutionDropDown.SetValueWithoutNotify(_selectResolution);
         _resolutionDropDown.RefreshShownValue();
 
-        SetDisplayMode(_isFullScreen);
+        SetDisplayMode(PlayerCustomizeManager.instance.GetFullScreen());
         SelectedButtonColor();
     }
 
@@ -83,6 +89,8 @@ public class DisplaySettingUI : MonoBehaviour
         if (isFullscreen && _isFullScreen) return;
 
         _isFullScreen = isFullscreen;
+
+        PlayerCustomizeManager.instance.SetFullScreen(_isFullScreen);
 
         SelectedButtonColor();
 
@@ -135,7 +143,8 @@ public class DisplaySettingUI : MonoBehaviour
         {           
             if (res.height == Screen.currentResolution.height && res.width == Screen.currentResolution.width)
             {
-              _selectResolution = idx;
+                _selectResolution = idx;
+                PlayerCustomizeManager.instance.SetResolutionIdx(idx);
             }
             idx++;
         }

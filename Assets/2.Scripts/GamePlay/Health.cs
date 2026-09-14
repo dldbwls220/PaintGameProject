@@ -156,6 +156,12 @@ public class Health : NetworkBehaviour
             GameUIManager._instance.CloseBeatenWnd();
             _localCamera.DisableKillCam();
             _beatenWndOpened = false;
+
+            if (HasInputAuthority)
+            {
+                _localCamera.OnOffAudio(_isAlive);
+            }
+
         }
         else if (!_beatenWndOpened && _beatenWndTimer.Expired(Runner))
         {
@@ -169,11 +175,18 @@ public class Health : NetworkBehaviour
                 {
                     _localCamera.EnableKillCam(killerObj.transform);
                 }
+
+                if (HasInputAuthority)
+                {
+                    _localCamera.OnOffAudio(_isAlive);
+                }
             }
 
             GameUIManager._instance.OpenBeatenWnd(killerName);
             _beatenWndOpened = true;
         }
+
+        
     }
 
     void UpdateDeathIcons()

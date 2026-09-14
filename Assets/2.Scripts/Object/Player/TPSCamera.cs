@@ -17,6 +17,10 @@ public class TPSCamera : MonoBehaviour
     [SerializeField] float _baseYSpeed = 2;
     float _sensitivity;
 
+    [Header("Audio")]
+    [SerializeField] AudioListener _originAL;
+    [SerializeField] AudioListener _killCamAL;
+
 
     const int _killCamOn = 20, _killCamOff = 0;
     CinemachineFreeLook _freeLook;
@@ -76,6 +80,12 @@ public class TPSCamera : MonoBehaviour
 
         _killCam.Priority = _killCamOff;
         _killCam.Follow = _killCam.LookAt = null;
+    }
+
+    public void OnOffAudio(bool isOriginOn)
+    {
+        _originAL.enabled = isOriginOn;
+        _killCamAL.enabled = !isOriginOn;
     }
 
     void SetLookInputEnabled(bool enabled)
