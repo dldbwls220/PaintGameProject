@@ -380,4 +380,10 @@ public class Health : NetworkBehaviour
 
         GameUIManager._instance.OpenBeatenWnd(killerName);
     }
+
+    private void OnDisable()
+    {
+        _damageScreenMat.SetFloat("_Vignette_Smoothness", 0f);
+        _damageScreenMat.SetFloat("_Vignette_Darkening", 0f);
+    }
 }
