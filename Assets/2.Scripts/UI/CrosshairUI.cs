@@ -5,6 +5,7 @@ public class CrosshairUI : MonoBehaviour
 {
     [Header("Corner Baracket")]
     [SerializeField] Image _cornerBracket;
+    [SerializeField] float _alpha = 0.3f;
 
     [Header("Crosshair")]
     [SerializeField] GameObject _crosshairObj;
@@ -34,12 +35,14 @@ public class CrosshairUI : MonoBehaviour
             _outerCircle.enabled = true;
             _innerCircle.enabled = true;
             _isHit = true;
+            _cornerBracket.color = new Color(1, 1, 1, _alpha);
         }
         else
         {
             _outerCircle.enabled = false;
             _innerCircle.enabled = false;
             _isHit = false;
+            _cornerBracket.color = new Color(1, 1, 1, 1);
         }
     }
 
