@@ -3586,7 +3586,7 @@ MonoBehaviour:
   _selectedMap: 0
   _gameSceneState: 2
   _UI: {fileID: 1904419588}
-  _startDelay: 30
+  _startDelay: 60
   _fullLobbyStartDelay: 30
   _mapSelectUI: {fileID: 41456778}
   _nrh: {fileID: 1699887963}
