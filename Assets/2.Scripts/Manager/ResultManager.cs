@@ -34,8 +34,6 @@ public class ResultManager : MonoBehaviour
     [SerializeField] EmoteCharacter[] _emoteCharacters;
     [SerializeField] TextMeshProUGUI[] _otherNickname;
     [SerializeField] TextMeshProUGUI _meNickname;
-    [Header("Scene Select Timer")]
-    [SerializeField] float _sceneChooseTimer = 30f;
     [Header("BGM Setting")]
     [SerializeField] float _resultFadeSpeed = 0.3f;
     [Header("Volume")]
