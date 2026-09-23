@@ -74,7 +74,6 @@ GameObject:
   - component: {fileID: 6814862403458457533}
   - component: {fileID: 6636397104927833626}
   - component: {fileID: 6578928669201057772}
-  - component: {fileID: 1630079643835440222}
   m_Layer: 16
   m_Name: Barrier
   m_TagString: Untagged
@@ -92,7 +91,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 8.5, y: 8.5, z: 8.5}
+  m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5858898761940267013}
@@ -175,22 +174,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1630079643835440222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2020095627401680613}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4106a3205bfac3c4c82e3e4a8f6ff639, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkBarrier
-  _minBO: 0
-  _maxBO: 0.5
-  _blinkDuration: 0.5
-  _blinkSpeed: 30
 --- !u!1 &2050890090336609690
 GameObject:
   m_ObjectHideFlags: 0
@@ -1267,7 +1250,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPlatform
   _spawnPlatformSMR: {fileID: 5115498388200721667}
   _teamState: 1
-  _barrier: {fileID: 1630079643835440222}
 --- !u!1 &8056203018569822435
 GameObject:
   m_ObjectHideFlags: 0

@@ -38,7 +38,6 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Header("Mask")]
     [SerializeField] LayerMask _playerMask;
     [SerializeField] LayerMask _worldMask;
-    [SerializeField] LayerMask _barrierMask;
 
     [Networked] InkProjectileData _data { get; set; }
     [Networked] Color _inkColor { get; set; }
@@ -119,24 +118,8 @@ public class NetworkInkProjectile : NetworkBehaviour
 
                 bool hitWorld = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit wHit, _worldMask, HitOptions.IncludePhysX);
 
-                NetworkBarrier barrier = null;
 
-                bool hitBarrier = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit bHit, _barrierMask, HitOptions.IncludePhysX);
-
-                if (hitBarrier)
-                {
-                    barrier = bHit.GameObject != null ? bHit.GameObject.GetComponent<NetworkBarrier>() : null;
-
-                    if (barrier == null || barrier._teamIdx == _shooterTeam)
-                        hitBarrier = false;
-                }
-
-                if (hitBarrier && bHit.Distance <= pHit.Distance && bHit.Distance <= wHit.Distance)
-                {
-                    barrier.IncreaseHitCount();
-                    OnHit(wHit.Point, wHit.Normal, false, bHit.GameObject.layer);
-                }
-                else if (hitPlayer && (!hitWorld || pHit.Distance <= wHit.Distance))
+                if (hitPlayer && (!hitWorld || pHit.Distance <= wHit.Distance))
                 {
                     var hitowner = pHit.Hitbox != null
                         ? pHit.Hitbox.GetComponentInParent<NetworkInklingMovement>()
@@ -152,11 +135,30 @@ public class NetworkInkProjectile : NetworkBehaviour
                 else if (hitWorld)
                 {
                     OnHit(wHit.Point, wHit.Normal, false, wHit.GameObject.layer);
-                }               
+                }
+
+                //// lHit.Hitbox는 IncludePhysX 옵션 때문에 같은 캐릭터를 맞혀도 PhysX 경로로 판정되면 null이 될 수 있어
+                //// (Fusion 문서: "Hitbox is null in case the hit was on PhysX"), Hitbox 유무 대신 GameObject로 대상을 판별한다.
+                //var hitOwner = lHit.GameObject != null ? lHit.GameObject.GetComponentInParent<NetworkInklingMovement>() : null;
+
+                //if (hitOwner != null)
+                //{
+                //    if (hitOwner._teamIndex == _shooterTeam)
+                //    {
+                //        Debug.Log($"[InkProjectile] 아군입니다 (target={lHit.GameObject.name}, teamIndex={hitOwner._teamIndex}, shooterTeam={_shooterTeam})");
+
+                //        return; // 아군이면 이번 틱은 무시 (필요하면 관통 처리)
+                //    }
+
+                //    OnHit(lHit.Point, lHit.Normal, true, lHit.GameObject.layer);
+                //    ApplyDamage(hitOwner);
+                //}
+                //else
+                //{
+                //    OnHit(lHit.Point, lHit.Normal, false, lHit.GameObject.layer);
+                //}
             }
         }
-
-        
 
         if (nextPos.y < -20f && HasStateAuthority)
         {
@@ -282,7 +284,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    void RPC_OnEnemyHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
+    private void RPC_OnEnemyHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
         GameObject fxPrefab = _hitFXPrefab;
         if (fxPrefab != null)

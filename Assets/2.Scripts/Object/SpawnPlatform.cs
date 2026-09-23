@@ -6,7 +6,6 @@ public class SpawnPlatform : MonoBehaviour
 {
     [SerializeField] SkinnedMeshRenderer _spawnPlatformSMR;
     [SerializeField] TeamState _teamState;
-    [SerializeField] NetworkBarrier _barrier;
 
     MaterialPropertyBlock _mpb;
 
@@ -19,9 +18,5 @@ public class SpawnPlatform : MonoBehaviour
         _spawnPlatformSMR.GetPropertyBlock(_mpb);
         _mpb.SetColor("_BaseColor", teamColor);
         _spawnPlatformSMR.SetPropertyBlock(_mpb);
-
-        int teamidx = _teamState == TeamState.Team1 ? 1 : 0;
-
-        _barrier.InitBarrier(teamidx, teamColor);
     }
 }

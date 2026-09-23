@@ -357,7 +357,7 @@ MonoBehaviour:
   _gravity: 300
   _hitMask:
     serializedVersion: 2
-    m_Bits: 67136
+    m_Bits: 1600
   _minRadius: 1.5
   _maxRadius: 2
   _hardness: 0.8
@@ -381,9 +381,6 @@ MonoBehaviour:
   _worldMask:
     serializedVersion: 2
     m_Bits: 3584
-  _barrierMask:
-    serializedVersion: 2
-    m_Bits: 65536
 --- !u!114 &-8632199437834742506
 MonoBehaviour:
   m_ObjectHideFlags: 0

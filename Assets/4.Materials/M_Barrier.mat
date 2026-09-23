@@ -108,7 +108,7 @@ Material:
     - _Amplitude: 0.5
     - _Blend: 2
     - _BlendModePreserveSpecular: 1
-    - _BodyOpacity: 0.5
+    - _BodyOpacity: 0
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClearCoatMask: 0
