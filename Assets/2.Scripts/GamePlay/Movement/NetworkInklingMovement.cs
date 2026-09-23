@@ -689,9 +689,10 @@ public class NetworkInklingMovement : NetworkBehaviour
             _isSameColor = false;
             _isOnPaint = false;
             Debug.Log("NotOnPaint");
+            return;
         }
-        else
-            _isOnPaint = true;
+
+        _isOnPaint = true;
 
 
         float distToMyTeam = Mathf.Abs(col.r - _inkColor.r) + Mathf.Abs(col.g - _inkColor.g) + Mathf.Abs(col.b - _inkColor.b);

@@ -58,7 +58,15 @@
                 float4 col = tex2D(_MainTex, i.uv);
                 float f = mask(i.worldPos, _PainterPosition, _Radius, _Hardness);
                 float edge = f * _Strength;
-                return lerp(col, _PainterColor, edge);
+
+                // 색(팀 소유권)은 섞지 않고 통째로 교체 → 텍스처 RGB는 항상 순수 팀색
+                // 빈 곳은 가장자리까지 내 색으로, 다른 잉크 위에서는 절반 이상 덮였을 때만 교체
+                float owns = (edge > 0) * max(step(0.5, edge), step(col.a, 0.01));
+                float3 rgb = lerp(col.rgb, _PainterColor.rgb, owns);
+
+                // 흐림(커버리지)은 알파에만 누적
+                float a = lerp(col.a, max(col.a, edge), owns);
+                return float4(rgb, a);
             }
             ENDCG
         }

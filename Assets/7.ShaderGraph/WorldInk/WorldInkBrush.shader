@@ -38,9 +38,16 @@
                 delta.y *= _AspectRatio;
                 float dist = length(delta);
 
-                float alpha = 1 - smoothstep(_BrushRadius * _BrushHardness, _BrushRadius, dist);
+                float alpha = (1 - smoothstep(_BrushRadius * _BrushHardness, _BrushRadius, dist)) * _BrushColor.a;
 
-                return lerp(current, _BrushColor, alpha * _BrushColor.a);
+                // 색(팀 소유권)은 섞지 않고 통째로 교체 → 텍스처 RGB는 항상 순수 팀색
+                // 빈 곳은 가장자리까지 내 색으로, 다른 잉크 위에서는 절반 이상 덮였을 때만 교체
+                float owns = (alpha > 0) * max(step(0.5, alpha), step(current.a, 0.01));
+                float3 rgb = lerp(current.rgb, _BrushColor.rgb, owns);
+
+                // 흐림(커버리지)은 알파에만 누적
+                float a = lerp(current.a, max(current.a, alpha), owns);
+                return float4(rgb, a);
             }
             ENDCG
         }
