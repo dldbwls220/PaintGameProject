@@ -26,7 +26,7 @@
 
             struct appdata{
                 float4 vertex : POSITION;
-				float2 uv : TEXCOORD0;
+				float2 uv : TEXCOORD1;
             };
 
             struct v2f{

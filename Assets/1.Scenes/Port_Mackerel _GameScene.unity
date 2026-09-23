@@ -2416,7 +2416,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8813036a6aa8093489a2f35aac8fd91a, type: 2}
+  - {fileID: 2100000, guid: 4c2339d22cdeea040adb4ddafaa6ecf1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5128,6 +5128,7 @@ GameObject:
   - component: {fileID: 1043233388842272389}
   - component: {fileID: 1937211884}
   - component: {fileID: 1937211883}
+  - component: {fileID: 4395192442384565623}
   m_Layer: 8
   m_Name: polySurface4027_1__FloorConcreteHigh
   m_TagString: Untagged
@@ -5135,6 +5136,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4395192442384565623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4395192442384565622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1014669c3ebb9244847f854cee50db2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Paintabale
+  _extendsIslandOffset: 1
 --- !u!1 &4414402232849049835
 GameObject:
   m_ObjectHideFlags: 0
