@@ -30,11 +30,18 @@ public class Node
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, paintableMask))
         {
-            WorldInkZoneReceiver receiver = hit.collider.GetComponent<WorldInkZoneReceiver>();
+            // WorldInkZoneReceiver receiver = hit.collider.GetComponent<WorldInkZoneReceiver>();
+            //
+            // if (receiver != null)
+            // {
+            //     _color = receiver.CheckPaintColor(hit);
+            // }
 
-            if (receiver != null)
+            Paintabale paintable = hit.collider.GetComponentInParent<Paintabale>();
+
+            if (paintable != null)
             {
-                _color = receiver.CheckPaintColor(hit);
+                _color = paintable.CheckPaintColor(hit);
             }
         }
     }

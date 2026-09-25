@@ -86,6 +86,13 @@ public class NetworkInkProjectile : NetworkBehaviour
 
         _mesh.material.EnableKeyword("_EMISSION");
 
+        // 스폰 직후 실제 궤적 위치로 처음 옮겨가는 순간의 이동을 TrailRenderer가 선으로
+        // 그려버리면, 클라이언트에서 "엉뚱한 곳에서 발사 지점으로 휙 날아오는" 잔상처럼
+        // 보인다. 시작 위치로 맞춘 뒤 트레일을 비워서 그 잔상이 생기지 않게 한다.
+        if (!HasStateAuthority)
+            transform.position = GetMovePosition(Runner.Tick);
+
+        _trailRenderer.Clear();
 
         if (_shootFX != null)
             _shootFX.Play();
@@ -117,7 +124,6 @@ public class NetworkInkProjectile : NetworkBehaviour
                 bool hitPlayer = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit pHit, _playerMask, HitOptions.None);
 
                 bool hitWorld = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit wHit, _worldMask, HitOptions.IncludePhysX);
-
 
                 if (hitPlayer && (!hitWorld || pHit.Distance <= wHit.Distance))
                 {
@@ -226,6 +232,26 @@ public class NetworkInkProjectile : NetworkBehaviour
             RPC_OnEnemyHit(point, normal, _inkColor, data.PaintRadius);
     }
 
+    readonly List<Paintabale> _paintablesInRadius = new List<Paintabale>();
+
+    // hit 지점을 중심으로 반경(radius) 안에 걸치는 모든 Paintable을 찾는다.
+    // 모서리처럼 물체 여러 개가 겹친 지점에서도 실제로 칠해진 대상이 스플래시 범위와 맞도록 한다.
+    List<Paintabale> FindPaintablesInRadius(Vector3 point, float radius)
+    {
+        _paintablesInRadius.Clear();
+
+        int mask = 1 << LayerMask.NameToLayer("Paintable");
+        Collider[] cols = Physics.OverlapSphere(point, radius, mask);
+        foreach (Collider col in cols)
+        {
+            Paintabale paintable = col.GetComponentInParent<Paintabale>();
+            if (paintable != null && !_paintablesInRadius.Contains(paintable))
+                _paintablesInRadius.Add(paintable);
+        }
+
+        return _paintablesInRadius;
+    }
+
     void CheckPlayerAround(Vector3 position, Vector3 dir)
     {
         if (!HasStateAuthority) return;
@@ -261,6 +287,16 @@ public class NetworkInkProjectile : NetworkBehaviour
         {
             if (WorldInkZoneManager._instance != null)
                 WorldInkZoneManager._instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+
+            // Paintabale은 MonoBehaviour라 RPC 인자로 넘길 수 없으므로,
+            // 씬에 고정 배치된 오브젝트라는 점을 이용해 각 클라이언트가 hit point 주변을 재탐색한다.
+            // 스플래시 반경(paintRadius) 안에 걸치는 모든 Paintable을 칠해야
+            // 모서리 등 물체가 여러 개 겹친 지점에서도 실제로 칠해진 것과 보이는 것이 일치한다.
+            if (PaintManager.instance != null)
+            {
+                foreach (Paintabale paintable in FindPaintablesInRadius(point, paintRadius))
+                    PaintManager.instance.paint(paintable, point, paintRadius, _hardness, _strength, color);
+            }
 
             // 그리드 페인트는 모든 피어가 로컬로 수행(결과 씬 색상 비율 계산에 사용).
             // 점수 가산은 호스트에서만, 실제 발사자(Object.InputAuthority) 기준으로 처리한다.
