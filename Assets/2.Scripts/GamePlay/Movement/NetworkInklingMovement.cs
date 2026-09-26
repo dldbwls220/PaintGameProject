@@ -664,25 +664,11 @@ public class NetworkInklingMovement : NetworkBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                // WorldInkZoneReceiver receiver = hit.collider.GetComponent<WorldInkZoneReceiver>();
-                //
-                // if (receiver != null)
-                // {
-                //     Color color = receiver.CheckPaintColor(hit);
-                //
-                //     CheckFloorStatus(color);
-                // }
-                // else
-                // {
-                //     _isSameColor = false;
-                //     _isOnPaint = false;
-                // }
+                WorldInkZoneReceiver receiver = hit.collider.GetComponent<WorldInkZoneReceiver>();
 
-                Paintabale paintable = hit.collider.GetComponentInParent<Paintabale>();
-
-                if (paintable != null)
+                if (receiver != null)
                 {
-                    Color color = paintable.CheckPaintColor(hit);
+                    Color color = receiver.CheckPaintColor(hit);
 
                     CheckFloorStatus(color);
                 }

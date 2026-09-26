@@ -26,7 +26,7 @@
 
             struct appdata{
                 float4 vertex : POSITION;
-				float2 uv : TEXCOORD1;
+				float2 uv : TEXCOORD0;
             };
 
             struct v2f{
@@ -45,14 +45,8 @@
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
                 o.uv = v.uv;
 				float4 uv = float4(0, 0, 0, 1);
-                // 타일링으로 UV가 [0,1]을 벗어날 수 있음 (예: 3.7). frac() 없이 그대로 clip 좌표로
-                // 쓰면 유효 범위(-1~1)를 벗어나 GPU가 통째로 클리핑해버려서, 화면에는 반복돼 보이지만
-                // 실제로는 원본 [0,1] 타일에만 칠해지고 나머지 타일은 전혀 칠해지지 않는다.
-                // 화면 표시가 마스크 텍스처를 Repeat로 샘플링하는 것과 동일하게, 여기서도 UV를
-                // frac()으로 감싸서 항상 같은 [0,1] 캔버스에 칠하도록 맞춘다.
-                float2 wrappedUV = frac(v.uv.xy);
-                uv.xy = float2(1, _ProjectionParams.x) * (wrappedUV * float2( 2, 2) - float2(1, 1));
-				o.vertex = uv;
+                uv.xy = float2(1, _ProjectionParams.x) * (v.uv.xy * float2( 2, 2) - float2(1, 1));
+				o.vertex = uv; 
                 return o;
             }
 

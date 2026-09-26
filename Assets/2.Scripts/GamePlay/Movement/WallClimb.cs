@@ -21,13 +21,13 @@ public class WallClimb : MonoBehaviour
     float _wallSurfaceAngle;
     RaycastHit _frontWallHit;
 
-    public Vector3 ClimbingWall(float climbAxis, float sideAxis)  // ï¿½Ä¶ï¿½ï¿½ï¿½Í·ï¿½ ï¿½Þµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    public Vector3 ClimbingWall(float climbAxis, float sideAxis)  // ÆÄ¶ó¹ÌÅÍ·Î ¹Þµµ·Ï º¯°æ
     {
         Vector3 wallRight = Vector3.Cross(Vector3.down, _frontWallHit.normal).normalized;
 
         Vector3 vertical = Mathf.Abs(climbAxis) > _inputDeadzone
             ? Vector3.up * climbAxis * _climbSpeed
-            : Vector3.down * _idleSlideDown;   // ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            : Vector3.down * _idleSlideDown;   // ÀÔ·Â ¾øÀ¸¸é ¼­¼­È÷ ½½¸³
 
         Vector3 horizontal = wallRight * sideAxis * _climbSideSpeed;
 
@@ -38,13 +38,13 @@ public class WallClimb : MonoBehaviour
     {
         if (Physics.SphereCast(transform.position + new Vector3(0, _yOffset, 0), _sphereCastRadius, transform.forward, out _frontWallHit, _detectionLength))
         {
-            // WorldInkZoneReceiver wir = _frontWallHit.collider.GetComponent<WorldInkZoneReceiver>();
+            WorldInkZoneReceiver wir = _frontWallHit.collider.GetComponent<WorldInkZoneReceiver>();
 
-            Paintabale paintable = _frontWallHit.collider.GetComponentInParent<Paintabale>();
 
-            if (paintable != null && _frontWallHit.collider.CompareTag("Wall"))
+
+            if (wir != null && _frontWallHit.collider.CompareTag("Wall"))
             {
-                Color color = paintable.CheckPaintColor(_frontWallHit);
+                Color color = wir.CheckPaintColor(_frontWallHit);
 
                 if (color.a < 0.1f)
                 {
@@ -61,7 +61,7 @@ public class WallClimb : MonoBehaviour
 
                     if (_wallSurfaceAngle > _minWallSurfaceAngle && _wallSurfaceAngle < _maxWallSurfaceAngle)
                     {
-                        Debug.Log("ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+                        Debug.Log("º®Å¸±â °¡´É");
                         return true;
                     }
                 }

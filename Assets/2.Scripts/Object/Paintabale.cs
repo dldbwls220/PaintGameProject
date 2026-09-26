@@ -35,13 +35,6 @@ public class Paintabale : MonoBehaviour
         _supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
         _supportTexture.filterMode = FilterMode.Bilinear;
 
-        // 새로 만든 RenderTexture는 내용이 보장되지 않아(이전에 해제된 다른 오브젝트의
-        // 텍스처 잔상 등 GPU 메모리 쓰레기가 남아있을 수 있음), 실제로는 칠해진 적이 없는데도
-        // 잉크가 묻어있는 것처럼 보일 수 있다. 페인팅 전에 반드시 투명하게 비워둔다.
-        ClearRenderTexture(_maskRenderTexture);
-        ClearRenderTexture(_extendIslandsRenderTexture);
-        ClearRenderTexture(_supportTexture);
-
         _renderer = GetComponent<Renderer>();
 
         if (_renderer == null)
@@ -74,8 +67,7 @@ public class Paintabale : MonoBehaviour
     {
         if (hit.collider.gameObject == this.gameObject)
         {
-           
-            Vector2 uv = hit.textureCoord2;
+            Vector2 uv = hit.textureCoord;
 
             // 타일링으로 [0,1] 범위를 벗어날 수 있으므로 Repeat으로 정규화
             uv.x = Mathf.Repeat(uv.x, 1f);
@@ -98,14 +90,6 @@ public class Paintabale : MonoBehaviour
             return detectedColor;
         }
         return Color.clear;
-    }
-
-    static void ClearRenderTexture(RenderTexture rt)
-    {
-        RenderTexture prev = RenderTexture.active;
-        RenderTexture.active = rt;
-        GL.Clear(true, true, Color.clear);
-        RenderTexture.active = prev;
     }
 
     void OnDisable()
