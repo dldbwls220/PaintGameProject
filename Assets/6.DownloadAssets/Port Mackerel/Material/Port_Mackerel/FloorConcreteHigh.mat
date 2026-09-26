@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FloorConcreteHigh
-  m_Shader: {fileID: 4800000, guid: f257646b58f0ae344af371884a75e2dd, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 6207412560a138f4aa597ee9d99efa8f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -17,7 +17,8 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -120,18 +121,20 @@ Material:
     m_Floats:
     - Vector1_0de750b9c41b4a5daef844a1599f5ac7: 0.01
     - Vector1_2871f666316541908d110962eef07f02: 110
-    - Vector1_2c6f3ce4bba145b09c0a22fced0d7f85: 0
+    - Vector1_2c6f3ce4bba145b09c0a22fced0d7f85: 0.1
     - Vector1_7bf270fe91494824b4209d2dc1faae23: 0.7
     - Vector1_8e760635099b4147956bb9600d13cac2: 0.3
-    - Vector1_b160a6374fb04a77b114bb611b8c55e4: 0
-    - Vector1_b5cc7f6f25194a778cb438f45fbbce66: 25
+    - Vector1_b160a6374fb04a77b114bb611b8c55e4: 0.1
+    - Vector1_b5cc7f6f25194a778cb438f45fbbce66: 10
     - Vector1_f6677799b193415b8be7686b658a6e85: 9
     - _AddPrecomputedVelocity: 0
+    - _Alpha: 1
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 0.3
+    - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -151,6 +154,7 @@ Material:
     - _Metallic: 0
     - _Mode: 3
     - _OcclusionStrength: 1
+    - _Offset: 0
     - _Parallax: 0.02
     - _QueueControl: 1
     - _QueueOffset: 0
@@ -167,7 +171,9 @@ Material:
     - _WorldMapMinY: 0
     - _WorldMapSize: 100
     - _XRMotionVectorsPass: 1
+    - _ZTest: 4
     - _ZWrite: 1
+    - _ZWriteControl: 0
     - _ZoneAxis: 0
     - _ZoneSizeU: 100
     - _ZoneSizeV: 100
@@ -180,6 +186,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _Vector3: {r: 0, g: 0, b: 0, a: 0}
     - _WorldMapOffset: {r: -50, g: -50, b: 0, a: 0}
     - _ZoneOffset: {r: -50, g: -50, b: 0, a: 0}
   m_BuildTextureStacks: []

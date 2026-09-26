@@ -50,6 +50,6 @@ Material:
     - _Vignette_Radius: 1
     - _Vignette_Smoothness: 0
     m_Colors:
-    - _Tint: {r: 0.41176474, g: 0.24313727, b: 0.9960785, a: 1}
+    - _Tint: {r: 0.92549026, g: 0.2627451, b: 0.97647065, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

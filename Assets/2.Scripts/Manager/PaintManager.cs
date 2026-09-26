@@ -122,7 +122,7 @@ public class PaintManager : Singleton<PaintManager>
         Graphics.ExecuteCommandBuffer(_command);
         _command.Clear();
 
-        Debug.Log($"[Paint] obj={paintable.name} pos={pos} radius={radius} scale={paintable.transform.lossyScale}");
+        //Debug.Log($"[Paint] obj={paintable.name} pos={pos} radius={radius} scale={paintable.transform.lossyScale}");
 
         //Graphics.ExecuteCommandBuffer(_command);
     }

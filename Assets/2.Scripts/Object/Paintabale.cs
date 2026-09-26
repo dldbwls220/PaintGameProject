@@ -2,9 +2,20 @@ using UnityEngine;
 
 public class Paintabale : MonoBehaviour
 {
-    const int TEXTURE_SIZE = 1024;
 
     public float _extendsIslandOffset = 1;
+
+    [Header("Texture Size")]
+    [SerializeField] int TEXTURE_SIZE;
+    [SerializeField] float _texelsPerMeter = 64f;   // 1m당 텍셀 수 (게임 전체 일관성 기준)
+    [SerializeField] int _minSize = 128, _maxSize = 2048;
+    [SerializeField] int _overrideSize = 0;         // 0이면 자동, 아니면 수동 지정
+
+    [Header("Bump Noise")]
+    [SerializeField] float _bumpNoisePerMeter = 0.5f;
+    [SerializeField] float _bumpNoiseOverrider = 0;
+    [SerializeField] int _bumpNoiseUVChanel = 0;
+    [SerializeField] float _bumpScale;
 
     RenderTexture _extendIslandsRenderTexture;
     RenderTexture _uvIslandsRenderTexture;
@@ -13,6 +24,7 @@ public class Paintabale : MonoBehaviour
 
     Renderer _renderer;
 
+    static readonly int _bumpNoiseScaleID = Shader.PropertyToID("Vector1_b5cc7f6f25194a778cb438f45fbbce66");
     int _maskTextureID = Shader.PropertyToID("_MaskTexture");
 
     public RenderTexture getmask() => _maskRenderTexture;
@@ -23,6 +35,8 @@ public class Paintabale : MonoBehaviour
 
     void Start()
     {
+        TEXTURE_SIZE = CalcTextureSize();
+
         _maskRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
         _maskRenderTexture.filterMode = FilterMode.Bilinear;
 
@@ -50,7 +64,8 @@ public class Paintabale : MonoBehaviour
             return;
         }
 
-        // 다중 머티리얼 슬롯 모두에 _MaskTexture 적용
+        // 다중 머티리얼 슬롯 모두에 _MaskTexture / _BumpNoiseScale 적용
+        float bumpScale = CalcBumpNoiseScale();
         bool hasPaintable = false;
         foreach (Material mat in _renderer.materials)
         {
@@ -59,6 +74,9 @@ public class Paintabale : MonoBehaviour
                 mat.SetTexture(_maskTextureID, _extendIslandsRenderTexture);
                 hasPaintable = true;
             }
+
+            if (mat.HasProperty(_bumpNoiseScaleID))
+                mat.SetFloat(_bumpNoiseScaleID, bumpScale);
         }
 
         if (!hasPaintable)
@@ -68,6 +86,52 @@ public class Paintabale : MonoBehaviour
         }
 
         PaintManager.instance.initTextures(this);
+    }
+
+    // 페인트 셰이더(TexturePainter)가 사용하는 UV 채널 (TEXCOORD1)
+    const int PAINT_UV_CHANNEL = 1;
+
+    int CalcTextureSize()
+    {
+        if (_overrideSize > 0) return _overrideSize;
+
+        // 맵 메시는 머티리얼별로 합쳐져 있어 bounds가 맵 전체 크기가 되므로 쓸 수 없다.
+        // 대신 UV 면적 1당 실제 표면 면적(메시 단위²)을 이용해 텍셀 밀도를 맞춘다.
+        MeshFilter mf = GetComponent<MeshFilter>();
+        float metric = mf != null && mf.sharedMesh != null ? mf.sharedMesh.GetUVDistributionMetric(PAINT_UV_CHANNEL) : 0f;
+
+        if (metric <= 0f || float.IsInfinity(metric) || float.IsNaN(metric))
+        {
+            Debug.LogWarning($"[Paintabale] '{gameObject.name}' UV 분포 값을 얻지 못해 기본 크기 1024를 사용합니다.");
+            return Mathf.Clamp(1024, _minSize, _maxSize);
+        }
+
+        Vector3 ls = transform.lossyScale;
+        float scale = Mathf.Max(Mathf.Abs(ls.x), Mathf.Abs(ls.y), Mathf.Abs(ls.z));
+
+        // UV 0~1 전체가 덮는 월드 한 변의 길이(m) × 1m당 텍셀 수
+        float uvSideInMeters = Mathf.Sqrt(metric) * scale;
+        int size = Mathf.ClosestPowerOfTwo(Mathf.CeilToInt(uvSideInMeters * _texelsPerMeter));
+        size = Mathf.Clamp(size, _minSize, _maxSize);
+
+        Debug.Log($"[Paintabale] {gameObject.name}: uvSide={uvSideInMeters:F1}m -> {size}");
+        return size;
+    }
+
+    float CalcBumpNoiseScale()
+    {
+        if (_bumpNoiseOverrider > 0) return _bumpNoiseOverrider;
+
+        MeshFilter mf = GetComponent<MeshFilter>();
+        float metric = mf != null && mf.sharedMesh != null ? mf.sharedMesh.GetUVDistributionMetric(_bumpNoiseUVChanel) : 0f;
+        if (metric <= 0f || float.IsInfinity(metric) || float.IsNaN(metric)) return 20f;
+
+        Vector3 Ls = transform.lossyScale;
+        float scale = Mathf.Max(Mathf.Abs(Ls.x), Mathf.Abs(Ls.y), Mathf.Abs(Ls.z));
+
+        _bumpScale = _bumpNoisePerMeter * scale * Mathf.Sqrt(metric);
+
+        return _bumpNoisePerMeter * scale * Mathf.Sqrt(metric);
     }
 
     public Color CheckPaintColor(RaycastHit hit)
