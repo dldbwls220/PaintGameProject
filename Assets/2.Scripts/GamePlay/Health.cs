@@ -30,6 +30,7 @@ public class Health : NetworkBehaviour
     [Header("Death Splash Setting")]
     [SerializeField] float _radius = 1.5f;
     [SerializeField] float _hardness = 0.9f;
+    [SerializeField] float _strength = 0.9f;
     [SerializeField] float _minPaintRadius = 0.5f;
     [SerializeField] float _maxPaintRadius = 1.5f;
     [SerializeField] int _splashCount = 12;
@@ -105,6 +106,8 @@ public class Health : NetworkBehaviour
 
         PruneExpiredAttackers();
 
+        CheckFallDeath();
+
         if (_healthTimer.Expired(Runner) && !_isAlive && !_pendingRespawn)
         {
             _pendingRespawn = true;
@@ -151,11 +154,14 @@ public class Health : NetworkBehaviour
             _damageScreenMat.SetFloat("_Vignette_Radius", Mathf.Lerp(_minRadius, _maxRadius, ratio));
         }
 
+        bool isFallDeath = _lastAttackers[0] == PlayerRef.None;
+
         if (_isAlive)
         {
             GameUIManager._instance.CloseBeatenWnd();
             _localCamera.DisableKillCam();
             _beatenWndOpened = false;
+            
 
             if (HasInputAuthority)
             {
@@ -163,7 +169,7 @@ public class Health : NetworkBehaviour
             }
 
         }
-        else if (!_beatenWndOpened && _beatenWndTimer.Expired(Runner))
+        else if (!_beatenWndOpened && _beatenWndTimer.Expired(Runner) && !isFallDeath)
         {
             PlayerRef killer = _lastAttackers[0];
 
@@ -225,29 +231,41 @@ public class Health : NetworkBehaviour
 
         if (_currentHealth <= 0f)
         {
-            _currentHealth = 0f;
-
-            if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
-            {
-                data._death++;
-                data._isAlive = false;
-                GameManager._instance.PlayerData.Set(Object.InputAuthority, data);
-            }
-
-            //if (GameManager._instance.PlayerData.TryGet(player, out var killerData))
-            //{
-            //    RPC_OpenBeatenWnd(Object.InputAuthority, killerData.DisplayName);
-            //}
-
-            _beatenWndTimer = TickTimer.CreateFromSeconds(Runner, _beatenWndDelay);
-
-            ExplodePaint();
-            Respawn();
-            RecordLastAttackers(player);
-            GameManager._instance.PlayerKilled(player, Object.InputAuthority);
+            Die(player);
         }
 
         return true;
+    }
+
+    void Die(PlayerRef killer)
+    {
+        _currentHealth = 0f;
+
+        if (GameManager._instance.PlayerData.TryGet(Object.InputAuthority, out var data))
+        {
+            data._death++;              
+            data._isAlive = false;
+            GameManager._instance.PlayerData.Set(Object.InputAuthority, data);
+        }
+
+        _beatenWndTimer = TickTimer.CreateFromSeconds(Runner, _beatenWndDelay);
+
+        ExplodePaint();
+        Respawn();
+        RecordLastAttackers(killer);    
+
+        if (killer != PlayerRef.None)
+            GameManager._instance.PlayerKilled(killer, Object.InputAuthority);
+    }
+
+    void CheckFallDeath()
+    {
+        if (!HasStateAuthority || !_isAlive) return;
+        if (_pendingRespawn || _nowRespawing) return;
+        if (MapManager._instance == null) return;
+
+        if (transform.position.y < MapManager._instance.GetDeathHeight())
+            Die(PlayerRef.None);
     }
 
     void RecordLastAttackers(PlayerRef killer)
@@ -349,6 +367,24 @@ public class Health : NetworkBehaviour
         }
     }
 
+    readonly List<Paintabale> _paintablesInRadius = new List<Paintabale>();
+
+    List<Paintabale> FindPaintablesInRadius(Vector3 point, float radius)
+    {
+        _paintablesInRadius.Clear();
+
+        int mask = 1 << LayerMask.NameToLayer("Paintable");
+        Collider[] cols = Physics.OverlapSphere(point, radius, mask);
+        foreach (Collider col in cols)
+        {
+            Paintabale paintable = col.GetComponentInParent<Paintabale>();
+            if (paintable != null && !_paintablesInRadius.Contains(paintable))
+                _paintablesInRadius.Add(paintable);
+        }
+
+        return _paintablesInRadius;
+    }
+
     void AddAttackerList(PlayerRef attacker)
     {
         _attackerTimers[attacker] = TickTimer.CreateFromSeconds(Runner, _attackerExpireTime);
@@ -382,8 +418,14 @@ public class Health : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     void RPC_OnDeathPaint(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
-        if (WorldInkZoneManager._instance == null) return;
-        WorldInkZoneManager._instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+        //if (WorldInkZoneManager._instance == null) return;
+        //WorldInkZoneManager._instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+
+        if (PaintManager._instance != null)
+        {
+            foreach (Paintabale paintable in FindPaintablesInRadius(point, paintRadius))
+                PaintManager._instance.paint(paintable, point, paintRadius, _hardness, _strength, color);
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

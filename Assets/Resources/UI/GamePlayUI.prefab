@@ -1271,6 +1271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrosshairUI
   _cornerBracket: {fileID: 2854375391768292084}
+  _alpha: 0.3
   _crosshairObj: {fileID: 7582689483556438544}
   _outerCircle: {fileID: 1105081272592442103}
   _innerCircle: {fileID: 7245422100356741118}

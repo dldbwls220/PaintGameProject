@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class PaintManager : Singleton<PaintManager>
+public class PaintManager : MonoBehaviour
 {
+    static PaintManager _uniqueInstance;
+
     public Shader _texturePaint;
     public Shader _extendIslands;
 
@@ -24,9 +26,11 @@ public class PaintManager : Singleton<PaintManager>
 
     MaterialPropertyBlock _propBlock;
 
-    public override void Awake()
+    public static PaintManager _instance => _uniqueInstance;
+
+    private void Awake()
     {
-        base.Awake();
+        _uniqueInstance = this;
 
         _paintMaterial = new Material(_texturePaint);
         _extendMaterial = new Material(_extendIslands);
@@ -35,7 +39,6 @@ public class PaintManager : Singleton<PaintManager>
 
         _propBlock = new MaterialPropertyBlock();
     }
-
     public void initTextures(Paintabale paintable)
     {
         RenderTexture uvIslands = paintable.getUVIslands();

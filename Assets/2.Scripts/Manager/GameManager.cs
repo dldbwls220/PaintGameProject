@@ -123,8 +123,11 @@ public class GameManager : NetworkBehaviour
         }
 
         // 활성화된 맵에 맞춰 해당 맵의 Ink Zone 텍스처 활성화
-        if (WorldInkZoneManager._instance != null)
-            WorldInkZoneManager._instance.SwitchMap(map);
+        //if (WorldInkZoneManager._instance != null)
+        //    WorldInkZoneManager._instance.SwitchMap(map);
+
+        if(MapManager._instance != null)
+            MapManager._instance.SwitchMap(map);
 
         SetCameraPos();
 
@@ -633,8 +636,11 @@ public class GameManager : NetworkBehaviour
 
     void CreatGrid()
     {
-        if (WorldInkZoneManager._instance != null)
-            _gridManager.CreateGride(WorldInkZoneManager._instance.XZWorldSize());
+        //if (WorldInkZoneManager._instance != null)
+        //    _gridManager.CreateGride(WorldInkZoneManager._instance.XZWorldSize());
+
+        if (MapManager._instance != null)
+            _gridManager.CreateGride(MapManager._instance.XZWorldSize());
     }
 
     void SortPlayerScore()

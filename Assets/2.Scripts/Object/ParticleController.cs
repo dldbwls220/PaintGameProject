@@ -31,7 +31,7 @@ public class ParticleController : MonoBehaviour
             {
                 Vector3 pos = _collisionEvents[i].intersection;
                 float radius = Random.Range(_minRadius, _maxRadius);
-                PaintManager.instance.paint(p, pos, radius, _hardness, _strength, _paintColor);
+                PaintManager._instance.paint(p, pos, radius, _hardness, _strength, _paintColor);
             }
         }
         Debug.Log("Painted");

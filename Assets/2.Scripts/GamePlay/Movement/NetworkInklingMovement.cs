@@ -309,6 +309,16 @@ public class NetworkInklingMovement : NetworkBehaviour
         if(_isWallClimb) _kcc.SetGravity(0);
         else _kcc.SetGravity(_gravity);
 
+        // 사망 중에는 제자리 고정 (낙사 후 계속 떨어지는 것 방지). 리스폰 시 위 SetGravity로 자동 복구
+        if (!_isAlive)
+        {
+            _moveDirection = Vector3.zero;
+            _pendingJumpImpulse = 0f;
+            _currentMoveVelocity = Vector3.zero;
+            _kcc.ResetVelocity();
+            _kcc.SetGravity(0f);
+        }
+
         // 캐릭터간 밀어내기: _currentMoveVelocity(관성 상태)에는 누적하지 않고, 이번 틱의 실제 이동에만 더함
         Vector3 separationVelocity = (_characterSeparation != null && !_isWallClimb && _isAlive)
             ? _characterSeparation.GetPushVelocity(this)

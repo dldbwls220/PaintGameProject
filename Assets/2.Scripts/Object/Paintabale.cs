@@ -85,7 +85,7 @@ public class Paintabale : MonoBehaviour
             return;
         }
 
-        PaintManager.instance.initTextures(this);
+        PaintManager._instance.initTextures(this);
     }
 
     // 페인트 셰이더(TexturePainter)가 사용하는 UV 채널 (TEXCOORD1)

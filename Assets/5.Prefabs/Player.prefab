@@ -10825,7 +10825,7 @@ MonoBehaviour:
   _nameText: {fileID: 7446917313835165544}
   _playerDeathCrossIcon: {fileID: 4164491076827434144}
   _walkSpeed: 5
-  _swimSpeed: 8.25
+  _swimSpeed: 9
   _slowSpeed: 1
   _jumpImpulse: 8
   _gravity: -20
@@ -11032,10 +11032,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WallClimb
   _sphereCastRadius: 0.14
-  _detectionLength: 2
+  _detectionLength: 1
   _yOffset: 0.4
-  _climbSpeed: 6
-  _climbSideSpeed: 6
+  _climbSpeed: 8
+  _climbSideSpeed: 7
   _idleSlideDown: 1
   _inputDeadzone: 0.1
   _maxWallLooking: 0

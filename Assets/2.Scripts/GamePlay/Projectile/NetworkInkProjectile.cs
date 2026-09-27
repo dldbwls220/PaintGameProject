@@ -292,10 +292,10 @@ public class NetworkInkProjectile : NetworkBehaviour
             // 씬에 고정 배치된 오브젝트라는 점을 이용해 각 클라이언트가 hit point 주변을 재탐색한다.
             // 스플래시 반경(paintRadius) 안에 걸치는 모든 Paintable을 칠해야
             // 모서리 등 물체가 여러 개 겹친 지점에서도 실제로 칠해진 것과 보이는 것이 일치한다.
-            if (PaintManager.instance != null)
+            if (PaintManager._instance != null)
             {
                 foreach (Paintabale paintable in FindPaintablesInRadius(point, paintRadius))
-                    PaintManager.instance.paint(paintable, point, paintRadius, _hardness, _strength, color);
+                    PaintManager._instance.paint(paintable, point, paintRadius, _hardness, _strength, color);
             }
 
             // 그리드 페인트는 모든 피어가 로컬로 수행(결과 씬 색상 비율 계산에 사용).

@@ -44,7 +44,14 @@ public class WallClimb : MonoBehaviour
 
             if (paintable != null && _frontWallHit.collider.CompareTag("Wall"))
             {
-                Color color = paintable.CheckPaintColor(_frontWallHit);
+                // SphereCast(스윕) 결과는 textureCoord가 실제 접촉점의 UV가 아니므로
+                // 같은 콜라이더에 레이를 다시 쏴서 정확한 UV를 얻는다.
+                RaycastHit uvHit = _frontWallHit;
+                Ray uvRay = new Ray(_frontWallHit.point + _frontWallHit.normal * 0.1f, -_frontWallHit.normal);
+                if (_frontWallHit.collider.Raycast(uvRay, out RaycastHit rayHit, 0.3f))
+                    uvHit = rayHit;
+
+                Color color = paintable.CheckPaintColor(uvHit);
 
                 if (color.a < 0.1f)
                 {
@@ -61,7 +68,7 @@ public class WallClimb : MonoBehaviour
 
                     if (_wallSurfaceAngle > _minWallSurfaceAngle && _wallSurfaceAngle < _maxWallSurfaceAngle)
                     {
-                        Debug.Log("��Ÿ�� ����");
+                        Debug.Log("벽 확인");
                         return true;
                     }
                 }
@@ -79,7 +86,7 @@ public class WallClimb : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        bool isHit = Physics.SphereCast(transform.position, _sphereCastRadius, transform.forward, out _frontWallHit, _detectionLength);
+        bool isHit = Physics.SphereCast(transform.position, _sphereCastRadius, transform.forward, out RaycastHit gizmoHit, _detectionLength);
 
         Gizmos.color = isHit ? Color.red : Color.blue;
 
@@ -87,13 +94,13 @@ public class WallClimb : MonoBehaviour
         {
             Gizmos.DrawWireSphere(transform.position + new Vector3(0,_yOffset,0), _sphereCastRadius);
 
-            Vector3 hitSphereCenter = transform.position + transform.forward * _frontWallHit.distance;
+            Vector3 hitSphereCenter = transform.position + transform.forward * gizmoHit.distance;
             Gizmos.DrawLine(transform.position, hitSphereCenter);
 
             Gizmos.DrawWireSphere(hitSphereCenter, _sphereCastRadius);
 
             Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(_frontWallHit.point, 0.05f);
+            Gizmos.DrawSphere(gizmoHit.point, 0.05f);
         }
         else
         {
