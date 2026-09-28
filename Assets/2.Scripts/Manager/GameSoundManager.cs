@@ -7,6 +7,8 @@ using UnityEngine.Audio;
 public class GameSoundManager : Singleton<GameSoundManager>
 {
     AudioMixer _audioMixerGroup;
+    AudioMixerGroup _bgmGroup;
+    AudioMixerGroup _sfxGroup;
 
     const string Master_Volume = "MasterMixer";
 
@@ -436,26 +438,43 @@ public class GameSoundManager : Singleton<GameSoundManager>
         PlayerCustomizeManager.instance.UpdateVolume(value, state);
     }
 
+    // 믹서 에셋과 그룹을 한 번만 로드해 캐싱
+    bool LoadMixer()
+    {
+        if (_audioMixerGroup != null) return true;
+
+        _audioMixerGroup = Resources.Load<AudioMixer>("AudioMixer/MasterAudioMixer");
+        if (_audioMixerGroup == null)
+        {
+            Debug.LogError("MasterAudioMixer를 찾을 수 없습니다");
+            return false;
+        }
+
+        _bgmGroup = _audioMixerGroup.FindMatchingGroups("BGM")[0];
+        _sfxGroup = _audioMixerGroup.FindMatchingGroups("SFX")[0];
+        return true;
+    }
+
     void SetAudioMixerGroup()
     {
-        if (_audioMixerGroup != null) return;
+        if (!LoadMixer()) return;
 
-        AudioMixer mixer = Resources.Load<AudioMixer>("AudioMixer/MasterAudioMixer");
+        _SFXDESC._output(_sfxGroup);
 
-        _audioMixerGroup = mixer;
+        _UiBGMDESC._output(_bgmGroup);
 
-        AudioMixerGroup bgmGroup = mixer.FindMatchingGroups("BGM")[0];
-        AudioMixerGroup sfxGroup = mixer.FindMatchingGroups("SFX")[0];
+        _GameBGMDESC._output(_bgmGroup);
 
-        _SFXDESC._output(sfxGroup);
+        _NowOrNeverDESC._output(_bgmGroup);
 
-        _UiBGMDESC._output(bgmGroup);
+        _ResultBGMDESC._output(_bgmGroup);
+    }
 
-        _GameBGMDESC._output(bgmGroup);
+    // 외부(플레이어 프리팹 등)에서 생성한 AudioSource를 믹서 그룹에 연결
+    public void SetOutput(AudioSource source, bool isSFX = true)
+    {
+        if (source == null || !LoadMixer()) return;
 
-        _NowOrNeverDESC._output(bgmGroup);
-
-        _ResultBGMDESC._output(bgmGroup);
-
+        source.outputAudioMixerGroup = isSFX ? _sfxGroup : _bgmGroup;
     }
 }

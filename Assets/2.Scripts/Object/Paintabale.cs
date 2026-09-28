@@ -24,6 +24,8 @@ public class Paintabale : MonoBehaviour
 
     Renderer _renderer;
 
+    static Texture2D _readTex;
+
     static readonly int _bumpNoiseScaleID = Shader.PropertyToID("Vector1_b5cc7f6f25194a778cb438f45fbbce66");
     int _maskTextureID = Shader.PropertyToID("_MaskTexture");
 
@@ -148,18 +150,18 @@ public class Paintabale : MonoBehaviour
             int px = Mathf.Clamp(Mathf.FloorToInt(uv.x * TEXTURE_SIZE), 0, TEXTURE_SIZE - 1);
             int py = Mathf.Clamp(Mathf.FloorToInt(uv.y * TEXTURE_SIZE), 0, TEXTURE_SIZE - 1);
 
-            Texture2D tempTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            // 1x1 읽기용 텍스처는 모든 Paintabale이 공유 (매 호출 할당/파괴 방지)
+            if (_readTex == null)
+                _readTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+
             RenderTexture prev = RenderTexture.active;
             RenderTexture.active = _extendIslandsRenderTexture;
 
-            tempTex.ReadPixels(new Rect(px, py, 1, 1), 0, 0);
-            tempTex.Apply();
+            // CPU 쪽 픽셀만 필요하므로 Apply()(GPU 재업로드)는 하지 않는다
+            _readTex.ReadPixels(new Rect(px, py, 1, 1), 0, 0, false);
 
             RenderTexture.active = prev;
-            Color detectedColor = tempTex.GetPixel(0, 0);
-
-            Destroy(tempTex);
-            return detectedColor;
+            return _readTex.GetPixel(0, 0);
         }
         return Color.clear;
     }

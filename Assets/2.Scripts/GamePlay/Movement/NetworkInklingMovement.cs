@@ -224,7 +224,9 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _hitbox.HitboxActive = _isAlive;
 
-        CheckPaintColor();
+        // 예측 재시뮬레이션 틱에서는 GPU 읽기를 반복하지 않고 이전 판정 결과(_isOnPaint/_isSameColor)를 재사용
+        if (Runner.IsForward)
+            CheckPaintColor();
 
         _inktankOffset = _weaponManager.UpdateInktankOffset();
 
@@ -242,7 +244,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         // 발사체 스폰 (StateAuthority만 실행, 쿨다운/단발-연사 체크는 Weapon 내부에서)
         // 단발 무기의 rising-edge 감지를 위해 버튼을 뗀 상태에서도 매 틱 호출해야 함
-        if (!_isSquid && HasStateAuthority)
+        if (!_isSquid && HasStateAuthority && _isAlive && !_health._nowRespawing)
         {
             _weaponManager.Shoot(_isShooting);
         }
@@ -370,7 +372,12 @@ public class NetworkInklingMovement : NetworkBehaviour
 
     void MovementInput(NetworkInputData input)
     {
-        if (!_health._isAlive || _health._nowRespawing || !GameManager._instance._gameStart) return;
+        if (!_health._isAlive || _health._nowRespawing || !GameManager._instance._gameStart)
+        {
+            // 입력이 막힌 동안 이전 발사 입력이 남아있지 않도록 해제
+            _isShooting = false;
+            return;
+        }
 
         // 호스트가 input에서 조준 위치를 읽어 [Networked] 상태에 기록 → 모든 클라이언트에 동기화
         _aimTargetPosition = input._aimTargetPosition;
@@ -712,7 +719,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         {
             _isSameColor = false;
             _isOnPaint = false;
-            Debug.Log("NotOnPaint");
             return;
         }
 
@@ -726,12 +732,10 @@ public class NetworkInklingMovement : NetworkBehaviour
         if (distToMyTeam < distToEnemyTeam && distToMyTeam < 0.5f)
         {
             _isSameColor = true;
-            Debug.Log("우리 팀 구역입니다!");
         }
         else if (distToEnemyTeam < distToMyTeam && distToEnemyTeam < 0.5f)
         {
             _isSameColor = false;
-            Debug.Log("상대 팀 구역입니다!");
         }
     }
 

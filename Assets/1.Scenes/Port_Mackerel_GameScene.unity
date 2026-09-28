@@ -708,7 +708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &879624919
 Transform:
   m_ObjectHideFlags: 0
@@ -1130,7 +1130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1166479295
 Transform:
   m_ObjectHideFlags: 0
@@ -3644,7 +3644,7 @@ GameObject:
   - component: {fileID: 5528955873880259148}
   m_Layer: 9
   m_Name: pPlane1045__GraffitiRemake00
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10082,7 +10082,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -364406621390071975, guid: 23372d38ffa1f00438c32d2c8ee42aa5, type: 3}
+  - {fileID: 2100000, guid: 4cbd9bf9a0dbb954ea1d41014f2193f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19549,7 +19549,7 @@ GameObject:
   - component: {fileID: 7123540088002369779}
   m_Layer: 9
   m_Name: pPlane552_1__WallTeamDoor
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

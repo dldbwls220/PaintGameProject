@@ -30,6 +30,12 @@ public class PlayerSoundManager : MonoBehaviour
         _slowedLoopSource.volume = 0;
     }
 
+    void Start()
+    {
+        GameSoundManager.instance.SetOutput(_swimLoopSource);
+        GameSoundManager.instance.SetOutput(_slowedLoopSource);
+    }
+
     public struct SoundState 
     {
         public bool isSquid;
