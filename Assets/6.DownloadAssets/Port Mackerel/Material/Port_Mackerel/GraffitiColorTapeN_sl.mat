@@ -133,7 +133,7 @@ Material:
     - _Metallic: 0
     - _Mode: 3
     - _OcclusionStrength: 1
-    - _Opacity: 0
+    - _Opacity: 1
     - _Parallax: 0.02
     - _QueueControl: 0
     - _QueueOffset: 0
