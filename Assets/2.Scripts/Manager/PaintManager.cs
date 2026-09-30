@@ -73,28 +73,6 @@ public class PaintManager : MonoBehaviour
         Mesh mesh = paintable.GetComponent<MeshFilter>().sharedMesh; // 메쉬 가져오기
         Matrix4x4 matrix = paintable.transform.localToWorldMatrix;   // 변환 행렬
 
-        //_paintMaterial.SetFloat(_prepareUVID, 0);
-        //_paintMaterial.SetVector(_positionID, pos);
-        //_paintMaterial.SetFloat(_hardnessID, hardness);
-        //_paintMaterial.SetFloat(_strengthID, strength);
-        //_paintMaterial.SetFloat(_radiusID, radius);
-        //_paintMaterial.SetTexture(_textureID, support);
-        //_paintMaterial.SetColor(_colorID, color ?? Color.red);
-        //_extendMaterial.SetFloat(_uvOffsetID, paintable._extendsIslandOffset);
-        //_extendMaterial.SetTexture(_uvIslandsID, uvIslands);
-
-        //_command.SetRenderTarget(mask);
-        //_command.DrawRenderer(rend, _paintMaterial, 0);
-
-        //_command.SetRenderTarget(support);
-        //_command.Blit(mask, support);
-
-        //_command.SetRenderTarget(extend);
-        //_command.Blit(mask, extend, _extendMaterial);
-
-        //Graphics.ExecuteCommandBuffer(_command);
-        //_command.Clear();
-
         _propBlock.Clear();
         _propBlock.SetFloat(_prepareUVID, 0);
         _propBlock.SetVector(_positionID, pos);

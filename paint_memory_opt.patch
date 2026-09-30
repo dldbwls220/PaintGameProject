@@ -1,0 +1,141 @@
+diff --git b/Assets/2.Scripts/Manager/PaintManager.cs a/Assets/2.Scripts/Manager/PaintManager.cs
+index 2f9dc97..90c5180 100644
+--- b/Assets/2.Scripts/Manager/PaintManager.cs
++++ a/Assets/2.Scripts/Manager/PaintManager.cs
+@@ -18,6 +18,7 @@ public class PaintManager : MonoBehaviour
+     int _textureID = Shader.PropertyToID("_MainTex");
+     int _uvOffsetID = Shader.PropertyToID("_OffsetUV");
+     int _uvIslandsID = Shader.PropertyToID("_UVIslands");
++    int _tempMaskID = Shader.PropertyToID("_TempPaintMask");
+ 
+     Material _paintMaterial;
+     Material _extendMaterial;
+@@ -64,7 +65,6 @@ public class PaintManager : MonoBehaviour
+ 
+     public void paint(Paintabale paintable, Vector3 pos, float radius = 1f, float hardness = .5f, float strength = .5f, Color? color = null)
+     {
+-        RenderTexture mask = paintable.getmask();
+         RenderTexture uvIslands = paintable.getUVIslands();
+         RenderTexture extend = paintable.getExtend();
+         RenderTexture support = paintable.getSupport();
+@@ -83,7 +83,13 @@ public class PaintManager : MonoBehaviour
+         _propBlock.SetColor(_colorID, color ?? Color.red);
+ 
+         _command.Clear();
+-        _command.SetRenderTarget(mask);
++
++        // mask는 칠한 직후 support로 그대로 복사되므로 오브젝트마다 들고 있을 필요가 없다.
++        // 같은 크기의 임시 텍스처를 풀에서 빌려 쓰고 바로 돌려준다.
++        // 풀에서 받은 텍스처는 이전 내용이 남아있으므로, UV 바깥이 support로 복사되지 않게 먼저 비운다.
++        _command.GetTemporaryRT(_tempMaskID, support.descriptor, FilterMode.Bilinear);
++        _command.SetRenderTarget(_tempMaskID);
++        _command.ClearRenderTarget(false, true, Color.clear);
+ 
+         // 모든 서브메시에 페인트 적용
+         for (int i = 0; i < mesh.subMeshCount; i++)
+@@ -91,14 +97,14 @@ public class PaintManager : MonoBehaviour
+             _command.DrawMesh(mesh, matrix, _paintMaterial, i, 0, _propBlock);
+         }
+ 
+-        _command.SetRenderTarget(support);
+-        _command.Blit(mask, support);
++        _command.Blit(_tempMaskID, support);
+ 
+         _extendMaterial.SetFloat(_uvOffsetID, paintable._extendsIslandOffset);
+         _extendMaterial.SetTexture(_uvIslandsID, uvIslands);
+ 
+-        _command.SetRenderTarget(extend);
+-        _command.Blit(mask, extend, _extendMaterial);
++        _command.Blit(_tempMaskID, extend, _extendMaterial);
++
++        _command.ReleaseTemporaryRT(_tempMaskID);
+ 
+         Graphics.ExecuteCommandBuffer(_command);
+         _command.Clear();
+diff --git b/Assets/2.Scripts/Object/Paintabale.cs a/Assets/2.Scripts/Object/Paintabale.cs
+index c5b42a0..76b0bbb 100644
+--- b/Assets/2.Scripts/Object/Paintabale.cs
++++ a/Assets/2.Scripts/Object/Paintabale.cs
+@@ -19,7 +19,6 @@ public class Paintabale : MonoBehaviour
+ 
+     RenderTexture _extendIslandsRenderTexture;
+     RenderTexture _uvIslandsRenderTexture;
+-    RenderTexture _maskRenderTexture;
+     RenderTexture _supportTexture;
+ 
+     Renderer _renderer;
+@@ -29,7 +28,6 @@ public class Paintabale : MonoBehaviour
+     static readonly int _bumpNoiseScaleID = Shader.PropertyToID("Vector1_b5cc7f6f25194a778cb438f45fbbce66");
+     int _maskTextureID = Shader.PropertyToID("_MaskTexture");
+ 
+-    public RenderTexture getmask() => _maskRenderTexture;
+     public RenderTexture getUVIslands() => _uvIslandsRenderTexture;
+     public RenderTexture getExtend() => _extendIslandsRenderTexture;
+     public RenderTexture getSupport() => _supportTexture;
+@@ -39,13 +37,15 @@ public class Paintabale : MonoBehaviour
+     {
+         TEXTURE_SIZE = CalcTextureSize();
+ 
+-        _maskRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+-        _maskRenderTexture.filterMode = FilterMode.Bilinear;
+-
++        // 칠할 때만 쓰는 중간 결과(mask)는 PaintManager가 임시 텍스처로 빌려 쓰므로 여기서 들고 있지 않는다.
+         _extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+         _extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
+ 
+-        _uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
++        // UV 아일랜드는 "이 텍셀이 UV 안쪽인가" 한 가지 정보만 필요하므로 1채널(R8)로 충분하다.
++        RenderTextureFormat islandFormat = SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.R8)
++            ? RenderTextureFormat.R8
++            : RenderTextureFormat.ARGB32;
++        _uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0, islandFormat);
+         _uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
+ 
+         _supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+@@ -54,8 +54,9 @@ public class Paintabale : MonoBehaviour
+         // 새로 만든 RenderTexture는 내용이 보장되지 않아(이전에 해제된 다른 오브젝트의
+         // 텍스처 잔상 등 GPU 메모리 쓰레기가 남아있을 수 있음), 실제로는 칠해진 적이 없는데도
+         // 잉크가 묻어있는 것처럼 보일 수 있다. 페인팅 전에 반드시 투명하게 비워둔다.
+-        ClearRenderTexture(_maskRenderTexture);
++        // UV 아일랜드도 쓰레기가 남아있으면 UV 바깥을 안쪽으로 오인해 이음새 번짐이 빠진다.
+         ClearRenderTexture(_extendIslandsRenderTexture);
++        ClearRenderTexture(_uvIslandsRenderTexture);
+         ClearRenderTexture(_supportTexture);
+ 
+         _renderer = GetComponent<Renderer>();
+@@ -176,7 +177,6 @@ public class Paintabale : MonoBehaviour
+ 
+     void OnDisable()
+     {
+-        _maskRenderTexture.Release();
+         _uvIslandsRenderTexture.Release();
+         _extendIslandsRenderTexture.Release();
+         _supportTexture.Release();
+diff --git b/Assets/7.ShaderGraph/Paintable/ExtendIslands.shader a/Assets/7.ShaderGraph/Paintable/ExtendIslands.shader
+index aa3db24..a7e1ea5 100644
+--- b/Assets/7.ShaderGraph/Paintable/ExtendIslands.shader
++++ a/Assets/7.ShaderGraph/Paintable/ExtendIslands.shader
+@@ -46,7 +46,8 @@
+ 				float4 color = tex2D(_MainTex, uv);
+ 				float4 island = tex2D(_UVIslands, uv);
+ 
+-                if(island.z < 1){
++                // UV 아일랜드 텍스처는 1채널(R8): R이 1이면 UV 안쪽, 0이면 바깥(번짐 대상)
++                if(island.r < 1){
+                     float4 extendedColor = color;
+                     for	(int i = 0; i < offsets.Length; i++){
+                         float2 currentUV = uv + offsets[i] * _MainTex_TexelSize.xy;
+diff --git b/Assets/7.ShaderGraph/Paintable/TexturePainter.shader a/Assets/7.ShaderGraph/Paintable/TexturePainter.shader
+index b6c3963..9271490 100644
+--- b/Assets/7.ShaderGraph/Paintable/TexturePainter.shader
++++ a/Assets/7.ShaderGraph/Paintable/TexturePainter.shader
+@@ -58,7 +58,8 @@
+ 
+             fixed4 frag (v2f i) : SV_Target{   
+                 if(_PrepareUV > 0 ){
+-                    return float4(0, 0, 1, 1);
++                    // UV 아일랜드 텍스처는 1채널(R8)이므로 R에 1을 기록한다
++                    return float4(1, 1, 1, 1);
+                 }         
+ 
+                 float4 col = tex2D(_MainTex, i.uv);
