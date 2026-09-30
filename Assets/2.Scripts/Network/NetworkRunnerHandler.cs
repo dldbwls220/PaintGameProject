@@ -1,13 +1,13 @@
 using UnityEngine;
+using DefineEnum;
 using Fusion;
-using Fusion.Sockets;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 
 public class NetworkRunnerHandler : MonoBehaviour
 {
@@ -24,6 +24,7 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     [Header("Connection UI")]
     [SerializeField] GameObject _connectionWnd;
+    [SerializeField] TextMeshProUGUI _connectionTxt;
     [SerializeField] AnimationClip _closeConnectionClip;
     [SerializeField] GameObject[] _fadeWhileConnecting;
     [SerializeField] float _minConnectionWndSeconds = 0.5f;
@@ -38,13 +39,9 @@ public class NetworkRunnerHandler : MonoBehaviour
     bool _resolved;
     int _retryCount;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //var clientTask = InitializeNetworkRunner(_networkRunner, GameMode.AutoHostOrClient, NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), OnConnected);
-
         Debug.Log($"Server NetworkRunner Started");
-
         Spawner.SessionListUpdated += OnSessions;
         BeginConnect(forceHost: false);
     }
@@ -59,6 +56,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         _sessions.Clear();
         _cts?.Dispose();
         _cts = new System.Threading.CancellationTokenSource();
+
+        SetStatus(forceHost ? ConnectState.RoomFullRecreate : ConnectState.ConnectingServer);
 
         if(_connectionWnd) _connectionWnd.SetActive(true);
         _connectionWndShownTime = Time.unscaledTime;
@@ -82,6 +81,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         var lobby = await runner.JoinSessionLobby(SessionLobby.ClientServer);
         if (!lobby.Ok) { OnConnectFailure(lobby.ShutdownReason); return; }
 
+        SetStatus(ConnectState.SearchingRoom);
+
         // 2. 목록 채워질 시간 확보
         float t = 0f;
         while(t < _sessionListWaitSeconds) { t += Time.unscaledDeltaTime; await Task.Yield(); }
@@ -92,13 +93,22 @@ public class NetworkRunnerHandler : MonoBehaviour
 
         SessionInfo joinable = forceHost ? null : _sessions
             .Where(s => s.IsValid && s.IsOpen && s.IsVisible && s.PlayerCount < s.MaxPlayers)
-            .OrderByDescending(s => s.PlayerCount) // 먼저 찬 방부터 채워 사람 모으기
+            .OrderByDescending(s => s.PlayerCount) 
             .FirstOrDefault();
 
-        if(joinable != null)    { mode = GameMode.Client; sessionName = joinable.Name; }
-        else                    { mode = GameMode.Host; sessionName = NextFreeRoomName(); }
+        if(joinable != null)    
+        {
+            mode = GameMode.Client; sessionName = joinable.Name;
 
-        // 4. 접속
+            SetStatus(ConnectState.JoiningRoom);
+        }
+        else                    
+        {
+            mode = GameMode.Host; sessionName = NextFreeRoomName();
+
+            SetStatus(ConnectState.CreatingRoom);
+        }
+      
         _cts.CancelAfter(TimeSpan.FromSeconds(_connectTimeoutSeconds));
         var result = await runner.StartGame(new StartGameArgs
         {
@@ -117,15 +127,10 @@ public class NetworkRunnerHandler : MonoBehaviour
         else if (mode == GameMode.Client && (
        result.ShutdownReason == ShutdownReason.GameClosed ||
        result.ShutdownReason == ShutdownReason.GameIsFull ||
-       result.ShutdownReason == ShutdownReason.GameNotFound))
-        {
-            // 고르는 사이에 그 방이 시작/꽉 참 → 내 방을 만든다
+       result.ShutdownReason == ShutdownReason.GameNotFound))       
             BeginConnect(forceHost: true);
-        }
-        else
-        {
+        else       
             OnConnectFailure(result.ShutdownReason);
-        }
 
     }
 
@@ -136,15 +141,16 @@ public class NetworkRunnerHandler : MonoBehaviour
 
         StopAllCoroutines();
         _cts?.Dispose(); _cts = null;
-        RestoreFadeGroups();     // ★ 재시도 도중에도 로비가 안 잠기도록
+        RestoreFadeGroups();     // 재시도 도중에도 로비가 안 잠기도록
         CleanupRunner();
 
         Debug.LogWarning($"[Connect] 실패: {reason} (재시도 {_retryCount})");
 
+        SetStatus(ConnectState.Failed, DescribeReason(reason));
+
         // 재시도로 해결 불가능한 경우 → 루프 중단
         if (reason == ShutdownReason.IncompatibleConfiguration)
-        {
-            //if (_connectionFailedText) _connectionFailedText.text = "게임 버전이 일치하지 않습니다.";
+        {           
             if (_autoReturnOnFatal) BackToTitle();
             return;
         }
@@ -152,7 +158,6 @@ public class NetworkRunnerHandler : MonoBehaviour
         // 그 외 전부 자동 재시도 (백오프)
         _retryCount++;
         float delay = Mathf.Min(_retryBaseDelay * _retryCount, _retryMaxDelay);
-        //if (_connectionFailedText) _connectionFailedText.text = $"접속 재시도 중... ({_retryCount})";
         StartCoroutine(RetryAfter(delay));
     }
 
@@ -179,12 +184,29 @@ public class NetworkRunnerHandler : MonoBehaviour
         ShutdownReason.ServerInRoom => "방이 가득 찼습니다.",
         ShutdownReason.ConnectionRefused => "접속이 거부되었습니다.",
         ShutdownReason.ConnectionTimeout => "접속 시간이 초과되었습니다.",
-        ShutdownReason.OperationCanceled => "접속 시간이 초과되었습니다.",   // ← CancelAfter 타임아웃이 이걸로 옴
+        ShutdownReason.OperationCanceled => "접속 시간이 초과되었습니다.",  
         ShutdownReason.PhotonCloudTimeout => "서버에 연결하지 못했습니다.\n네트워크 상태를 확인해 주세요.",
         ShutdownReason.IncompatibleConfiguration => "게임 버전이 일치하지 않습니다.",
         ShutdownReason.Error => "알 수 없는 오류로 접속에 실패했습니다.",
         _ => $"접속에 실패했습니다. ({reason})",
     };
+
+    void SetStatus(ConnectState state, string extra = null)
+    {
+        if (!_connectionTxt) return;
+
+        _connectionTxt.text = state switch
+        {
+            ConnectState.ConnectingServer => "서버에 연결하고 있습니다...",
+            ConnectState.SearchingRoom => "참가 가능한 방을 찾고 있습니다...",
+            ConnectState.CreatingRoom => "새 방을 만들고 있습니다...",
+            ConnectState.RoomFullRecreate => "방이 가득 찼습니다.\n새 방을 만들겠습니다...",
+            ConnectState.Connected => "접속 완료!",
+            ConnectState.Failed => extra,
+            ConnectState.Fatal => extra,
+            _ => ""
+        };
+    }
 
     string NextFreeRoomName()
     {
@@ -208,6 +230,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         _retryCount = 0;          // 성공했으니 재시도 카운터 리셋
         _cts?.Dispose(); _cts = null;
         StartCoroutine(HandleConnected());
+
+        SetStatus(ConnectState.Connected);
     }
 
     IEnumerator HandleConnected()
@@ -290,36 +314,4 @@ public class NetworkRunnerHandler : MonoBehaviour
             _connectionWnd.SetActive(false);
         }
     }
-
-    //protected virtual async Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, NetAddress address, SceneRef scene, Action<NetworkRunner> initialized)
-    //{
-    //    var sceneManager = runner.GetComponents(typeof(MonoBehaviour)).OfType<INetworkSceneManager>().FirstOrDefault();
-
-    //    if (sceneManager == null)
-    //    {
-    //        //Handle networked objects that already exits in the scene
-    //        sceneManager = runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
-    //    }
-
-    //    runner.ProvideInput = true;
-
-    //    var result = await runner.StartGame(new StartGameArgs
-    //    {
-    //        GameMode = gameMode,
-    //        Address = address,
-    //        Scene = scene,
-    //        SessionName = "Port_Mackerel _GameScene",
-    //        SceneManager = sceneManager
-    //    });
-
-    //    if (result.Ok)
-    //    {
-    //        // Fusion 1의 Initialized 콜백 대신 여기서 처리
-    //        initialized?.Invoke(runner);
-    //    }
-    //    else
-    //    {
-    //        Debug.LogError($"StartGame 실패: {result.ShutdownReason}");
-    //    }
-    //}
 }

@@ -104,20 +104,20 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked, OnChangedRender(nameof(OnNicknameChanged))]
     NetworkString<_32> _nickname { get; set; }
 
-    [Networked] public NetworkBool _isSquid { get; set; }
-    [Networked] public NetworkBool _isShooting { get; set; }
-    [Networked] public NetworkBool _isGrounded { get; set; }
-    [Networked] public NetworkBool _isMoving  { get; set; }
-    [Networked] public NetworkBool _switchFoot { get; set; }
-    [Networked] public NetworkBool _isMorphingSquid { get; set; }
-    [Networked] public NetworkBool _isMorphingInkling { get; set; }
-    [Networked] public NetworkBool _isSameColor { get; set; }
-    [Networked] public NetworkBool _isOnPaint { get; set; }
-    [Networked] public NetworkBool _isSwimming {  get; set; }
-    [Networked] public NetworkBool _isSlowed { get; set; }
-    [Networked] public NetworkBool _isWallClimb { get; set; }
-    [Networked] public NetworkBool _isAlive { get; set; }
-    [Networked] public NetworkBool _openNicknameWnd { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isSquid { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isShooting { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isGrounded { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isMoving  { get; set; }
+    [Networked, HideInInspector] public NetworkBool _switchFoot { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isMorphingSquid { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isMorphingInkling { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isSameColor { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isOnPaint { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isSwimming {  get; set; }
+    [Networked, HideInInspector] public NetworkBool _isSlowed { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isWallClimb { get; set; }
+    [Networked, HideInInspector] public NetworkBool _isAlive { get; set; }
+    [Networked, HideInInspector] public NetworkBool _openNicknameWnd { get; set; }
 
     // 이전 프레임 값 — 변경 감지용 (네트워크 동기화 불필요)
     bool _prevIsOnPaint;
@@ -143,7 +143,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _inkRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
         _audioListnerRoot.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
 
-        if (crosshairUI != null || GameManager._instance._introFinished)
+        if (crosshairUI != null && GameManager._instance._introFinished)
         {
             var target = _aimTargetObj.transform.GetComponent<MouseTarget>();
 
@@ -383,7 +383,7 @@ public class NetworkInklingMovement : NetworkBehaviour
         _aimTargetPosition = input._aimTargetPosition;
 
         // 카메라 방향 기반 이동 방향 계산
-        _camForward = new Vector3(input._cameraForwardRight.x, 0f, input._cameraForwardRight.y).normalized;
+        _camForward = new Vector3(input._cameraForward.x, 0f, input._cameraForward.y).normalized;
         _camRight = new Vector3(_camForward.z, 0f, -_camForward.x);
 
         _moveDirection = _camForward * input._movementInput.z + _camRight * input._movementInput.x;
@@ -441,9 +441,6 @@ public class NetworkInklingMovement : NetworkBehaviour
         _hitbox.CapsuleRadius = isInklingForm ? _inklingHitboxRadius : _squidHitboxRadius;
         _hitbox.CapsuleExtents = isInklingForm ? _inklingHitboxExtents : _squidHitboxExtents;
         _hitbox.Offset = isInklingForm ? _inklingHitboxOffset : _squidHitboxOffset;
-
-        // 죽은 상태에서는 히트박스를 꺼서 랙 보정 쿼리에 잡히지 않도록 한다 (HitboxActive는 enabled 토글과 달리 안전)
-        
 
         var renderstate = new InklingRenderController.RenderState
         {

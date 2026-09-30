@@ -12,9 +12,4 @@ public class StartManager : MonoBehaviour
         WipeTransitionManager.instance.StartScene();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

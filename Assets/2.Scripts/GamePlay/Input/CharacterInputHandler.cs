@@ -56,14 +56,12 @@ public class CharacterInputHandler : MonoBehaviour
         if (_mainCam != null)
         {
             Vector3 camForward = _mainCam.transform.forward;
-            Vector3 camRight = _mainCam.transform.right;
             camForward.y = 0; camForward.Normalize();
-            camRight.y = 0; camRight.Normalize();
-            inputdata._cameraForwardRight = new Vector2(camForward.x, camForward.z);
+            inputdata._cameraForward =new Vector2(camForward.x, camForward.z);
         }
 
         inputdata._aimTargetPosition = _aimTargetPosition;
-        _isJumpPressed = false; // 점프는 한 프레임만
+        _isJumpPressed = false; 
         return inputdata;
     }
 }

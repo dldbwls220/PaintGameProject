@@ -467,4 +467,20 @@ namespace DefineEnum
     }
 
     #endregion[리소스]
+
+    #region[네트워크]
+
+    public enum ConnectState
+    {
+        ConnectingServer,
+        SearchingRoom,
+        JoiningRoom,
+        CreatingRoom,
+        RoomFullRecreate,
+        Connected,
+        Failed,
+        Fatal
+    }
+
+    #endregion[네트워크]
 }

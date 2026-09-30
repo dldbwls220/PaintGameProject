@@ -28,8 +28,9 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
     bool _startRequested;
     bool _isCustomizeSceneLoaded;
     bool _isCustomizeSceneLoading;
+    bool _isCustomizeOpen;
 
-    public bool IsCustomizeOpen => _isCustomizeSceneLoaded;
+    public bool IsCustomizeOpen => _isCustomizeOpen;
 
     public override void Awake()
     {
@@ -71,11 +72,7 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
 
     public void CloseCustomizationScene()
     {
-        //if (_isCustomizeSceneLoaded && CustomizationUI._instance != null)
-        //{
-        //    CustomizationUI._instance.transform.parent.gameObject.SetActive(false);
-        //}
-
+        if (!_isCustomizeOpen || _isCustomizeSceneLoading) return;
         StartCoroutine(CloseCustomizationWipeAnim());
     }
 
@@ -221,6 +218,7 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
     IEnumerator LoadCustomizationScene()
     {
         _isCustomizeSceneLoading = true;
+        _isCustomizeOpen = true;
 
         FadeSound(false);
 
@@ -260,6 +258,7 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
             yield return new WaitForSeconds(_anim.clip.length);
             _isCustomizeSceneLoading = false;
             CustomizationUI._instance.transform.parent.gameObject.SetActive(true);
+            _isCustomizeOpen = true;
             CustomizeVisualManager._instance.OpenObject();
 
             EndWipeAnim();
@@ -289,6 +288,8 @@ public class WipeTransitionManager : Singleton<WipeTransitionManager>
         {
             CustomizeVisualManager._instance.CloseObject();
         }
+
+        _isCustomizeOpen = false;
 
         EndWipeAnim();
 

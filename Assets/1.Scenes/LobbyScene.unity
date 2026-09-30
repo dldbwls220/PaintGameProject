@@ -8549,6 +8549,7 @@ MonoBehaviour:
   _retryMaxDelay: 10
   _autoReturnOnFatal: 0
   _connectionWnd: {fileID: 1510323306}
+  _connectionTxt: {fileID: 304528296}
   _closeConnectionClip: {fileID: 7400000, guid: 7121c7def6141f746a546b0d63158e48, type: 2}
   _fadeWhileConnecting:
   - {fileID: 699287596}

@@ -63,7 +63,7 @@ public class DisplaySettingUI : MonoBehaviour
         {
             GetCurrentResolution();
         }
-        else if (PlayerCustomizeManager.instance.GetResolutionIdx() >= 0)
+        else
         {
             _selectResolution = PlayerCustomizeManager.instance.GetResolutionIdx();
         }
@@ -72,7 +72,7 @@ public class DisplaySettingUI : MonoBehaviour
         _resolutionDropDown.SetValueWithoutNotify(_selectResolution);
         _resolutionDropDown.RefreshShownValue();
 
-        SetDisplayMode(PlayerCustomizeManager.instance.GetFullScreen());
+        _isFullScreen = PlayerCustomizeManager.instance.GetFullScreen();
         SelectedButtonColor();
     }
 
@@ -80,7 +80,7 @@ public class DisplaySettingUI : MonoBehaviour
     {
         _selectResolution = x;
         _currResolution = _resolutions[_selectResolution];
-
+        PlayerCustomizeManager.instance.SetResolutionIdx(x);
         Screen.SetResolution(_currResolution.width, _currResolution.height, _isFullScreen);
     }
 
