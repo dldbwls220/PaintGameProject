@@ -16,6 +16,7 @@ public class GameManager : NetworkBehaviour
     [Header("Class Reference")]
     [SerializeField] NetworkInklingMovement _playerPrefab;
     [SerializeField] GridManager _gridManager;
+    [SerializeField] SettingUI _settingUI;
 
     [Header("Gameplay Setting")]
     [SerializeField] float _gameDuration = 180f;
@@ -138,6 +139,13 @@ public class GameManager : NetworkBehaviour
 
         CreatGrid();
         _playableDirector.stopped += OnIntroFinished;
+
+        if (_settingUI != null)
+        {
+            _settingUI.InitSettingUI();
+            _settingUI.OpenMouseSetting(true);
+            _settingUI.CloseWnd();
+        }      
     }
 
     private void OnDestroy()
@@ -694,6 +702,16 @@ public class GameManager : NetworkBehaviour
 
         data._score += score;
         PlayerData.Set(shooter, data);
+    }
+
+    public void OpenSettingUI(bool open)
+    {
+        if (_settingUI == null) return;
+
+        if(open)
+            _settingUI.OpenWnd();
+        else
+            _settingUI.CloseWnd();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

@@ -25,6 +25,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] Hitbox _hitbox;
     [SerializeField] CharacterSeperation _characterSeparation;
     [SerializeField] PlayerSoundManager _playerSoundManager;
+    [SerializeField] TPSCamera _TPScamera;
 
     [Header("Hitbox Size (Squid Form)")]
     [SerializeField] float _squidHitboxRadius = 0.5f;
@@ -123,6 +124,8 @@ public class NetworkInklingMovement : NetworkBehaviour
     bool _prevIsOnPaint;
     bool _prevIsSameColor;
     bool _prevMorphingSquid, _prevMorphingInkling, _prevRespawing, _prevPendingRespawn;
+    bool _isSettingOpen;
+    CharacterInputHandler _inputHandler;
 
     [Networked] public TickTimer _morphTimer { get; set; }
     [Networked] public TickTimer _respawningTimer { get; set; }
@@ -136,6 +139,21 @@ public class NetworkInklingMovement : NetworkBehaviour
     [Networked] public float _targetWeight {  get; set; }
 
     GameObject _aimTargetObj;
+
+    private void Update()
+    {
+        if (!HasInputAuthority) return;
+
+        if (!GameManager._instance._introFinished || GameManager._instance._gameEnd)
+        {           
+            if (_isSettingOpen)
+                SetSettingOpen(false);
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SetSettingOpen(!_isSettingOpen);
+    }
 
     void LateUpdate()
     {
@@ -157,6 +175,7 @@ public class NetworkInklingMovement : NetworkBehaviour
     public override void Spawned()
     {
         _kcc = GetComponent<SimpleKCC>();
+        _inputHandler = GetComponent<CharacterInputHandler>();
 
         if (HasInputAuthority)
         {
@@ -244,7 +263,7 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         // 발사체 스폰 (StateAuthority만 실행, 쿨다운/단발-연사 체크는 Weapon 내부에서)
         // 단발 무기의 rising-edge 감지를 위해 버튼을 뗀 상태에서도 매 틱 호출해야 함
-        if (!_isSquid && HasStateAuthority && _isAlive && !_health._nowRespawing)
+        if (!_isSquid && HasStateAuthority && _isAlive && !_health._nowRespawing && !input._isMenuOpen)
         {
             _weaponManager.Shoot(_isShooting);
         }
@@ -428,6 +447,15 @@ public class NetworkInklingMovement : NetworkBehaviour
             _switchFoot = !_switchFoot;
             _pendingJumpImpulse = _jumpImpulse;
         }
+    }
+
+    void SetSettingOpen(bool open)
+    {
+        _isSettingOpen = open;
+        GameManager._instance.OpenSettingUI(open);
+        _TPScamera.SetMenuOpen(open);
+        if (_inputHandler != null)
+            _inputHandler._isMenuOpen = open;   // 다음 틱 입력부터 호스트에 전달됨
     }
 
     public override void Render()

@@ -58,7 +58,7 @@
 
             fixed4 frag (v2f i) : SV_Target{   
                 if(_PrepareUV > 0 ){
-                    return float4(0, 0, 1, 1);
+                    return float4(1, 0, 0, 1);
                 }         
 
                 float4 col = tex2D(_MainTex, i.uv);

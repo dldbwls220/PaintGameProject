@@ -67,7 +67,7 @@ public class PaintManager : MonoBehaviour
         RenderTexture mask = paintable.getmask();
         RenderTexture uvIslands = paintable.getUVIslands();
         RenderTexture extend = paintable.getExtend();
-        RenderTexture support = paintable.getSupport();
+        RenderTexture support = RenderTexture.GetTemporary(mask.descriptor);
         Renderer rend = paintable.getRenderer();
 
         Mesh mesh = paintable.GetComponent<MeshFilter>().sharedMesh; // 메쉬 가져오기
@@ -83,6 +83,7 @@ public class PaintManager : MonoBehaviour
         _propBlock.SetColor(_colorID, color ?? Color.red);
 
         _command.Clear();
+        _command.Blit(mask, support);        // 칠하기 전 상태를 먼저 복사
         _command.SetRenderTarget(mask);
 
         // 모든 서브메시에 페인트 적용
@@ -90,9 +91,6 @@ public class PaintManager : MonoBehaviour
         {
             _command.DrawMesh(mesh, matrix, _paintMaterial, i, 0, _propBlock);
         }
-
-        _command.SetRenderTarget(support);
-        _command.Blit(mask, support);
 
         _extendMaterial.SetFloat(_uvOffsetID, paintable._extendsIslandOffset);
         _extendMaterial.SetTexture(_uvIslandsID, uvIslands);
@@ -102,6 +100,7 @@ public class PaintManager : MonoBehaviour
 
         Graphics.ExecuteCommandBuffer(_command);
         _command.Clear();
+        RenderTexture.ReleaseTemporary(support);
 
         //Debug.Log($"[Paint] obj={paintable.name} pos={pos} radius={radius} scale={paintable.transform.lossyScale}");
 

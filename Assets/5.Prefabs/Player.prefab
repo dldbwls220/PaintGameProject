@@ -10817,6 +10817,7 @@ MonoBehaviour:
   _hitbox: {fileID: 6161846713622275408}
   _characterSeparation: {fileID: 9216481044901981345}
   _playerSoundManager: {fileID: 8554473167015916915}
+  _TPScamera: {fileID: 6359762694976922568}
   _squidHitboxRadius: 0.5
   _squidHitboxExtents: 0.3
   _squidHitboxOffset: {x: 0, y: 0.35, z: 0}
@@ -10909,6 +10910,7 @@ MonoBehaviour:
   _beatenWndDelay: 1
   _radius: 1.5
   _hardness: 0.9
+  _strength: 0.9
   _minPaintRadius: 1
   _maxPaintRadius: 2.5
   _splashCount: 12
@@ -12762,6 +12764,10 @@ PrefabInstance:
     - target: {fileID: 8550430974084442759, guid: f839c1189c9b8454fa34fdc4a242e6a1, type: 3}
       propertyPath: m_Name
       value: DeathIcon
+      objectReference: {fileID: 0}
+    - target: {fileID: 8550430974084442759, guid: f839c1189c9b8454fa34fdc4a242e6a1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

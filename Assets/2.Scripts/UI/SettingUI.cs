@@ -25,6 +25,8 @@ public class SettingUI : MonoBehaviour
     [SerializeField] Image _volumeBtnImg;
     [SerializeField] Image _resolutionBtnImg;
 
+    [Header("Display")]
+    [SerializeField] DisplaySettingUI _displayUI;
 
     private void Update()
     {
@@ -44,6 +46,8 @@ public class SettingUI : MonoBehaviour
         _bgmSlider.value = PlayerCustomizeManager.instance.ReturnVolume(MixerState.BGMMixer);
         _sfxSlider.value = PlayerCustomizeManager.instance.ReturnVolume(MixerState.SFXMixer);
 
+        _displayUI.InitDisplay();
+        _displayUI.InitDisplayOption();
     }
 
     public void SaveSensitivity()
@@ -72,12 +76,14 @@ public class SettingUI : MonoBehaviour
     {
         gameObject.SetActive(true);
         InitSettingUI();
+        GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00);
     }
 
     public void CloseWnd()
     {
         SaveSensitivity();
         gameObject.SetActive(false);
+        //GameSoundManager.instance.PlayerSFX(PlayerSFXName.UI_Decide00);
     }
 
     #region[EventSystem]

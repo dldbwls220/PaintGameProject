@@ -45,7 +45,7 @@ public class Paintabale : MonoBehaviour
         _extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
         _extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        _uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        _uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0, RenderTextureFormat.R8);
         _uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
         _supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
@@ -56,7 +56,7 @@ public class Paintabale : MonoBehaviour
         // 잉크가 묻어있는 것처럼 보일 수 있다. 페인팅 전에 반드시 투명하게 비워둔다.
         ClearRenderTexture(_maskRenderTexture);
         ClearRenderTexture(_extendIslandsRenderTexture);
-        ClearRenderTexture(_supportTexture);
+        ClearRenderTexture(_uvIslandsRenderTexture);
 
         _renderer = GetComponent<Renderer>();
 

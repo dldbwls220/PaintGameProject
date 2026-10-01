@@ -9,6 +9,7 @@ public class CharacterInputHandler : MonoBehaviour
     bool _isJumpPressed;
     bool _isShootPressed;
     bool _isSquidPressed;
+    public bool _isMenuOpen { get; set; }
 
     Camera _mainCam;
     MouseTarget _mouseTarget;
@@ -51,6 +52,7 @@ public class CharacterInputHandler : MonoBehaviour
         inputdata._isSquidPressed = _isSquidPressed;
         inputdata._climbAxis = _climbAxis;
         inputdata._sideAxis = _sideAxis;
+        inputdata._isMenuOpen = _isMenuOpen;
 
         // 카메라 방향을 struct에 담아 서버에서도 같은 방향으로 이동
         if (_mainCam != null)

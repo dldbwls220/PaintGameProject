@@ -27,6 +27,8 @@ public class TPSCamera : MonoBehaviour
     CinemachineBrain _brain;
 
     bool _lookInputEnabled = true;
+    bool _menuOpen;
+    bool _initDone;
 
     private void Awake()
     {
@@ -35,10 +37,7 @@ public class TPSCamera : MonoBehaviour
 
     private void Start()
     {
-        if (PlayerCustomizeManager.instance != null)
-        {
-            _sensitivity = PlayerCustomizeManager.instance.ReturnSensitivity();
-        }
+
 
         //initCam();
         Cursor.lockState = CursorLockMode.Locked;
@@ -51,11 +50,19 @@ public class TPSCamera : MonoBehaviour
     void Update()
     {
         bool introFinished = GameManager._instance != null && GameManager._instance._introFinished;
+        bool shouldEnable = introFinished && !_menuOpen;
 
-        if (introFinished != _lookInputEnabled)
+        if (shouldEnable != _lookInputEnabled)
         {
-            SetLookInputEnabled(introFinished);
+            SetLookInputEnabled(shouldEnable);
         }
+    }
+
+    public void SetMenuOpen(bool open)
+    {
+        _menuOpen = open;
+        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = open;
     }
 
     public void EnableKillCam(Transform killer)
@@ -92,6 +99,11 @@ public class TPSCamera : MonoBehaviour
     {
         if (_freeLook == null) return;
 
+        if (PlayerCustomizeManager.instance != null)
+        {
+            _sensitivity = PlayerCustomizeManager.instance.ReturnSensitivity();
+        }
+
         _freeLook.m_XAxis.m_InputAxisName = enabled ? "Mouse X" : string.Empty;
         _freeLook.m_YAxis.m_InputAxisName = enabled ? "Mouse Y" : string.Empty;
 
@@ -105,12 +117,12 @@ public class TPSCamera : MonoBehaviour
             /// Heading이 Target Forward 기준이라 X축 0 = 캐릭터가 바라보는 방향(정면) 뒤에 카메라 위치
             /// Recentering이 꺼져 있어 자동으로 정렬되지 않으므로 인트로 종료 시점에 명시적으로 초기화
 
-            if(_inkling._teamIndex == 1)
-                _freeLook.m_XAxis.Value = 180f;
-            else
-                _freeLook.m_XAxis.Value = 0f;
-           
-            _freeLook.m_YAxis.Value = 0.5f;
+            if (!_initDone)
+            {
+                _freeLook.m_XAxis.Value = _inkling._teamIndex == 1 ? 180f : 0f;
+                _freeLook.m_YAxis.Value = 0.5f;
+                _initDone = true;
+            }
 
             _freeLook.m_XAxis.m_MaxSpeed = _baseXSpeed * _sensitivity;
             _freeLook.m_YAxis.m_MaxSpeed = _baseYSpeed * _sensitivity;

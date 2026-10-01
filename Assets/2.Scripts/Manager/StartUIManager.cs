@@ -6,7 +6,6 @@ public class StartUIManager : MonoBehaviour
 {
     [SerializeField] GameObject[] _selectedWnds;
     [SerializeField] SettingUI _settingUI;
-    [SerializeField] DisplaySettingUI _displayUI;
     private void Start()
     {
         foreach (var wnd in _selectedWnds)
@@ -15,17 +14,17 @@ public class StartUIManager : MonoBehaviour
         }
         _settingUI.InitSettingUI();
         _settingUI.OpenMouseSetting(true);
-        _settingUI.CloseWnd();
-
-        _displayUI.InitDisplay();
-        _displayUI.InitDisplayOption();
+        _settingUI.CloseWnd();      
     }
 
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            CloseCustomization();
+            if (WipeTransitionManager.instance != null && WipeTransitionManager.instance.IsCustomizeOpen)
+                CloseCustomization();
+            else
+                _settingUI.CloseWnd();
         }
     }
 
@@ -88,8 +87,7 @@ public class StartUIManager : MonoBehaviour
 
     public void CloseCustomization()
     {
-        if (WipeTransitionManager.instance != null && WipeTransitionManager.instance.IsCustomizeOpen)
-            WipeTransitionManager.instance.CloseCustomizationScene();
+        WipeTransitionManager.instance.CloseCustomizationScene();
     }
 
     public void EndGame()

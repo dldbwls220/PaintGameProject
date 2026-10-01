@@ -84,8 +84,6 @@ public class NetworkInkProjectile : NetworkBehaviour
         _trailRenderer = GetComponent<TrailRenderer>();
         _splashParticle = GetComponentsInChildren<ParticleSystem>();
 
-        _mesh.material.EnableKeyword("_EMISSION");
-
         // 스폰 직후 실제 궤적 위치로 처음 옮겨가는 순간의 이동을 TrailRenderer가 선으로
         // 그려버리면, 클라이언트에서 "엉뚱한 곳에서 발사 지점으로 휙 날아오는" 잔상처럼
         // 보인다. 시작 위치로 맞춘 뒤 트레일을 비워서 그 잔상이 생기지 않게 한다.
@@ -142,27 +140,6 @@ public class NetworkInkProjectile : NetworkBehaviour
                 {
                     OnHit(wHit.Point, wHit.Normal, false, wHit.GameObject.layer);
                 }
-
-                //// lHit.Hitbox는 IncludePhysX 옵션 때문에 같은 캐릭터를 맞혀도 PhysX 경로로 판정되면 null이 될 수 있어
-                //// (Fusion 문서: "Hitbox is null in case the hit was on PhysX"), Hitbox 유무 대신 GameObject로 대상을 판별한다.
-                //var hitOwner = lHit.GameObject != null ? lHit.GameObject.GetComponentInParent<NetworkInklingMovement>() : null;
-
-                //if (hitOwner != null)
-                //{
-                //    if (hitOwner._teamIndex == _shooterTeam)
-                //    {
-                //        Debug.Log($"[InkProjectile] 아군입니다 (target={lHit.GameObject.name}, teamIndex={hitOwner._teamIndex}, shooterTeam={_shooterTeam})");
-
-                //        return; // 아군이면 이번 틱은 무시 (필요하면 관통 처리)
-                //    }
-
-                //    OnHit(lHit.Point, lHit.Normal, true, lHit.GameObject.layer);
-                //    ApplyDamage(hitOwner);
-                //}
-                //else
-                //{
-                //    OnHit(lHit.Point, lHit.Normal, false, lHit.GameObject.layer);
-                //}
             }
         }
 
@@ -279,14 +256,10 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     void RPC_OnHit(Vector3 point, Vector3 normal, Color color, float paintRadius, int layer)
     {
-        // 페인팅: RenderTexture는 로컬이므로 모든 클라이언트에서 직접 호출 필요
-        // Paintable 레이어에 맞았을 때만 칠한다. Obstacle(유리 등)은 hit.point 주변에
-        // Paintable 콜라이더가 인접해 있을 수 있어(PaintAuto의 OverlapSphere 폴백),
-        // 여기서 걸러내지 않으면 엉뚱한 인접 벽이 대신 칠해진다.
         if (layer == LayerMask.NameToLayer("Paintable"))
         {
-            if (WorldInkZoneManager._instance != null)
-                WorldInkZoneManager._instance.PaintAuto(point, normal, color, paintRadius, _hardness);
+            //if (WorldInkZoneManager._instance != null)
+            //    WorldInkZoneManager._instance.PaintAuto(point, normal, color, paintRadius, _hardness);
 
             // Paintabale은 MonoBehaviour라 RPC 인자로 넘길 수 없으므로,
             // 씬에 고정 배치된 오브젝트라는 점을 이용해 각 클라이언트가 hit point 주변을 재탐색한다.

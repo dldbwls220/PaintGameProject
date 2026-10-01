@@ -92,7 +92,6 @@ public class Health : NetworkBehaviour
 
         if (HasInputAuthority && _damageScreenFeature != null)
         {
-            Material screenMat = new Material(_damageScreenMat);
             _damageScreenFeature.passMaterial = _damageScreenMat;
 
             _damageScreenMat.SetFloat("_Vignette_Smoothness", 0.3f);
