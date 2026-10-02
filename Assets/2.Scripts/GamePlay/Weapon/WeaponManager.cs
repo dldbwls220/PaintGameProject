@@ -116,8 +116,6 @@ public class WeaponManager : NetworkBehaviour
 
         if (HasInputAuthority)
             _inkTankC.UpdateInkTank(_currentInk / _totalInk);
-
-        Debug.Log("자동충전");
     }
 
     public void RefillInk()

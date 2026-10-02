@@ -314,7 +314,8 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         Vector3 targetVelocity = _moveDirection * speed;
 
-        if (_isSquid && _wallClimb.CheckWall(_inkColor, _enemyColor))
+        // CheckPaintColor와 마찬가지로 재시뮬레이션 틱에서는 GPU 읽기를 생략하고 이전 판정(_isWallClimb)을 재사용
+        if (_isSquid && _wallClimb.CheckWall(_inkColor, _enemyColor, Runner.IsForward, _isWallClimb))
         {
             _isWallClimb = true;
             _kcc.ResetVelocity();

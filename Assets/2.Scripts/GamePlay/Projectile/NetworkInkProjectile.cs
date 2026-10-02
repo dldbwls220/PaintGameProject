@@ -54,6 +54,7 @@ public class NetworkInkProjectile : NetworkBehaviour
     ParticleSystem[] _splashParticle;
     readonly HashSet<PlayerRef> _passByNotified = new HashSet<PlayerRef>();
     readonly List<LagCompensatedHit> _passHits = new List<LagCompensatedHit>();
+    readonly List<LagCompensatedHit> _playerHits = new List<LagCompensatedHit>();
 
     // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
     const int DESPAWN_DELAY_TICKS = 10;
@@ -119,25 +120,19 @@ public class NetworkInkProjectile : NetworkBehaviour
         {
             if (HasStateAuthority)
             {
-                bool hitPlayer = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit pHit, _playerMask, HitOptions.None);
-
                 bool hitWorld = Runner.LagCompensation.Raycast(previousPos, dir, distance, Object.InputAuthority, out LagCompensatedHit wHit, _worldMask, HitOptions.IncludePhysX);
 
-                if (hitPlayer && (!hitWorld || pHit.Distance <= wHit.Distance))
-                {
-                    var hitowner = pHit.Hitbox != null
-                        ? pHit.Hitbox.GetComponentInParent<NetworkInklingMovement>()
-                        : null;
+                // 벽보다 앞에 있는 플레이어만 유효하므로 벽까지의 거리로 검사 구간을 자른다
+                float playerCheckDistance = hitWorld ? wHit.Distance : distance;
 
-                    if (hitowner != null && hitowner._teamIndex != _shooterTeam)
-                    {
-                        OnHit(pHit.Point, pHit.Normal, true, pHit.Hitbox.gameObject.layer);
-                        ApplyDamage(hitowner);
-                    }
-                    // 아군이면 관통
+                if (TryGetNearestEnemyHit(previousPos, dir, playerCheckDistance, out LagCompensatedHit pHit, out NetworkInklingMovement hitowner))
+                {
+                    OnHit(pHit.Point, pHit.Normal, true, pHit.Hitbox.gameObject.layer);
+                    ApplyDamage(hitowner);
                 }
                 else if (hitWorld)
                 {
+                    // 아군만 걸렸거나 아무도 없으면 벽 충돌을 그대로 처리 (아군은 관통)
                     OnHit(wHit.Point, wHit.Normal, false, wHit.GameObject.layer);
                 }
             }
@@ -172,6 +167,32 @@ public class NetworkInkProjectile : NetworkBehaviour
             transform.forward = vel.normalized;
 
         ApplyProjectileColor();
+    }
+
+    // 가장 가까운 히트박스 하나만 보면, 그게 아군일 때 같은 틱 구간 안의 벽이나 뒤에 있는 적을 놓친다.
+    // 구간에 걸리는 히트박스를 전부 받아 아군은 건너뛰고 가장 가까운 적만 고른다.
+    bool TryGetNearestEnemyHit(Vector3 origin, Vector3 dir, float distance, out LagCompensatedHit enemyHit, out NetworkInklingMovement enemy)
+    {
+        enemyHit = default;
+        enemy = null;
+
+        Runner.LagCompensation.RaycastAll(origin, dir, distance, Object.InputAuthority, _playerHits, _playerMask, true, HitOptions.None);
+
+        float nearest = float.MaxValue;
+
+        foreach (var hit in _playerHits)
+        {
+            if (hit.Hitbox == null || hit.Distance >= nearest) continue;
+
+            var owner = hit.Hitbox.GetComponentInParent<NetworkInklingMovement>();
+            if (owner == null || owner._teamIndex == _shooterTeam) continue;
+
+            nearest = hit.Distance;
+            enemyHit = hit;
+            enemy = owner;
+        }
+
+        return enemy != null;
     }
 
     void HideVisual()

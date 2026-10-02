@@ -20,7 +20,6 @@ public class Paintabale : MonoBehaviour
     RenderTexture _extendIslandsRenderTexture;
     RenderTexture _uvIslandsRenderTexture;
     RenderTexture _maskRenderTexture;
-    RenderTexture _supportTexture;
 
     Renderer _renderer;
 
@@ -32,7 +31,6 @@ public class Paintabale : MonoBehaviour
     public RenderTexture getmask() => _maskRenderTexture;
     public RenderTexture getUVIslands() => _uvIslandsRenderTexture;
     public RenderTexture getExtend() => _extendIslandsRenderTexture;
-    public RenderTexture getSupport() => _supportTexture;
     public Renderer getRenderer() => _renderer;
 
     void Start()
@@ -47,9 +45,6 @@ public class Paintabale : MonoBehaviour
 
         _uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0, RenderTextureFormat.R8);
         _uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
-
-        _supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
-        _supportTexture.filterMode = FilterMode.Bilinear;
 
         // 새로 만든 RenderTexture는 내용이 보장되지 않아(이전에 해제된 다른 오브젝트의
         // 텍스처 잔상 등 GPU 메모리 쓰레기가 남아있을 수 있음), 실제로는 칠해진 적이 없는데도
@@ -179,6 +174,5 @@ public class Paintabale : MonoBehaviour
         _maskRenderTexture.Release();
         _uvIslandsRenderTexture.Release();
         _extendIslandsRenderTexture.Release();
-        _supportTexture.Release();
     }
 }

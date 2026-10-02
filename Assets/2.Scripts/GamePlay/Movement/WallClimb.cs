@@ -34,7 +34,9 @@ public class WallClimb : MonoBehaviour
         return vertical + horizontal;
     }
 
-    public bool CheckWall(Color teamColor, Color enemyColor)
+    // readInk가 false면(예측 재시뮬레이션 틱) 잉크 색을 GPU에서 다시 읽지 않고
+    // 벽의 형태만 검사한 뒤 이전 판정 결과(wasClimbing)를 재사용한다.
+    public bool CheckWall(Color teamColor, Color enemyColor, bool readInk, bool wasClimbing)
     {
         if (Physics.SphereCast(transform.position + new Vector3(0, _yOffset, 0), _sphereCastRadius, transform.forward, out _frontWallHit, _detectionLength))
         {
@@ -44,6 +46,14 @@ public class WallClimb : MonoBehaviour
 
             if (paintable != null && _frontWallHit.collider.CompareTag("Wall"))
             {
+                // 탈 수 없는 각도면 잉크 색을 읽을 필요가 없다
+                _wallSurfaceAngle = Vector3.Angle(_frontWallHit.normal, Vector3.up);
+                if (_wallSurfaceAngle <= _minWallSurfaceAngle || _wallSurfaceAngle >= _maxWallSurfaceAngle)
+                    return false;
+
+                if (!readInk)
+                    return wasClimbing;
+
                 // SphereCast(스윕) 결과는 textureCoord가 실제 접촉점의 UV가 아니므로
                 // 같은 콜라이더에 레이를 다시 쏴서 정확한 UV를 얻는다.
                 RaycastHit uvHit = _frontWallHit;
@@ -62,20 +72,7 @@ public class WallClimb : MonoBehaviour
 
                 float distToEnemyTeam = Mathf.Abs(color.r - enemyColor.r) + Mathf.Abs(color.g - enemyColor.g) + Mathf.Abs(color.b - enemyColor.b);
 
-                if (distToMyTeam < distToEnemyTeam && distToMyTeam < 0.5f)
-                {
-                    _wallSurfaceAngle = Vector3.Angle(_frontWallHit.normal, Vector3.up);
-
-                    if (_wallSurfaceAngle > _minWallSurfaceAngle && _wallSurfaceAngle < _maxWallSurfaceAngle)
-                    {
-                        Debug.Log("벽 확인");
-                        return true;
-                    }
-                }
-                else if (distToEnemyTeam < distToMyTeam && distToEnemyTeam < 0.5f)
-                {
-                    return false;
-                }           
+                return distToMyTeam < distToEnemyTeam && distToMyTeam < 0.5f;
             }
             else
                 return false;
