@@ -8,7 +8,7 @@ public class Paintabale : MonoBehaviour
     [Header("Texture Size")]
     [SerializeField] int TEXTURE_SIZE;
     [SerializeField] float _texelsPerMeter = 64f;   // 1m당 텍셀 수 (게임 전체 일관성 기준)
-    [SerializeField] int _minSize = 128, _maxSize = 2048;
+    [SerializeField] int _minSize = 128, _maxSize = 1024;
     [SerializeField] int _overrideSize = 0;         // 0이면 자동, 아니면 수동 지정
 
     [Header("Bump Noise")]

@@ -10754,9 +10754,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -17595,9 +17595,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -17726,9 +17726,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -17998,9 +17998,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -18320,9 +18320,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -19495,9 +19495,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -19732,9 +19732,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -21051,9 +21051,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -21555,9 +21555,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -22045,9 +22045,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -22515,9 +22515,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -23448,9 +23448,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -23962,9 +23962,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -25048,9 +25048,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -26085,9 +26085,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -27476,9 +27476,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -27587,9 +27587,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -28262,9 +28262,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -28544,9 +28544,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -28637,9 +28637,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -29098,9 +29098,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -29392,9 +29392,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -29497,9 +29497,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -30119,9 +30119,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -30294,9 +30294,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -30784,9 +30784,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -30888,9 +30888,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -31390,9 +31390,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -31569,9 +31569,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -31677,9 +31677,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -32675,9 +32675,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -33012,9 +33012,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -33210,9 +33210,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -33292,9 +33292,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -33422,9 +33422,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -33543,9 +33543,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -33694,9 +33694,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -33932,9 +33932,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -33984,9 +33984,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -34117,9 +34117,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -34217,9 +34217,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -34308,9 +34308,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -34498,9 +34498,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -34591,9 +34591,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -35583,9 +35583,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -35654,9 +35654,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -35813,9 +35813,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -35966,9 +35966,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -36563,9 +36563,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -37367,9 +37367,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -37500,9 +37500,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -37635,9 +37635,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -37767,9 +37767,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38087,9 +38087,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38173,9 +38173,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -38297,9 +38297,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -38390,9 +38390,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38484,9 +38484,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38717,9 +38717,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38799,9 +38799,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38870,9 +38870,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38922,9 +38922,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -38989,9 +38989,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -39132,9 +39132,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -39386,9 +39386,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -39468,9 +39468,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -39528,9 +39528,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -39675,9 +39675,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -40124,9 +40124,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -40351,9 +40351,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -40738,9 +40738,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -40915,9 +40915,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -40989,9 +40989,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0
@@ -41049,9 +41049,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.5
   _bumpNoiseOverrider: 0
@@ -41196,9 +41196,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Paintabale
   _extendsIslandOffset: 1
   TEXTURE_SIZE: 0
-  _texelsPerMeter: 32
+  _texelsPerMeter: 64
   _minSize: 128
-  _maxSize: 512
+  _maxSize: 1024
   _overrideSize: 0
   _bumpNoisePerMeter: 0.8
   _bumpNoiseOverrider: 0

@@ -45,8 +45,10 @@ public class NetworkInkProjectile : NetworkBehaviour
     [Networked] int _shooterTeam { get; set; }
     [Networked] float _damage { get; set; }
     [Networked] float _straightDistance { get; set; } // 이 거리(m)까지는 중력 무시하고 직선 이동, 이후 낙하 시작
+    [Networked] float _netGravity { get; set; }
 
     bool _visualHidden;
+    Color _appliedColor;
     MaterialPropertyBlock _mpb;
     MaterialPropertyBlock _trailMpb;
     MeshRenderer _mesh;
@@ -73,8 +75,10 @@ public class NetworkInkProjectile : NetworkBehaviour
         _shooterTeam = teamIndex;
         _damage = damage;
 
-        if(gravity != 0)
-            _gravity = gravity;
+        //if(gravity != 0)
+        //    _gravity = gravity;
+
+        _netGravity = gravity != 0 ? gravity : _gravity;
     }
 
     public override void Spawned()
@@ -166,7 +170,10 @@ public class NetworkInkProjectile : NetworkBehaviour
         if (vel.sqrMagnitude > 0.01f)
             transform.forward = vel.normalized;
 
-        ApplyProjectileColor();
+        // 호스트는 Spawned()가 Initialize()보다 먼저 불려 그 시점엔 _inkColor가 비어 있다.
+        // 그래서 Render에서 적용하되, 값이 실제로 바뀐 프레임에만 다시 칠한다.
+        if (_appliedColor != _inkColor)
+            ApplyProjectileColor();
     }
 
     // 가장 가까운 히트박스 하나만 보면, 그게 아군일 때 같은 틱 구간 안의 벽이나 뒤에 있는 적을 놓친다.
@@ -371,17 +378,22 @@ public class NetworkInkProjectile : NetworkBehaviour
 
     Vector3 GetMovePosition(float tick)
     {
+        // 발사 후 경과 시간(초)
         float time = (tick - _data.FireTick) * Runner.DeltaTime;
         if (time <= 0f) return _data.Position;
 
+        // 직선 구간이 끝나는 시간
         float straightDuration = GetStraightDuration();
         if (time <= straightDuration)
             return _data.Position + _data.Velocity * time;
 
-        // 직선 구간 종료 지점부터 낙하 포물선 시작 (위치/속도 연속)
+        // 직선 구간 종료 지점부터 낙하 포물선 시작
         Vector3 straightEndPos = _data.Position + _data.Velocity * straightDuration;
+
+        // 낙하가 시작된 뒤 지난 시간
         float fallTime = time - straightDuration;
-        return straightEndPos + _data.Velocity * fallTime + new Vector3(0f, -_gravity, 0f) * (fallTime * fallTime * 0.5f);
+        return straightEndPos + _data.Velocity * fallTime + 
+            new Vector3(0f, -_netGravity, 0f) * (fallTime * fallTime * 0.5f);
     }
 
     Vector3 GetVelocity(float time)
@@ -391,7 +403,7 @@ public class NetworkInkProjectile : NetworkBehaviour
             return _data.Velocity;
 
         float fallTime = time - straightDuration;
-        return _data.Velocity + new Vector3(0f, -_gravity, 0f) * fallTime;
+        return _data.Velocity + new Vector3(0f, -_netGravity, 0f) * fallTime;
     }
 
     void ApplyColorToFX(GameObject fx)
@@ -414,6 +426,8 @@ public class NetworkInkProjectile : NetworkBehaviour
         _trailMpb.SetColor("_BaseColor", _inkColor);
         _trailMpb.SetColor("_EmissionColor", _inkColor);
         _trailRenderer.SetPropertyBlock(_trailMpb);
+
+        _appliedColor = _inkColor;
     }
 
     private void OnDrawGizmos()
