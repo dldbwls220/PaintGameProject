@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4887530610097513526}
   - component: {fileID: 2072665081635290476}
   - component: {fileID: -6799181102363670611}
+  - component: {fileID: 2382149289639219081}
   m_Layer: 0
   m_Name: Runner
   m_TagString: Untagged
@@ -73,4 +74,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2932a22a079ce474ba3b02fcd2765dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spawner
-  _networkPlayer: {fileID: -4205617023733384634, guid: 98b99b743a8647d43a00c05d6d68afbe, type: 3}
+--- !u!114 &2382149289639219081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3846152777954637064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1017ab2b447f2847a33ad69031b5e94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PooledNetworkObjectProvider
+  DelayIfSceneManagerIsBusy: 1
+  _pooledPrefabs:
+  - {fileID: -8632199437834742506, guid: 584a0b01541683b44af74ebd8df56ad2, type: 3}

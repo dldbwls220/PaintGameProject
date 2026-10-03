@@ -110,6 +110,15 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
       
         _cts.CancelAfter(TimeSpan.FromSeconds(_connectTimeoutSeconds));
+
+        // 풀링할 프리팹 목록은 Runner 프리팹에 붙은 Provider의 Inspector에서 지정한다
+        var provider = runner.GetComponent<PooledNetworkObjectProvider>();
+        if (provider == null)
+        {
+            Debug.LogWarning("[Pool] Runner 프리팹에 PooledNetworkObjectProvider가 없어 풀링 없이 진행합니다.");
+            provider = runner.gameObject.AddComponent<PooledNetworkObjectProvider>();
+        }
+
         var result = await runner.StartGame(new StartGameArgs
         {
             GameMode = mode,
@@ -117,6 +126,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             PlayerCount = _maxPlayers,
             Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
             SceneManager = _sceneManager,
+            ObjectProvider = provider,
             StartGameCancellationToken = _cts.Token,
         });
 

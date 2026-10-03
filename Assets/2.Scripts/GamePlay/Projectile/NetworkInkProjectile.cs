@@ -39,13 +39,18 @@ public class NetworkInkProjectile : NetworkBehaviour
     [SerializeField] LayerMask _playerMask;
     [SerializeField] LayerMask _worldMask;
 
+    [Header("Projectile")]
+    [SerializeField] float _maxLifeTime = 10f;
+
     [Networked] InkProjectileData _data { get; set; }
     [Networked] Color _inkColor { get; set; }
-    [Networked] int _finishedTick { get; set; }
     [Networked] int _shooterTeam { get; set; }
     [Networked] float _damage { get; set; }
     [Networked] float _straightDistance { get; set; } // 이 거리(m)까지는 중력 무시하고 직선 이동, 이후 낙하 시작
     [Networked] float _netGravity { get; set; }
+    [Networked] TickTimer _despawnTimer {  get; set; }
+    [Networked] TickTimer _lifeTime { get; set; }
+
 
     bool _visualHidden;
     Color _appliedColor;
@@ -58,8 +63,8 @@ public class NetworkInkProjectile : NetworkBehaviour
     readonly List<LagCompensatedHit> _passHits = new List<LagCompensatedHit>();
     readonly List<LagCompensatedHit> _playerHits = new List<LagCompensatedHit>();
 
-    // RPC 수신 보장을 위한 Despawn 지연: RPC 왕복 시간(~100ms) + 여유를 감안해 10틱
-    const int DESPAWN_DELAY_TICKS = 10;
+    const float DESPAWN_DELAY_SEC = 0.3f;
+    const float FX_LIFETIME_SEC = 3f;
 
     public void Initialize(Vector3 position, Vector3 velocity, Color inkColor, float straightDistance, int teamIndex, float damage, float gravity = 0)
     {
@@ -74,6 +79,7 @@ public class NetworkInkProjectile : NetworkBehaviour
         _straightDistance = straightDistance;
         _shooterTeam = teamIndex;
         _damage = damage;
+        _lifeTime = TickTimer.CreateFromSeconds(Runner, _maxLifeTime);
 
         //if(gravity != 0)
         //    _gravity = gravity;
@@ -83,11 +89,12 @@ public class NetworkInkProjectile : NetworkBehaviour
 
     public override void Spawned()
     {
-        _mpb = new MaterialPropertyBlock();
-        _trailMpb = new MaterialPropertyBlock();
-        _mesh = GetComponent<MeshRenderer>();
-        _trailRenderer = GetComponent<TrailRenderer>();
-        _splashParticle = GetComponentsInChildren<ParticleSystem>();
+        // 풀에서 재사용될 때마다 다시 할당/탐색하지 않도록 최초 1회만 캐싱한다
+        _mpb ??= new MaterialPropertyBlock();
+        _trailMpb ??= new MaterialPropertyBlock();
+        if (_mesh == null) _mesh = GetComponent<MeshRenderer>();
+        if (_trailRenderer == null) _trailRenderer = GetComponent<TrailRenderer>();
+        _splashParticle ??= GetComponentsInChildren<ParticleSystem>();
 
         // 스폰 직후 실제 궤적 위치로 처음 옮겨가는 순간의 이동을 TrailRenderer가 선으로
         // 그려버리면, 클라이언트에서 "엉뚱한 곳에서 발사 지점으로 휙 날아오는" 잔상처럼
@@ -103,10 +110,11 @@ public class NetworkInkProjectile : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        if (!HasStateAuthority) return;
+
         if (_data.IsFinished)
         {
-            // RPC가 모든 클라이언트에 도달할 시간을 확보한 뒤 Despawn
-            if (HasStateAuthority && Runner.Tick >= _finishedTick + DESPAWN_DELAY_TICKS)
+            if (HasStateAuthority && _despawnTimer.Expired(Runner))
                 Runner.Despawn(Object);
             return;
         }
@@ -142,13 +150,7 @@ public class NetworkInkProjectile : NetworkBehaviour
             }
         }
 
-        if (nextPos.y < -20f && HasStateAuthority)
-        {
-            var data = _data;
-            data.IsFinished = true;
-            _data = data;
-            _finishedTick = Runner.Tick;
-        }
+        if (_lifeTime.Expired(Runner) || nextPos.y < -20f) Finish();
 
         if (!_data.IsFinished)
             CheckPlayerAround(nextPos, dir);
@@ -202,6 +204,27 @@ public class NetworkInkProjectile : NetworkBehaviour
         return enemy != null;
     }
 
+    // 풀로 반납되기 직전에 로컬(비네트워크) 상태를 되돌려, 다음 Spawned에서 새 탄처럼 동작하게 한다
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        if (_shootFX != null)
+            _shootFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        _passByNotified.Clear();
+        _visualHidden = false;
+        _appliedColor = default;
+        if (_mesh) _mesh.enabled = true;
+        if (_trailRenderer) { _trailRenderer.enabled = true; _trailRenderer.Clear(); }
+    }
+
+    void Finish()
+    {
+        var data = _data;
+        data.IsFinished = true;
+        _data = data;
+        _despawnTimer = TickTimer.CreateFromSeconds(Runner, DESPAWN_DELAY_SEC);
+    }
+
     void HideVisual()
     {
         if (_visualHidden) return;
@@ -221,13 +244,14 @@ public class NetworkInkProjectile : NetworkBehaviour
 
     void OnHit(Vector3 point, Vector3 normal, bool isEnemyHit, int layer)
     {
+        Finish();
+
         var data = _data;
-        data.IsFinished = true;
         data.ImpactPosition = point;
         data.ImpactNormal = normal;
         data.PaintRadius = Random.Range(_minRadius, _maxRadius);
         _data = data;
-        _finishedTick = Runner.Tick;
+
         if (!isEnemyHit)
         {
             RPC_PlayInkSplashSound(layer);
@@ -312,10 +336,8 @@ public class NetworkInkProjectile : NetworkBehaviour
         GameObject fxPrefab = _splashFXPrefab;
         if (fxPrefab != null)
         {
-            var fx = Instantiate(fxPrefab, point, Quaternion.LookRotation(normal));
+            var fx = SpawnFX(fxPrefab, point, Quaternion.LookRotation(normal));
             ApplyColorToFX(fx);
-
-            Destroy(fx, 3f);
         }
 
     }
@@ -333,12 +355,10 @@ public class NetworkInkProjectile : NetworkBehaviour
                 spawnPos = point + dirToCam * 0.5f;
             }
 
-            var fx = Instantiate(fxPrefab, spawnPos, Quaternion.identity);
+            var fx = SpawnFX(fxPrefab, spawnPos, Quaternion.identity);
             ApplyColorToFX(fx);
 
             GameSoundManager.instance.ProjectileSFX(ProjectileSFXName.HitEffectiveCommon02, _sfx, _hitVolume);
-
-            Destroy(fx, 3f);
         }
 
     }
@@ -404,6 +424,17 @@ public class NetworkInkProjectile : NetworkBehaviour
 
         float fallTime = time - straightDuration;
         return _data.Velocity + new Vector3(0f, -_netGravity, 0f) * fallTime;
+    }
+
+    // 씬에 PoolManager가 있으면 풀에서 꺼내 쓰고, 없으면 기존처럼 생성 후 파괴한다
+    GameObject SpawnFX(GameObject prefab, Vector3 position, Quaternion rotation)
+    {
+        if (PoolManager._instance != null)
+            return PoolManager._instance.GetFX(prefab, position, rotation, FX_LIFETIME_SEC);
+
+        var fx = Instantiate(prefab, position, rotation);
+        Destroy(fx, FX_LIFETIME_SEC);
+        return fx;
     }
 
     void ApplyColorToFX(GameObject fx)
