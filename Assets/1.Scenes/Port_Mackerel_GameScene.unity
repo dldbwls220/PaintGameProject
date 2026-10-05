@@ -327,12 +327,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PoolManager
   _objInfo:
   - _name: Splash
-    _objPrefab: {fileID: 8628159061674279328, guid: fa1654a8480382a4489e9a35c33ab2c7, type: 3}
+    _objPrefab: {fileID: 4712812498915546899, guid: 5d57eb9e838d9784e80fb2f9955a6012, type: 3}
     _count: 20
     _tfPoolParent: {fileID: 1130327652}
   - _name: Hit
     _objPrefab: {fileID: 294876349431089311, guid: 7d5df22c7ad279c4f8fa3bf2ede3ae18, type: 3}
     _count: 20
+    _tfPoolParent: {fileID: 1130327652}
+  - _name: Morph
+    _objPrefab: {fileID: 7209088588381556896, guid: 8cfe7d309d7517e4a89c28a6affb13a7, type: 3}
+    _count: 10
+    _tfPoolParent: {fileID: 1130327652}
+  - _name: Swim
+    _objPrefab: {fileID: 8628159061674279328, guid: fa1654a8480382a4489e9a35c33ab2c7, type: 3}
+    _count: 10
+    _tfPoolParent: {fileID: 1130327652}
+  - _name: DeathSplash
+    _objPrefab: {fileID: 8781502534069747683, guid: a3159f693dec9204ebc0539a46d50357, type: 3}
+    _count: 10
     _tfPoolParent: {fileID: 1130327652}
 --- !u!1 &355314555
 GameObject:

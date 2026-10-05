@@ -16,107 +16,71 @@ public class PoolManager : MonoBehaviour
 {
     static PoolManager _uniqueInstance;
 
+    // 인덱스는 FXState 순서와 일치해야 한다 (Splash, HitParticle, Morph, Swim)
     [SerializeField] ObjectInfo[] _objInfo;
 
-    [SerializeField] List<GameObject>[] _poolList;   
+    // 비활성 상태로 대기 중인 인스턴스만 들어 있다. 사용 중인 FX는 ReleaseFXAfter에서 반납된다.
+    Stack<GameObject>[] _poolStack;
 
-    public static PoolManager _instance { get { return _uniqueInstance; } }
-
-    // 프리팹 자체를 키로 쓰는 FX 풀. Inspector 등록 없이 처음 요청될 때 해당 프리팹의 풀이 생긴다.
-    readonly Dictionary<GameObject, Queue<GameObject>> _fxPool = new();
+    public static PoolManager _instance => _uniqueInstance;
 
     void Awake()
     {
         _uniqueInstance = this;
-    }
 
-    private void Start()
-    {
+        // 다른 오브젝트의 Start에서 GetFX를 호출해도 안전하도록 Awake에서 초기화한다
         InitPool();
     }
 
     public void InitPool()
     {
-        _poolList = new List<GameObject>[_objInfo.Length];
+        _poolStack = new Stack<GameObject>[_objInfo.Length];
 
-        for (int i = 0; i < _poolList.Length; i++)
+        for (int i = 0; i < _poolStack.Length; i++)
         {
-            _poolList[i] = new List<GameObject>();
-        }
-       
-    }
+            _poolStack[i] = new Stack<GameObject>(_objInfo[i]._count);
 
-    public GameObject Get(InkProjectileState state)
-    {
-        GameObject select = null;
-
-        ObjectInfo info = _objInfo[(int)state];
-
-        foreach (GameObject obj in _poolList[(int)state])
-        {
-            if (!obj.activeSelf)
+            // _count만큼 미리 만들어 두어 게임 중 첫 생성 스파이크를 줄인다
+            for (int j = 0; j < _objInfo[i]._count; j++)
             {
-                select = obj;
-
-                if (select.TryGetComponent<TrailRenderer>(out var trail))
-                {
-                    trail.Clear();
-                }
-
-                select.SetActive(true);
-
-                Debug.Log("프리팹 제사용");
-
-                break;
+                GameObject obj = Instantiate(_objInfo[i]._objPrefab, _objInfo[i]._tfPoolParent);
+                obj.SetActive(false);
+                _poolStack[i].Push(obj);
             }
         }
-      
-        if (select == null)
-        {
-            select = Instantiate(info._objPrefab, info._tfPoolParent);
-            _poolList[(int)state].Add(select);
-
-            Debug.Log("프리팹 생성");
-        }
-
-        Debug.Log(select);
-
-        return select;
     }
 
-    // 풀에서 FX를 꺼내 지정 위치에 켜고, lifeTime 후 자동으로 꺼서 풀에 돌려놓는다
-    public GameObject GetFX(GameObject prefab, Vector3 position, Quaternion rotation, float lifeTime)
+    public GameObject GetFX(FXState state, Vector3 position, Quaternion rotation, float lifeTime)
     {
-        if (!_fxPool.TryGetValue(prefab, out var queue))
-            _fxPool[prefab] = queue = new Queue<GameObject>();
+        ObjectInfo info = _objInfo[(int)state];
+        Stack<GameObject> stack = _poolStack[(int)state];
 
         GameObject fx = null;
-        while (fx == null && queue.Count > 0)
-            fx = queue.Dequeue(); // 외부에서 파괴된 인스턴스는 건너뛴다
+        while (fx == null && stack.Count > 0)
+            fx = stack.Pop(); 
 
         if (fx == null)
         {
-            // 위치를 지정해 생성해야 Play On Awake로 첫 프레임에 원점에서 터지지 않는다
-            fx = Instantiate(prefab, position, rotation, transform);
+
+            fx = Instantiate(info._objPrefab, position, rotation, info._tfPoolParent);
         }
         else
         {
-            // 꺼진 상태에서 위치를 먼저 옮긴 뒤 켜야 OnEnable 재생이 올바른 위치에서 시작된다
             fx.transform.SetPositionAndRotation(position, rotation);
             fx.SetActive(true);
         }
 
-        StartCoroutine(ReleaseFXAfter(fx, queue, lifeTime));
+        StartCoroutine(ReleaseFXAfter(fx, stack, lifeTime));
         return fx;
     }
 
-    IEnumerator ReleaseFXAfter(GameObject fx, Queue<GameObject> queue, float delay)
+    IEnumerator ReleaseFXAfter(GameObject fx, Stack<GameObject> stack, float delay)
     {
         yield return new WaitForSeconds(delay);
 
         if (fx == null) yield break;
 
         fx.SetActive(false);
-        queue.Enqueue(fx);
+        stack.Push(fx);
     }
 }

@@ -21,8 +21,6 @@ public class NetworkInkProjectile : NetworkBehaviour
 
     [Header("FX")]
     [SerializeField] ParticleSystem _shootFX;
-    [SerializeField] GameObject _splashFXPrefab;
-    [SerializeField] GameObject _hitFXPrefab;
 
     [Header("SFX")]
     [SerializeField] AudioSource _sfx;
@@ -80,9 +78,6 @@ public class NetworkInkProjectile : NetworkBehaviour
         _shooterTeam = teamIndex;
         _damage = damage;
         _lifeTime = TickTimer.CreateFromSeconds(Runner, _maxLifeTime);
-
-        //if(gravity != 0)
-        //    _gravity = gravity;
 
         _netGravity = gravity != 0 ? gravity : _gravity;
     }
@@ -333,33 +328,25 @@ public class NetworkInkProjectile : NetworkBehaviour
             }
         }
 
-        GameObject fxPrefab = _splashFXPrefab;
-        if (fxPrefab != null)
-        {
-            var fx = SpawnFX(fxPrefab, point, Quaternion.LookRotation(normal));
-            ApplyColorToFX(fx);
-        }
+        var fx = SpawnFX(FXState.Splash, point, Quaternion.LookRotation(normal));
+        ApplyColorToFX(fx);
 
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     private void RPC_OnEnemyHit(Vector3 point, Vector3 normal, Color color, float paintRadius)
     {
-        GameObject fxPrefab = _hitFXPrefab;
-        if (fxPrefab != null)
+        Vector3 spawnPos = point;
+        if (Camera.main != null)
         {
-            Vector3 spawnPos = point;
-            if (Camera.main != null)
-            {
-                Vector3 dirToCam = (Camera.main.transform.position - point).normalized;
-                spawnPos = point + dirToCam * 0.5f;
-            }
-
-            var fx = SpawnFX(fxPrefab, spawnPos, Quaternion.identity);
-            ApplyColorToFX(fx);
-
-            GameSoundManager.instance.ProjectileSFX(ProjectileSFXName.HitEffectiveCommon02, _sfx, _hitVolume);
+            Vector3 dirToCam = (Camera.main.transform.position - point).normalized;
+            spawnPos = point + dirToCam * 0.5f;
         }
+
+        var fx = SpawnFX(FXState.HitParticle, spawnPos, Quaternion.identity);
+        ApplyColorToFX(fx);
+
+        GameSoundManager.instance.ProjectileSFX(ProjectileSFXName.HitEffectiveCommon02, _sfx, _hitVolume);
 
     }
 
@@ -426,19 +413,18 @@ public class NetworkInkProjectile : NetworkBehaviour
         return _data.Velocity + new Vector3(0f, -_netGravity, 0f) * fallTime;
     }
 
-    // 씬에 PoolManager가 있으면 풀에서 꺼내 쓰고, 없으면 기존처럼 생성 후 파괴한다
-    GameObject SpawnFX(GameObject prefab, Vector3 position, Quaternion rotation)
+    // FX 프리팹은 PoolManager의 _objInfo에서 관리한다. 씬에 PoolManager가 없으면 FX를 생략한다.
+    GameObject SpawnFX(FXState state, Vector3 position, Quaternion rotation)
     {
-        if (PoolManager._instance != null)
-            return PoolManager._instance.GetFX(prefab, position, rotation, FX_LIFETIME_SEC);
+        if (PoolManager._instance == null) return null;
 
-        var fx = Instantiate(prefab, position, rotation);
-        Destroy(fx, FX_LIFETIME_SEC);
-        return fx;
+        return PoolManager._instance.GetFX(state, position, rotation, FX_LIFETIME_SEC);
     }
 
     void ApplyColorToFX(GameObject fx)
     {
+        if (fx == null) return;
+
         foreach (var ps in fx.GetComponentsInChildren<ParticleSystem>())
         {
             var main = ps.main;

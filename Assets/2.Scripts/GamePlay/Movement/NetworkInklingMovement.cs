@@ -89,13 +89,11 @@ public class NetworkInklingMovement : NetworkBehaviour
     [SerializeField] GameObject _vCamera;
 
     [Header("Swim Wake FX")]
-    [SerializeField] GameObject _swimWakeFX;
     [SerializeField] float _swimWakeInterval = 0.15f;
     [SerializeField] float _swimWakeFXLifetime = 1f;
     float _swimWakeTimer;
 
     [Header("Morph Ink FX")]
-    [SerializeField] GameObject _morphFX;
     [SerializeField] Vector3 _morphFXOffset;
     [SerializeField] float _morphFXLifeTime = 1f;
 
@@ -781,9 +779,10 @@ public class NetworkInklingMovement : NetworkBehaviour
 
         _swimWakeTimer = _swimWakeInterval;
 
-        if (_swimWakeFX == null) return;
+        if (PoolManager._instance == null) return;
 
-        GameObject fx = Instantiate(_swimWakeFX, transform.position, Quaternion.identity);
+        // 풀 오브젝트이므로 Destroy하지 않는다. lifeTime이 지나면 PoolManager가 회수한다.
+        GameObject fx = PoolManager._instance.GetFX(FXState.Swim, transform.position, Quaternion.identity, _swimWakeFXLifetime);
 
         ParticleSystem[] ps = fx.GetComponentsInChildren<ParticleSystem>();
         foreach (ParticleSystem p in ps)
@@ -791,17 +790,15 @@ public class NetworkInklingMovement : NetworkBehaviour
             var main = p.main;
             main.startColor = _inkColor;
         }
-
-        Destroy(fx, _swimWakeFXLifetime);
     }
 
     void PlayMorphSplashEffect()
     {
         if (!_isAlive) return;
 
-        if(_morphFX == null) return;
+        if (PoolManager._instance == null) return;
 
-        GameObject fx = Instantiate(_morphFX, transform.position + _morphFXOffset, Quaternion.identity);
+        GameObject fx = PoolManager._instance.GetFX(FXState.Morph, transform.position + _morphFXOffset, Quaternion.identity, _morphFXLifeTime);
 
         ParticleSystem[] ps = fx.GetComponentsInChildren<ParticleSystem>();
         foreach (ParticleSystem p in ps)
@@ -809,8 +806,6 @@ public class NetworkInklingMovement : NetworkBehaviour
             var main = p.main;
             main.startColor = _inkColor;
         }
-
-        Destroy(fx, _morphFXLifeTime);
     }
 
     void InitNicknameUI()

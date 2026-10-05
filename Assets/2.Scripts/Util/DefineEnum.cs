@@ -466,6 +466,15 @@ namespace DefineEnum
         Count
     }
 
+    public enum FXState
+    {
+        Splash,
+        HitParticle,
+        Morph,
+        Swim,
+        DeathSplash
+    }
+
     #endregion[리소스]
 
     #region[네트워크]

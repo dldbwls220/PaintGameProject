@@ -33,9 +33,11 @@ public class Health : NetworkBehaviour
     [SerializeField] float _strength = 0.9f;
     [SerializeField] float _minPaintRadius = 0.5f;
     [SerializeField] float _maxPaintRadius = 1.5f;
+    [SerializeField] float _fxLifeTime = 1f;
     [SerializeField] int _splashCount = 12;
     [SerializeField] float _splashCastRadius = 0.2f;
     [SerializeField] LayerMask _paintMask = ~0;
+    [SerializeField] Vector3 _splashPosition = new Vector3(0,0.5f,0);
 
     [Header("Game Object")]
     [SerializeField] GameObject _deathSplashFX;
@@ -307,7 +309,10 @@ public class Health : NetworkBehaviour
 
         if (_wasAlive && !_isAlive)
         {
-            GameObject fx = Instantiate(_deathSplashFX, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+            GameObject fx = null;
+
+            if (PoolManager._instance != null)
+                fx = PoolManager._instance.GetFX(FXState.DeathSplash, transform.position + _splashPosition, Quaternion.identity, _fxLifeTime);
 
             ParticleSystem[] ps = fx.GetComponentsInChildren<ParticleSystem>();
 
@@ -318,8 +323,6 @@ public class Health : NetworkBehaviour
             }
 
             PlayDeadSound();
-
-            Destroy(fx, 3f);
         }
 
         _wasAlive = _isAlive;
